@@ -8,7 +8,7 @@ const CONFIG = {
     email: "Alireza_Azadi@Hotmail.com",
     linkedin: "a-azadi",
     github: "alirezaazadi",
-    instagram: "alireza_aazadi",
+    telegram: "https://t.me/+uwc-ONxmoEg4Nzc0",
   },
   projects: [
     {
