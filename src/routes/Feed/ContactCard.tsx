@@ -5,6 +5,7 @@ import {
   AiOutlineGithub,
   AiOutlineInstagram,
   AiOutlineMail,
+  FaTelegramPlane,
 } from "react-icons/ai"
 import { CONFIG } from "site.config"
 import { Emoji } from "src/components/Emoji"
@@ -57,6 +58,17 @@ const ContactCard: React.FC = () => {
             <div className="name">linkedin</div>
           </a>
         )}
+        {CONFIG.profile.telegram && (
+          <a
+            href={`https://t.me/${CONFIG.profile.telegram}`}
+            rel="noreferrer"
+            target="_blank"
+          >
+            <FaTelegramPlane className="icon" />
+            <div className="name">telegram</div>
+          </a>
+        )}
+
       </StyledWrapper>
     </>
   )
