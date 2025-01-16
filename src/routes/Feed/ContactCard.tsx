@@ -5,8 +5,8 @@ import {
   AiOutlineGithub,
   AiOutlineInstagram,
   AiOutlineMail,
-  FaTelegramPlane,
 } from "react-icons/ai"
+import { FaTelegramPlane } from "react-icons/fa"
 import { CONFIG } from "site.config"
 import { Emoji } from "src/components/Emoji"
 
