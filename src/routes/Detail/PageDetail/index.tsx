@@ -18,6 +18,9 @@ const PageDetail: React.FC<Props> = () => {
 export default PageDetail
 
 const StyledWrapper = styled.div`
-  margin: 0 auto;
-  max-width: 56rem;
+    margin: 0 auto;
+    max-width: 56rem;
+    font-family: 'Vazirmatn', sans-serif;
+    direction: rtl;
+
 `
