@@ -17,7 +17,11 @@ export function PostCard({ post }: PostCardProps) {
         >
             {post.image && (
                 <div className="post-card-image">
-                    <img src={post.image} alt={post.title} loading="lazy" />
+                    <img
+                        src={post.image.startsWith("./") ? `/post/${post.slug}/${post.image.slice(2)}` : post.image}
+                        alt={post.title}
+                        loading="lazy"
+                    />
                 </div>
             )}
             <div className="post-card-content">
