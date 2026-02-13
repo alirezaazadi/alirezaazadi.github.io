@@ -557,7 +557,7 @@ img {
 
 .post-card-image {
   width: 160px;
-  min-height: 110px;
+  height: 110px;
   border-radius: var(--radius-sm);
   overflow: hidden;
   flex-shrink: 0;
@@ -590,6 +590,7 @@ img {
   margin-bottom: 12px;
   line-height: 1.6;
   display: -webkit-box;
+  line-clamp: 2;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
