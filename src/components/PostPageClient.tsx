@@ -19,6 +19,7 @@ interface PostPageClientProps {
 
 export function PostPageClient({ post }: PostPageClientProps) {
     const [translatedContent, setTranslatedContent] = useState<string | null>(null);
+    const [translationProvider, setTranslationProvider] = useState<string | undefined>(undefined);
     const [readerOpen, setReaderOpen] = useState(false);
     const router = useRouter();
     const isTranslated = translatedContent !== null;
@@ -69,9 +70,16 @@ export function PostPageClient({ post }: PostPageClientProps) {
                 <div className="post-actions">
                     <TranslateButton
                         originalContent={post.body}
-                        onTranslated={setTranslatedContent}
-                        onRevert={() => setTranslatedContent(null)}
+                        onTranslated={(text, provider) => {
+                            setTranslatedContent(text);
+                            setTranslationProvider(provider);
+                        }}
+                        onRevert={() => {
+                            setTranslatedContent(null);
+                            setTranslationProvider(undefined);
+                        }}
                         isTranslated={isTranslated}
+                        provider={translationProvider}
                     />
                     <button
                         className="btn"
@@ -87,7 +95,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
 
             {isTranslated && (
                 <div className="translation-banner">
-                    <span>🌐 showing translated version</span>
+                    <span>🌐 showing translated version {translationProvider ? `by ${translationProvider}` : ""}</span>
                     <button onClick={() => setTranslatedContent(null)}>
                         show original
                     </button>

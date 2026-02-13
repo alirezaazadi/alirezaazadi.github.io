@@ -152,19 +152,20 @@ export async function POST(request: NextRequest) {
                     }
                 );
 
-                if (res.ok) {
+                // If Gemini returns error, log and fall through to fallback
+                if (!res.ok) {
+                    console.warn("Gemini API returned", res.status, "— falling back to Google Translate");
+                } else {
                     const data = await res.json();
                     const translatedText =
                         data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
                     if (translatedText) {
-                        return NextResponse.json({ translatedText: restoreCodeBlocks(translatedText) });
+                        return NextResponse.json({
+                            translatedText: restoreCodeBlocks(translatedText),
+                            provider: "Gemini"
+                        });
                     }
-                }
-
-                // If Gemini returns error, log and fall through to fallback
-                if (!res.ok) {
-                    console.warn("Gemini API returned", res.status, "— falling back to Google Translate");
                 }
             } catch (geminiError) {
                 console.warn("Gemini translation failed, falling back:", geminiError);
@@ -175,7 +176,11 @@ export async function POST(request: NextRequest) {
         try {
             console.log("Using Google Translate fallback for", targetLang);
             const translatedText = await googleTranslateFallback(textWithPlaceholders, targetLang);
-            return NextResponse.json({ translatedText: restoreCodeBlocks(translatedText), fallback: true });
+            return NextResponse.json({
+                translatedText: restoreCodeBlocks(translatedText),
+                fallback: true,
+                provider: "Google Translate"
+            });
         } catch (fallbackError) {
             console.error("Google Translate fallback also failed:", fallbackError);
             return NextResponse.json(

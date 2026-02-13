@@ -135,10 +135,14 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
         ),
         img: ({ src, alt, style, ...props }) => {
             let finalSrc = (src as string) || "";
-            // Fix local images in markdown (e.g. ./media/foo.png -> /post/slug/media/foo.png)
-            if (slug && (finalSrc.startsWith("./") || finalSrc.startsWith("media/"))) {
-                const cleanPath = finalSrc.replace(/^\.\//, "");
-                finalSrc = `/post/${slug}/${cleanPath}`;
+            // Fix local images in markdown (e.g. ./media/foo.png or media/foo.png -> /post/slug/media/foo.png)
+            if (slug) {
+                if (finalSrc.startsWith("./")) {
+                    const cleanPath = finalSrc.replace(/^\.\//, "");
+                    finalSrc = `/post/${slug}/${cleanPath}`;
+                } else if (finalSrc.startsWith("media/")) {
+                    finalSrc = `/post/${slug}/${finalSrc}`;
+                }
             }
 
             return (

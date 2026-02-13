@@ -5,9 +5,10 @@ import { Languages, ChevronDown } from "lucide-react";
 
 interface TranslateButtonProps {
     originalContent: string;
-    onTranslated: (text: string) => void;
+    onTranslated: (text: string, provider?: string) => void;
     onRevert: () => void;
     isTranslated: boolean;
+    provider?: string;
 }
 
 const LANGUAGES = [
@@ -33,6 +34,7 @@ export function TranslateButton({
     onTranslated,
     onRevert,
     isTranslated,
+    provider
 }: TranslateButtonProps) {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -73,7 +75,7 @@ export function TranslateButton({
                 return;
             }
 
-            onTranslated(data.translatedText);
+            onTranslated(data.translatedText, data.provider);
         } catch {
             setError("Network error — check your connection");
         } finally {
@@ -85,7 +87,7 @@ export function TranslateButton({
         return (
             <button className="btn" onClick={onRevert}>
                 <Languages size={14} />
-                show original
+                show original {provider ? `(translated by ${provider})` : ""}
             </button>
         );
     }
