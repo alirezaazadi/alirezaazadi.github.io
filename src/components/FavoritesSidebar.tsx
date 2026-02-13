@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Book, Music, Podcast, Youtube, ListMusic, ChevronDown, ChevronRight, X } from "lucide-react";
+import { Book, Music, Podcast, Youtube, ListMusic, ChevronDown, ChevronRight, X, Newspaper } from "lucide-react";
 
 interface FavoriteItem {
     title: string;
@@ -16,6 +16,7 @@ interface Favorites {
     podcasts: FavoriteItem[];
     youtube: FavoriteItem[];
     playlists: FavoriteItem[];
+    magazines: FavoriteItem[];
 }
 
 interface FavoritesSidebarProps {
@@ -26,6 +27,7 @@ const STORAGE_KEY = "blog-preferences";
 
 const sectionConfig = [
     { key: "books" as const, label: "Reading", icon: <Book size={14} /> },
+    { key: "magazines" as const, label: "Magazines", icon: <Newspaper size={14} /> },
     { key: "music" as const, label: "Listening", icon: <Music size={14} /> },
     { key: "podcasts" as const, label: "Podcasts", icon: <Podcast size={14} /> },
     { key: "youtube" as const, label: "Watching", icon: <Youtube size={14} /> },

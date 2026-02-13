@@ -63,4 +63,18 @@
 - title: The Way of the Ghost
   url: https://open.spotify.com/track/4amEa4NDuUC9ulTmpF9YRV?si=96a5ef9d5f144aaf
 
+
   cover: /media/favorites/fav_xc2wb8t2r.jpg
+## magazines
+- title: How it works: Issue 212
+  url: https://pocketmags.com/magazine/reader/290981
+  subtitle: Issue 212
+  cover: /media/favorites/mag_howitworks.jpg
+- title: The Economist
+  url: https://www.economist.com/
+  subtitle: Weekly
+  cover: /media/favorites/mag_economist.jpg
+- title: Hacker News
+  url: https://news.ycombinator.com/
+  subtitle: Y Combinator
+  cover: /media/favorites/mag_hackernews.jpg

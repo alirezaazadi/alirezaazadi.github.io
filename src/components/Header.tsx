@@ -23,6 +23,9 @@ export function Header() {
                     <Link href="/about" className={pathname === "/about" ? "active" : ""}>
                         about
                     </Link>
+                    <Link href="/suggestions" className={pathname === "/suggestions" ? "active" : ""}>
+                        suggestions
+                    </Link>
                 </nav>
             </div>
             <div className="header-right">

@@ -14,6 +14,7 @@ export interface Favorites {
     podcasts: FavoriteItem[];
     youtube: FavoriteItem[];
     playlists: FavoriteItem[];
+    magazines: FavoriteItem[];
 }
 
 /**
@@ -28,6 +29,7 @@ export function parseFavorites(content: string): Favorites {
         podcasts: [],
         youtube: [],
         playlists: [],
+        magazines: [],
     };
 
     let currentSection: keyof Favorites | null = null;
