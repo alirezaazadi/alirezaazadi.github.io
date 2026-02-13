@@ -78,9 +78,12 @@ function FavoritesSection({
                 const overflow = el.scrollWidth - el.clientWidth;
                 // Speed: ~40px/s so longer text takes proportionally longer
                 const duration = Math.max(1, overflow / 40);
+                // Remove element-level overflow so full text is painted;
+                // parent .favorite-info still clips via its own overflow:hidden
+                el.style.overflow = "visible";
+                el.style.textOverflow = "clip";
                 el.style.transition = `transform ${duration}s linear`;
                 el.style.transform = `translateX(-${overflow}px)`;
-                el.style.textOverflow = "clip";
             }
         });
     };
@@ -93,6 +96,7 @@ function FavoritesSection({
             if (!el) return;
             el.style.transition = "transform 0.3s ease";
             el.style.transform = "translateX(0)";
+            el.style.overflow = "hidden";
             el.style.textOverflow = "ellipsis";
         });
     };
