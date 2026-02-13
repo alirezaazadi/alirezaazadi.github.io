@@ -72,17 +72,25 @@ function FavoritesSection({
     const scrollInterval = useRef<NodeJS.Timeout | null>(null);
     const [hasOverflow, setHasOverflow] = useState(false);
 
-    useEffect(() => {
-        const checkOverflow = () => {
-            const el = listRef.current;
-            if (el) {
-                setHasOverflow(el.scrollHeight > el.clientHeight);
-            }
-        };
+    const checkOverflow = () => {
+        const el = listRef.current;
+        if (el) {
+            // Use a small buffer (1px) to avoid precision issues
+            setHasOverflow(el.scrollHeight > el.clientHeight + 1);
+        }
+    };
 
+    useEffect(() => {
         checkOverflow();
-        window.addEventListener("resize", checkOverflow);
-        return () => window.removeEventListener("resize", checkOverflow);
+
+        const el = listRef.current;
+        if (!el) return;
+
+        // Observer for size changes (resizing window or container)
+        const resizeObserver = new ResizeObserver(() => checkOverflow());
+        resizeObserver.observe(el);
+
+        return () => resizeObserver.disconnect();
     }, [items]);
 
     const startScrolling = () => {
@@ -96,16 +104,22 @@ function FavoritesSection({
         scrollInterval.current = setInterval(() => {
             if (el) {
                 // Smooth scroll down
+                const previousTop = el.scrollTop;
                 el.scrollTop += 1;
-                // Loop back to top if reached end? Or just stop?
-                // User said "it will goes down", usually implies continuous or just simple scroll.
-                // Let's just scroll down.
-                if (el.scrollTop + el.clientHeight >= el.scrollHeight) {
-                    // stop at bottom
-                    if (scrollInterval.current) clearInterval(scrollInterval.current);
+
+                // If we hit the bottom, clear interval or loop? 
+                // For now, simple stop at bottom seems safest to avoid "stuck" loops,
+                // but if we want "automated" feel, maybe we should auto-reverse?
+                // The user said "automated vertical scrolling", but the UI implies "scroll down".
+                // Let's stick to existing behavior but ensure it works.
+                if (Math.ceil(el.scrollTop + el.clientHeight) >= el.scrollHeight) {
+                    if (scrollInterval.current) {
+                        clearInterval(scrollInterval.current);
+                        scrollInterval.current = null;
+                    }
                 }
             }
-        }, 15); // Adjust speed
+        }, 20);
     };
 
     const stopScrolling = () => {
@@ -140,6 +154,7 @@ function FavoritesSection({
                                     alt={item.title}
                                     className="favorite-cover"
                                     loading="lazy"
+                                    onLoad={checkOverflow}
                                 />
                             )}
                             <div className="favorite-info">
@@ -166,6 +181,7 @@ function FavoritesSection({
                             left: 0,
                             right: 0,
                             height: "20px",
+                            zIndex: 10,
                             background: "linear-gradient(to bottom, transparent, var(--bg-primary))",
                             cursor: "s-resize",
                             display: "flex",
