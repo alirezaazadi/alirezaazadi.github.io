@@ -149,7 +149,7 @@ export function TranslateButton({
                             letterSpacing: "0.5px",
                             textTransform: "uppercase"
                         }}>
-                            AI Model
+                            Translator
                         </div>
                         <select
                             value={selectedModel.id}
@@ -171,7 +171,9 @@ export function TranslateButton({
                             }}
                         >
                             {MODELS.map(m => (
-                                <option key={m.id} value={m.id}>{m.label}</option>
+                                <option key={m.id} value={m.id}>
+                                    {m.id === "google-translate" ? m.label : `(AI) ${m.label}`}
+                                </option>
                             ))}
                         </select>
                     </div>
