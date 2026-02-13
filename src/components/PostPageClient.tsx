@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { TranslateButton } from "@/components/TranslateButton";
+import { InlineTranslate } from "@/components/InlineTranslate";
 import { ReplyButton } from "@/components/ReplyButton";
 import { ReaderMode } from "@/components/ReaderMode";
 import { ShareButton } from "@/components/ShareButton";
@@ -124,6 +125,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
             )}
 
             <MarkdownRenderer content={displayContent} slug={post.slug} />
+            <InlineTranslate />
 
             {/* Comment / Reply section at the bottom */}
             <div className="post-comment-section">
