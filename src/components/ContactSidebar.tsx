@@ -19,7 +19,21 @@ const iconMap: Record<string, React.ReactNode> = {
     linkedin: <Linkedin size={16} />,
     telegram: <Send size={16} />,
     email: <Mail size={16} />,
-    flickr: <Camera size={16} />,
+    flickr: (
+        <svg
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <circle cx="8" cy="12" r="4" />
+            <circle cx="16" cy="12" r="4" />
+        </svg>
+    ),
     goodreads: <BookOpen size={16} />,
 };
 
