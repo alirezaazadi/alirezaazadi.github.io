@@ -1,8 +1,9 @@
 "use client";
 
+import { Analytics as VercelAnalytics } from "@vercel/analytics/next";
 import Script from "next/script";
 
-export function Analytics() {
+function GoogleAnalytics() {
     const gaId = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID;
 
     // Don't load if no GA ID configured
@@ -35,6 +36,15 @@ export function Analytics() {
                     `,
                 }}
             />
+        </>
+    );
+}
+
+export function Analytics() {
+    return (
+        <>
+            <GoogleAnalytics />
+            <VercelAnalytics />
         </>
     );
 }
