@@ -48,6 +48,19 @@ const nextConfig: NextConfig = {
       },
     ];
   },
+  async redirects() {
+    return [
+      {
+        source: "/:slug",
+        destination: "/post/:slug",
+        permanent: true,
+        // Only redirect if the slug doesn't match a known page or file
+        missing: [
+          { type: "header", key: "x-do-not-redirect" },
+        ],
+      },
+    ];
+  },
 };
 
 export default nextConfig;

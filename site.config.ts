@@ -14,7 +14,7 @@ export const siteConfig = {
     linkedin: "https://linkedin.com/in/a-azadi",
     telegram: "https://t.me/dr_biglari_ds",
     email: "mailto:Alireza_Azadi@Hotmail.com",
-    flickr: "https://flickr.com/alireza_azadi",
+    flickr: "https://www.flickr.com/people/202223694@N03/",
     goodreads: "https://www.goodreads.com/user/show/125123075-alireza-azadi",
   } as Record<string, string>,
 

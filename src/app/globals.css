@@ -771,6 +771,18 @@ img {
   overflow: hidden;
 }
 
+/* Hide terminal on small screens */
+@media (max-width: 604px) {
+
+  .terminal-toggle-btn,
+  .terminal-minimized-bar,
+  .terminal-window,
+  .terminal-overlay {
+    display: none !important;
+  }
+}
+
+
 /* Tabs */
 .filter-tabs {
   display: flex;

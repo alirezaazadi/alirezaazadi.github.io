@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "update-covers": "node scripts/fetch-covers.mjs"
   },
   "dependencies": {
     "date-fns": "^4.1.0",
