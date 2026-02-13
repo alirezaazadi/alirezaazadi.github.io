@@ -19,8 +19,8 @@ export default async function HomePage() {
 
   return (
     <div>
-      <h1 className="page-title">{siteConfig.author}</h1>
-      <p className="page-subtitle">{siteConfig.description}</p>
+      {/* <h1 className="page-title">{siteConfig.author}</h1> -- Removed per user request */}
+      <p className="page-subtitle" style={{ marginTop: 0 }}>{siteConfig.description}</p>
       <Suspense fallback={<div className="empty-state"><span className="spinner" /></div>}>
         <PostList
           initialPosts={firstPagePosts}

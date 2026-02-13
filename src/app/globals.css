@@ -1435,14 +1435,17 @@ img {
 
   .contact-sidebar {
     position: fixed;
-    left: 8px;
+    left: 50%;
+    transform: translateX(-50%);
     right: auto;
     top: auto;
-    bottom: 16px;
-    transform: none;
+    bottom: 24px;
     flex-direction: row;
     border-radius: 9999px;
     padding: 6px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
   }
 
   .contact-sidebar a .tooltip {
@@ -1486,6 +1489,27 @@ img {
 
   .post-card {
     padding: 14px;
+  }
+
+  .header {
+    padding: 0 12px;
+  }
+
+  .header-left {
+    gap: 12px;
+  }
+
+  .header-logo {
+    font-size: 16px;
+  }
+
+  .header-nav {
+    gap: 0;
+  }
+
+  .header-nav a {
+    padding: 6px 8px;
+    font-size: 12px;
   }
 }
 
