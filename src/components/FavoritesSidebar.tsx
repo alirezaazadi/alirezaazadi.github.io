@@ -68,78 +68,14 @@ function FavoritesSection({
     icon: React.ReactNode;
     items: FavoriteItem[];
 }) {
-    const listRef = useRef<HTMLDivElement>(null);
-    const scrollInterval = useRef<NodeJS.Timeout | null>(null);
-    const [hasOverflow, setHasOverflow] = useState(false);
-
-    const checkOverflow = () => {
-        const el = listRef.current;
-        if (el) {
-            // Use a small buffer (1px) to avoid precision issues
-            setHasOverflow(el.scrollHeight > el.clientHeight + 1);
-        }
-    };
-
-    useEffect(() => {
-        checkOverflow();
-
-        const el = listRef.current;
-        if (!el) return;
-
-        // Observer for size changes (resizing window or container)
-        const resizeObserver = new ResizeObserver(() => checkOverflow());
-        resizeObserver.observe(el);
-
-        return () => resizeObserver.disconnect();
-    }, [items]);
-
-    const startScrolling = () => {
-        if (scrollInterval.current) return;
-        const el = listRef.current;
-        if (!el) return;
-
-        // Only scroll if there's overflow
-        if (el.scrollHeight <= el.clientHeight) return;
-
-        scrollInterval.current = setInterval(() => {
-            if (el) {
-                // Smooth scroll down
-                const previousTop = el.scrollTop;
-                el.scrollTop += 1;
-
-                // If we hit the bottom, clear interval or loop? 
-                // For now, simple stop at bottom seems safest to avoid "stuck" loops,
-                // but if we want "automated" feel, maybe we should auto-reverse?
-                // The user said "automated vertical scrolling", but the UI implies "scroll down".
-                // Let's stick to existing behavior but ensure it works.
-                if (Math.ceil(el.scrollTop + el.clientHeight) >= el.scrollHeight) {
-                    if (scrollInterval.current) {
-                        clearInterval(scrollInterval.current);
-                        scrollInterval.current = null;
-                    }
-                }
-            }
-        }, 20);
-    };
-
-    const stopScrolling = () => {
-        if (scrollInterval.current) {
-            clearInterval(scrollInterval.current);
-            scrollInterval.current = null;
-        }
-    };
-
     return (
         <div className="favorites-section">
             <h3 className="favorites-section-title">
                 {icon}
                 {title}
             </h3>
-            <div className="favorites-section-container" style={{ position: "relative" }}>
-                <div
-                    className="favorites-items"
-                    ref={listRef}
-                >
+            <div className="favorites-section-container">
+                <div className="favorites-items">
                     {items.map((item) => (
                         <a
                             key={item.url}
@@ -154,7 +90,6 @@ function FavoritesSection({
                                     alt={item.title}
                                     className="favorite-cover"
                                     loading="lazy"
-                                    onLoad={checkOverflow}
                                 />
                             )}
                             <div className="favorite-info">
@@ -166,33 +101,6 @@ function FavoritesSection({
                         </a>
                     ))}
                 </div>
-                {/* 
-                  "Transparent narrow down at the end"
-                  Hovering this zone triggers the scroll.
-                */}
-                {hasOverflow && (
-                    <div
-                        className="scroll-indicator-zone"
-                        onMouseEnter={startScrolling}
-                        onMouseLeave={stopScrolling}
-                        style={{
-                            position: "absolute",
-                            bottom: 0,
-                            left: 0,
-                            right: 0,
-                            height: "20px",
-                            zIndex: 10,
-                            background: "linear-gradient(to bottom, transparent, var(--bg-primary))",
-                            cursor: "s-resize",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "center",
-                            opacity: 0.7,
-                        }}
-                    >
-                        <ChevronDown size={12} className="scroll-arrow" style={{ opacity: 0.5 }} />
-                    </div>
-                )}
             </div>
         </div>
     );
