@@ -141,8 +141,9 @@ export async function POST(request: NextRequest) {
             try {
                 const prompt = `Translate the following text to ${targetLang}. Preserve all markdown formatting and links. Keep any __CODE_BLOCK_N__ placeholders exactly as-is. Only output the translated text, nothing else.\n\n${textWithPlaceholders}`;
 
+                // Use gemini-1.5-flash
                 const res = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -154,7 +155,8 @@ export async function POST(request: NextRequest) {
 
                 // If Gemini returns error, log and fall through to fallback
                 if (!res.ok) {
-                    console.warn("Gemini API returned", res.status, "— falling back to Google Translate");
+                    const errorText = await res.text();
+                    console.warn(`Gemini API returned ${res.status}: ${errorText} — falling back to Google Translate`);
                 } else {
                     const data = await res.json();
                     const translatedText =
