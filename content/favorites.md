@@ -35,3 +35,14 @@
   url: https://www.goodreads.com/book/show/18058001-systems-performance
 - title: Fundamentals of Software Architecture
   url: https://www.goodreads.com/book/show/44144493-fundamentals-of-software-architecture?ref=nav_sb_ss_4_16
+
+## music
+- title: Think
+  url: https://open.spotify.com/track/4ppeeHhV4lYtxH6dhSig5a?si=5b8a4a9a99854f5e
+  subtitle: Kaleida
+- title: Plastic Heart
+  url: https://open.spotify.com/track/7EPbzLbSzg9d94LZ9MnKFA?si=04e7936d67ed4398
+- title: Aghoosh
+  url: https://open.spotify.com/track/6mlxwOv29th9MVrxsA0TDp?si=1b230234ddb247a4
+- title: The Way of the Ghost
+  url: https://open.spotify.com/track/4amEa4NDuUC9ulTmpF9YRV?si=96a5ef9d5f144aaf
