@@ -22,7 +22,8 @@
   --border-light: #e8e6e3;
 
   --accent: #3d7317;
-  --accent-hover: #2d5016;
+  --accent-hover: #001f3f;
+  /* Navy Blue for Light Mode */
   --accent-soft: #e8f0e0;
 
   --tag-bg: #eeedeb;
@@ -69,7 +70,8 @@
   --border-light: #21262d;
 
   --accent: #58a835;
-  --accent-hover: #7ee787;
+  --accent-hover: #4ade80;
+  /* Brighter Green for Dark Mode (was #7ee787) - "Green" requested */
   --accent-soft: #1a2e12;
 
   --tag-bg: #1c2128;
