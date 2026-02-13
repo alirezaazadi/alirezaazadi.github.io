@@ -59,11 +59,13 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
     // Seed cache with initial server data
     useEffect(() => {
         const key = buildCacheKey(1, "", "", "");
-        cacheRef.current[key] = {
-            posts: initialPosts,
-            totalPages: Math.max(1, Math.ceil(totalPosts / siteConfig.postsPerPage)),
-            totalPosts,
-        };
+        if (!cacheRef.current[key]) {
+            cacheRef.current[key] = {
+                posts: initialPosts,
+                totalPages: Math.max(1, Math.ceil(totalPosts / siteConfig.postsPerPage)),
+                totalPosts,
+            };
+        }
     }, [initialPosts, totalPosts]);
 
     /**
@@ -146,6 +148,22 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
             prefetchNextPage(p, cat, q, d, result.totalPages);
         }
     }, [fetchPosts, prefetchNextPage]);
+
+    // Sync state with URL search params (fix for back button)
+    useEffect(() => {
+        const p = parseInt(searchParams.get("page") || "1", 10);
+        const q = searchParams.get("q") || "";
+        const c = searchParams.get("category") || "";
+        const d = searchParams.get("date") || "";
+
+        setPage(p);
+        setQuery(q);
+        setCategory(c);
+        setDate(d);
+
+        // Load data for the new params
+        loadPage(p, c, q, d);
+    }, [searchParams, loadPage]);
 
     // Prefetch next page on initial load
     useEffect(() => {

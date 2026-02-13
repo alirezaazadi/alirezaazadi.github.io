@@ -143,7 +143,12 @@ img {
   flex: 1;
   min-width: 0;
   padding: 32px 24px 64px;
-  padding-right: calc(24px + var(--sidebar-width) + 16px);
+  /* Reduced right padding to balance with left sidebar visually, assuming contact sidebar is small */
+  padding-right: calc(24px + 16px);
+  max-width: 900px;
+  /* Limit content width for readability and centering */
+  margin: 0 auto;
+  /* Center the content block within the flex area */
 }
 
 /* ---- Favorites Sidebar (Left) ---- */
