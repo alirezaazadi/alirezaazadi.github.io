@@ -22,8 +22,8 @@
   --border-light: #e8e6e3;
 
   --accent: #3d7317;
-  --accent-hover: #001f3f;
-  /* Navy Blue for Light Mode */
+  --accent-hover: #2563eb;
+  /* Shining Blue for Light Mode */
   --accent-soft: #e8f0e0;
 
   --tag-bg: #eeedeb;
@@ -34,6 +34,8 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
+  --glow-hover: 0 0 8px rgba(37, 99, 235, 0.5);
+  /* Blue glow */
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -71,7 +73,7 @@
 
   --accent: #58a835;
   --accent-hover: #4ade80;
-  /* Brighter Green for Dark Mode (was #7ee787) - "Green" requested */
+  /* Brighter Green for Dark Mode */
   --accent-soft: #1a2e12;
 
   --tag-bg: #1c2128;
@@ -82,6 +84,17 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --glow-hover: 0 0 10px rgba(74, 222, 128, 0.6);
+  /* Green glow */
+}
+
+/* Apply glow to links/buttons on hover */
+a:hover,
+button:not(:disabled):hover,
+.btn:hover {
+  text-shadow: var(--glow-hover);
+  color: var(--accent-hover);
+  transition: all 0.2s ease;
 }
 
 /* ---- Reset & Base ---- */

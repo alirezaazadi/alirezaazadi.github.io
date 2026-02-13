@@ -75,6 +75,16 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
         }
     }, [output]);
 
+    // Global Keydown for Escape (to close terminal even if input not focused)
+    useEffect(() => {
+        if (!isOpen) return;
+        const onKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") onClose();
+        };
+        window.addEventListener("keydown", onKeyDown);
+        return () => window.removeEventListener("keydown", onKeyDown);
+    }, [isOpen, onClose]);
+
     const getDirEntries = useCallback((): string[] => {
         if (cwd === "~") return ["posts/", "favorites/", "about/", "contact/"];
         if (cwd === "~/posts") return (fsData?.posts || []).map((p) => p.slug + ".md");
