@@ -11,6 +11,7 @@ import type { Components } from "react-markdown";
 interface MarkdownRendererProps {
     content: string;
     adhdMode?: boolean;
+    slug?: string;
 }
 
 /**
@@ -122,7 +123,7 @@ function getSpotifyEmbedUrl(url: string): string | null {
     return null;
 }
 
-export function MarkdownRenderer({ content, adhdMode = false }: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRendererProps) {
     const processed = preprocessContent(content);
     const dir = getDirection(content);
 
@@ -132,6 +133,24 @@ export function MarkdownRenderer({ content, adhdMode = false }: MarkdownRenderer
                 {children}
             </a>
         ),
+        img: ({ src, alt, style, ...props }) => {
+            let finalSrc = (src as string) || "";
+            // Fix local images in markdown (e.g. ./media/foo.png -> /post/slug/media/foo.png)
+            if (slug && (finalSrc.startsWith("./") || finalSrc.startsWith("media/"))) {
+                const cleanPath = finalSrc.replace(/^\.\//, "");
+                finalSrc = `/post/${slug}/${cleanPath}`;
+            }
+
+            return (
+                <img
+                    src={finalSrc}
+                    alt={alt as string}
+                    style={style}
+                    loading="lazy"
+                    {...props}
+                />
+            );
+        }
     };
 
     return (

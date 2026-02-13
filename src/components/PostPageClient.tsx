@@ -107,7 +107,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                 />
             )}
 
-            <MarkdownRenderer content={displayContent} />
+            <MarkdownRenderer content={displayContent} slug={post.slug} />
 
             {/* Comment / Reply section at the bottom */}
             <div className="post-comment-section">
