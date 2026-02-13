@@ -373,29 +373,18 @@ img {
   font-weight: 500;
   color: var(--text-primary);
   white-space: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-  /* Firefox */
-  -ms-overflow-style: none;
-  /* IE/Edge */
-}
-
-.favorite-title::-webkit-scrollbar {
-  display: none;
-  /* Chrome/Safari */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
 }
 
 .favorite-subtitle {
   font-size: 10px;
   color: var(--text-muted);
   white-space: nowrap;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.favorite-subtitle::-webkit-scrollbar {
-  display: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  position: relative;
 }
 
 /* Marquee scroll on hover for truncated text */
