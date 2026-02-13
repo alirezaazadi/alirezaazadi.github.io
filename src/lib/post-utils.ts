@@ -12,6 +12,7 @@ export interface Post {
     image: string;
     readingTime: string; // e.g. "5 min read"
     body: string;
+    hidden?: boolean;
 }
 
 export interface PostMeta {
@@ -22,6 +23,7 @@ export interface PostMeta {
     categories: string[];
     image: string;
     readingTime: string;
+    hidden?: boolean;
 }
 
 /**

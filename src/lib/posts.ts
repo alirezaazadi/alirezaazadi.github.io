@@ -26,6 +26,7 @@ function parsePost(filename: string, raw: string): Post {
         image: data.image || "",
         body: content,
         readingTime: calculateReadingTime(content),
+        hidden: data.hidden || false,
     };
 }
 
@@ -44,6 +45,7 @@ function parsePostMeta(filename: string, raw: string): PostMeta {
         ),
         image: data.image || "",
         readingTime: calculateReadingTime(content),
+        hidden: data.hidden || false,
     };
 }
 
@@ -60,9 +62,9 @@ export async function getAllPosts(): Promise<Post[]> {
         })
     );
 
-    return posts.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    return posts
+        .filter((post) => !post.hidden)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 /**
@@ -79,9 +81,9 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
         })
     );
 
-    return metas.sort(
-        (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()
-    );
+    return metas
+        .filter((meta) => !meta.hidden)
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
 /**

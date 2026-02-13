@@ -1,3 +1,6 @@
+import { getPostBySlug } from '@/lib/posts';
+import { PostPageClient } from '@/components/PostPageClient';
+import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 
 export const metadata: Metadata = {
@@ -5,16 +8,12 @@ export const metadata: Metadata = {
     description: 'My personal recommendations for books, movies, podcasts, and articles.',
 };
 
-export default function SuggestionsPage() {
-    return (
-        <div className="about-page" dir="rtl">
-            <h1 className="post-title" style={{ fontFamily: "var(--font-rtl)" }}>پیشنهادات</h1>
+export default async function SuggestionsPage() {
+    const post = await getPostBySlug('suggestions');
 
-            <div className="markdown-body" style={{ fontFamily: "var(--font-rtl)", fontSize: "1.1em", lineHeight: "2" }}>
-                <p>
-                    اینجا من مطالبی که خوندم (از هرجا و از هرکس) که برام به هرشکلی جالب بود. یا ویدیوهایی که دیدم از جمله مستند، فیلم، کلیپ یا حتی محتوایی آموزشی و پادکستهایی که گوش کردم و در نهایت کتابهایی که خوندم و فکر کردم که معرفیش به دوستام جالبه رو میذارم. اینها در تکمیل بخش علاقهمندیهاست که کنار صفحه میبینید. اینجا رو به مرور تکمیل میکنم
-                </p>
-            </div>
-        </div>
-    );
+    if (!post) {
+        notFound();
+    }
+
+    return <PostPageClient post={post} />;
 }
