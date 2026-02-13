@@ -1,0 +1,14 @@
+npx lint-staged
+
+# As requested, fetch covers and strip metadata before commit.
+# lint-staged handles metadata stripping on staged files.
+# fetch-covers needs to run globally as it might fetch new covers.
+
+node scripts/fetch-covers.mjs
+
+# If fetch-covers modified files, add them to the commit?
+# The user said "before any commit and push".
+# If valid, they should be staged. But git hooks shouldn't automagically add unstaged files usually.
+# However, for "fetch-covers", if it downloads a new cover, we probably want it in the commit.
+# Let's add any changes in public/media to the staging area if they were modified by fetch-covers.
+git add public/media

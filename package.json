@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "update-covers": "node scripts/fetch-covers.mjs"
+    "update-covers": "node scripts/fetch-covers.mjs",
+    "prepare": "husky"
   },
   "dependencies": {
     "@vercel/analytics": "^1.6.1",
@@ -23,7 +24,8 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
-    "server-only": "^0.0.1"
+    "server-only": "^0.0.1",
+    "sharp": "^0.34.5"
   },
   "devDependencies": {
     "@types/node": "^20",
@@ -31,6 +33,13 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.1.6",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.2.7",
     "typescript": "^5"
+  },
+  "lint-staged": {
+    "*.{jpg,jpeg,png,webp,tiff,avif,heif}": [
+      "node scripts/strip-metadata.mjs"
+    ]
   }
 }
