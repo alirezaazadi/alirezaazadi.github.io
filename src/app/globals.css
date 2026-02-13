@@ -2235,4 +2235,45 @@ img {
   /* Lighter blue for dark mode */
   border-color: rgba(59, 130, 246, 0.3);
   box-shadow: 0 0 10px rgba(96, 165, 250, 0.15);
+}/* ---- Post Card Overrides (Fix hover glow) ---- */
+.post-card {
+    display: flex !important;
+    /* Ensure flex layout */
+    flex-direction: column;
+    text-decoration: none !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    transition: all var(--transition-fast);
+    background: var(--bg-card);
+}
+
+.post-card:hover {
+    border-color: var(--accent);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    /* Disable global text glow */
+    text-shadow: none !important;
+    color: var(--text-primary) !important;
+}
+
+[data-theme="dark"] .post-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    /* "Corner" glow effect - border shine */
+    box-shadow: 0 0 15px rgba(74, 222, 128, 0.1);
+}
+
+/* Ensure child text elements don't glow or change color */
+.post-card:hover .post-card-title,
+.post-card:hover .post-card-summary,
+.post-card:hover .post-card-date,
+.post-card:hover .tag {
+    text-shadow: none !important;
+    color: inherit !important;
+}
+
+/* Specific overrides for title if needed */
+.post-card:hover .post-card-title {
+    color: var(--text-primary) !important;
 }

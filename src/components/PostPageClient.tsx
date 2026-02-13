@@ -113,6 +113,8 @@ export function PostPageClient({ post }: PostPageClientProps) {
                     alt={post.title}
                     style={{
                         width: "100%",
+                        height: "400px",
+                        objectFit: "cover",
                         borderRadius: "var(--radius-md)",
                         marginBottom: 24,
                         border: "1px solid var(--border-color)",
