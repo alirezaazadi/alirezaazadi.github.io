@@ -1674,6 +1674,11 @@ img {
   min-width: 240px;
 }
 
+.model-selector-section {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
 .lang-option {
   padding: 6px 12px;
   font-family: var(--font-mono);
