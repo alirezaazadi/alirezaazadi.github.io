@@ -69,7 +69,7 @@
 - title: How it works: Issue 212
   url: https://www.howitworksdaily.com/
   subtitle: Issue 212
-  cover: /media/favorites/mag_howitworks.jpg
+  cover: /media/favorites/mg_howitworks.png
 - title: The Economist
   url: https://www.economist.com/
   subtitle: Weekly
