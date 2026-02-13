@@ -10,7 +10,11 @@ export const metadata: Metadata = {
 export default function AboutPage() {
     return (
         <div className="about-page">
-            <MarkdownRenderer content={siteConfig.aboutMe} />
+            <div className="about-page">
+                <p style={{ fontFamily: "var(--font-mono)", color: "var(--text-secondary)" }}>
+                    well, one day I&apos;ll put something here.
+                </p>
+            </div>
         </div>
     );
 }
