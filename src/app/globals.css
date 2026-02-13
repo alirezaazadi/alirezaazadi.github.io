@@ -337,59 +337,32 @@ img {
   font-weight: 500;
   color: var(--text-primary);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.favorite-title::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
 }
 
 .favorite-subtitle {
   font-size: 10px;
   color: var(--text-muted);
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  position: relative;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-/* Marquee scroll on hover for truncated text */
-.favorite-item:hover .favorite-title,
-.favorite-item:hover .favorite-subtitle {
-  text-overflow: clip;
-  display: inline-block;
-  width: auto;
-  max-width: none;
-  animation: marqueeScroll 5s linear infinite;
+.favorite-subtitle::-webkit-scrollbar {
+  display: none;
 }
 
-@keyframes marqueeScroll {
-  0% {
-    transform: translateX(0);
-  }
-
-  5% {
-    transform: translateX(0);
-  }
-
-  45% {
-    transform: translateX(-100%);
-  }
-
-  50% {
-    transform: translateX(-100%);
-  }
-
-  55% {
-    transform: translateX(100%);
-  }
-
-  60% {
-    transform: translateX(100%);
-  }
-
-  100% {
-    transform: translateX(0);
-  }
-}
+/* Remove Marquee styles as they are no longer needed */
 
 /* ---- Header ---- */
 .header {
