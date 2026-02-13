@@ -104,7 +104,11 @@ export function PostPageClient({ post }: PostPageClientProps) {
 
             {post.image && (
                 <img
-                    src={post.image}
+                    src={
+                        post.image.startsWith("./") || post.image.startsWith("media/")
+                            ? `/post/${post.slug}/${post.image.replace(/^\.\//, "")}`
+                            : post.image
+                    }
                     alt={post.title}
                     style={{
                         width: "100%",
