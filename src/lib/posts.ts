@@ -6,6 +6,7 @@ import "server-only";
 import matter from "gray-matter";
 import { fetchPostsList, fetchPostContent } from "./github";
 import type { Post, PostMeta } from "./post-utils";
+import { calculateReadingTime } from "./post-utils";
 
 export type { Post, PostMeta } from "./post-utils";
 
@@ -19,9 +20,12 @@ function parsePost(filename: string, raw: string): Post {
         title: data.title || "Untitled",
         summary: data.summary || "",
         date: data.date ? new Date(data.date).toISOString().split("T")[0] : "",
-        categories: data.categories || [],
+        categories: (data.categories || []).map((c: string) =>
+            c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()
+        ),
         image: data.image || "",
         body: content,
+        readingTime: calculateReadingTime(content),
     };
 }
 
@@ -29,14 +33,17 @@ function parsePost(filename: string, raw: string): Post {
  * Parses only frontmatter metadata (no body) — much cheaper for listing pages
  */
 function parsePostMeta(filename: string, raw: string): PostMeta {
-    const { data } = matter(raw);
+    const { data, content } = matter(raw); // We need content for reading time
     return {
         slug: filename.replace(/\.md$/, ""),
         title: data.title || "Untitled",
         summary: data.summary || "",
         date: data.date ? new Date(data.date).toISOString().split("T")[0] : "",
-        categories: data.categories || [],
+        categories: (data.categories || []).map((c: string) =>
+            c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()
+        ),
         image: data.image || "",
+        readingTime: calculateReadingTime(content),
     };
 }
 

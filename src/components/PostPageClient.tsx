@@ -57,6 +57,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                 </h1>
                 <div className="post-meta-bar">
                     <span className="post-card-date">{post.date}</span>
+                    <span className="post-card-date" style={{ marginLeft: "8px" }}>· {post.readingTime}</span>
                     {post.categories.map((cat) => (
                         <Link
                             key={cat}
