@@ -22,8 +22,7 @@
   --border-light: #e8e6e3;
 
   --accent: #3d7317;
-  --accent-hover: #2563eb;
-  /* Shining Blue for Light Mode */
+  --accent-hover: #2d5016;
   --accent-soft: #e8f0e0;
 
   --tag-bg: #eeedeb;
@@ -34,8 +33,6 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.06);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.1);
-  --glow-hover: 0 0 8px rgba(37, 99, 235, 0.5);
-  /* Blue glow */
 
   --radius-sm: 4px;
   --radius-md: 8px;
@@ -72,8 +69,7 @@
   --border-light: #21262d;
 
   --accent: #58a835;
-  --accent-hover: #4ade80;
-  /* Brighter Green for Dark Mode */
+  --accent-hover: #7ee787;
   --accent-soft: #1a2e12;
 
   --tag-bg: #1c2128;
@@ -84,17 +80,6 @@
   --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --glow-hover: 0 0 10px rgba(74, 222, 128, 0.6);
-  /* Green glow */
-}
-
-/* Apply glow to links/buttons on hover */
-a:hover,
-button:not(:disabled):hover,
-.btn:hover {
-  text-shadow: var(--glow-hover);
-  color: var(--accent-hover);
-  transition: all 0.2s ease;
 }
 
 /* ---- Reset & Base ---- */
@@ -173,10 +158,8 @@ img {
   padding: 32px 16px 64px 24px;
   position: sticky;
   top: var(--header-height);
-  /* Use viewport height minus header, but allow sub-sections to scroll so sidebar fits */
-  max-height: calc(100vh - var(--header-height));
+  height: calc(100vh - var(--header-height));
   overflow-y: auto;
-  /* Scroll sidebar if it still overflows */
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
 }
@@ -315,25 +298,6 @@ img {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  max-height: 25vh;
-  /* simple percentage limit */
-  overflow-y: auto;
-  padding-right: 0;
-  /* avoid scrollbar covering content */
-  scrollbar-width: none;
-  /* Hide scrollbar for Firefox */
-  -ms-overflow-style: none;
-  /* Hide scrollbar for IE/Edge */
-}
-
-.favorites-items::-webkit-scrollbar {
-  display: none;
-  /* Hide scrollbar for Chrome/Safari */
-}
-
-.favorites-items::-webkit-scrollbar-thumb {
-  background: transparent;
-  border-radius: 4px;
 }
 
 .favorite-item {
@@ -364,6 +328,7 @@ img {
   display: flex;
   flex-direction: column;
   min-width: 0;
+  overflow: hidden;
 }
 
 .favorite-title {
@@ -371,16 +336,33 @@ img {
   font-size: 11px;
   font-weight: 500;
   color: var(--text-primary);
-  word-break: break-word;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge */
+}
+
+.favorite-title::-webkit-scrollbar {
+  display: none;
+  /* Chrome/Safari */
 }
 
 .favorite-subtitle {
   font-size: 10px;
   color: var(--text-muted);
-  word-break: break-word;
+  white-space: nowrap;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
+.favorite-subtitle::-webkit-scrollbar {
+  display: none;
+}
 
+/* Remove Marquee styles as they are no longer needed */
 
 /* ---- Header ---- */
 .header {
@@ -1656,11 +1638,6 @@ img {
   min-width: 240px;
 }
 
-.model-selector-section {
-  grid-column: 1 / -1;
-  width: 100%;
-}
-
 .lang-option {
   padding: 6px 12px;
   font-family: var(--font-mono);
@@ -2199,70 +2176,4 @@ img {
   .terminal-minimized-bar {
     bottom: 12px;
   }
-}
-
-/* Inline code styling - "shining" effect */
-:not(pre)>code {
-  background: rgba(59, 130, 246, 0.1);
-  /* Subtle blue background */
-  color: #2563eb;
-  /* Blue text */
-  padding: 2px 4px;
-  border-radius: 4px;
-  font-family: var(--font-mono);
-  font-size: 0.9em;
-  border: 1px solid rgba(59, 130, 246, 0.2);
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.1);
-  /* subtle shine */
-}
-
-[data-theme="dark"] :not(pre)>code {
-  background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa;
-  /* Lighter blue for dark mode */
-  border-color: rgba(59, 130, 246, 0.3);
-  box-shadow: 0 0 10px rgba(96, 165, 250, 0.15);
-}
-
-/* ---- Post Card Overrides (Fix hover glow) ---- */
-.post-card {
-  display: flex !important;
-  /* Ensure flex layout */
-  flex-direction: column;
-  text-decoration: none !important;
-  color: var(--text-primary) !important;
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-md);
-  overflow: hidden;
-  transition: all var(--transition-fast);
-  background: var(--bg-card);
-}
-
-.post-card:hover {
-  border-color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  transform: translateY(-2px);
-  /* Disable global text glow */
-  text-shadow: none !important;
-  color: var(--text-primary) !important;
-}
-
-[data-theme="dark"] .post-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-  /* "Corner" glow effect - border shine */
-  box-shadow: 0 0 15px rgba(74, 222, 128, 0.1);
-}
-
-/* Ensure child text elements don't glow or change color */
-.post-card:hover .post-card-title,
-.post-card:hover .post-card-summary,
-.post-card:hover .post-card-date,
-.post-card:hover .tag {
-  text-shadow: none !important;
-  color: inherit !important;
-}
-
-/* Specific overrides for title if needed */
-.post-card:hover .post-card-title {
-  color: var(--text-primary) !important;
 }
