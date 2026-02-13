@@ -71,12 +71,14 @@ export function TranslateButton({
             const data = await res.json();
 
             if (!res.ok) {
-                setError(data.error || "Translation failed");
+                // Try to parse error message from response
+                const errorMessage = data.error?.message || data.error || "Translation failed";
+                setError(errorMessage);
                 return;
             }
 
             onTranslated(data.translatedText, data.provider);
-        } catch {
+        } catch (err) {
             setError("Network error — check your connection");
         } finally {
             setLoading(false);
