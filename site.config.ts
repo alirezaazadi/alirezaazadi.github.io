@@ -6,7 +6,11 @@ export const siteConfig = {
   title: "Alireza Azadi's Blog",
   description: "An observer, a sojourner, an Ibn us-Sabiil. Here, I write about whatever amuses me; Share my thoughts, and experiences.",
   author: "Alireza Azadi",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "https://a-azadi.blog",
+  url:
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    (process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : "https://a-azadi.blog"),
   email: "Alireza_Azadi@Hotmail.com",
 
   social: {
