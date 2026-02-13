@@ -130,8 +130,27 @@ export function TranslateButton({
 
             {showLangPicker && (
                 <div className="lang-picker-popup">
-                    <div className="model-selector-section" style={{ padding: "8px", borderBottom: "1px solid var(--border-color)", marginBottom: "4px" }}>
-                        <div style={{ fontSize: "10px", opacity: 0.7, marginBottom: "4px" }}>TRANSLATOR MODEL</div>
+                    <div className="model-selector-section" style={{
+                        padding: "12px",
+                        borderBottom: "1px solid var(--border-color)",
+                        marginBottom: "0",
+                        position: "sticky",
+                        top: 0,
+                        backgroundColor: "var(--bg-primary)", // Ensure opacity
+                        zIndex: 10,
+                        display: "flex",
+                        flexDirection: "column",
+                        gap: "6px"
+                    }}>
+                        <div style={{
+                            fontSize: "10px",
+                            fontWeight: "600",
+                            opacity: 0.8,
+                            letterSpacing: "0.5px",
+                            textTransform: "uppercase"
+                        }}>
+                            AI Model
+                        </div>
                         <select
                             value={selectedModel.id}
                             onChange={(e) => {
@@ -141,12 +160,14 @@ export function TranslateButton({
                             onClick={(e) => e.stopPropagation()}
                             style={{
                                 width: "100%",
-                                padding: "4px",
-                                fontSize: "12px",
-                                borderRadius: "4px",
+                                padding: "6px 8px",
+                                fontSize: "13px",
+                                borderRadius: "6px",
                                 background: "var(--bg-secondary)",
                                 color: "var(--fg-primary)",
-                                border: "1px solid var(--border-color)"
+                                border: "1px solid var(--border-color)",
+                                cursor: "pointer",
+                                outline: "none"
                             }}
                         >
                             {MODELS.map(m => (
