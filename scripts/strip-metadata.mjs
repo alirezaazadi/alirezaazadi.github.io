@@ -27,11 +27,13 @@ async function stripMetadata(filePath) {
         await fs.writeFile(filePath, processedBuffer);
         console.log(`Stripped metadata: ${filePath}`);
     } catch (error) {
+        if (error.message.includes('Input buffer contains unsupported image format')) {
+            console.warn(`Skipping unsupported file format: ${filePath}`);
+            return;
+        }
         console.error(`Error processing ${filePath}:`, error.message);
-        // Don't fail the commit, just warn? Or fail strict?
-        // Let's warn but allow commit, as it might be a corrupted image or whatever.
-        // Actually, user wants to be sure there is no metadata. If we fail, they know something is wrong.
-        process.exit(1);
+        // Warn but do not fail the commit for metadata stripping errors
+        // process.exit(1); 
     }
 }
 

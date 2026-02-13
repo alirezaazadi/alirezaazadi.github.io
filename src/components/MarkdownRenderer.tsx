@@ -7,6 +7,7 @@ import rehypeHighlight from "rehype-highlight";
 import "highlight.js/styles/github-dark.css";
 import { getDirection } from "@/lib/rtl";
 import type { Components } from "react-markdown";
+import { ExpandableImage } from "@/components/ExpandableImage";
 
 interface MarkdownRendererProps {
     content: string;
@@ -146,11 +147,10 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
             }
 
             return (
-                <img
+                <ExpandableImage
                     src={finalSrc}
                     alt={alt as string}
                     style={style}
-                    loading="lazy"
                     {...props}
                 />
             );

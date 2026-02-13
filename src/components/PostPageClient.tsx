@@ -12,6 +12,7 @@ import Link from "next/link";
 import type { Post } from "@/lib/post-utils";
 import { isRTL } from "@/lib/rtl";
 import { siteConfig } from "../../site.config";
+import { ExpandableImage } from "@/components/ExpandableImage";
 
 interface PostPageClientProps {
     post: Post;
@@ -104,7 +105,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
             )}
 
             {post.image && (
-                <img
+                <ExpandableImage
                     src={
                         post.image.startsWith("./") || post.image.startsWith("media/")
                             ? `/post/${post.slug}/${post.image.replace(/^\.\//, "")}`

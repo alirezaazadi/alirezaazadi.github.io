@@ -67,14 +67,14 @@
   cover: /media/favorites/fav_xc2wb8t2r.jpg
 ## magazines
 - title: How it works: Issue 212
-  url: https://pocketmags.com/magazine/reader/290981
+  url: https://www.howitworksdaily.com/
   subtitle: Issue 212
   cover: /media/favorites/mag_howitworks.jpg
 - title: The Economist
   url: https://www.economist.com/
   subtitle: Weekly
-  cover: /media/favorites/mag_economist.jpg
+  cover: /media/favorites/mag_economist.svg
 - title: Hacker News
   url: https://news.ycombinator.com/
   subtitle: Y Combinator
-  cover: /media/favorites/mag_hackernews.jpg
+  cover: /media/favorites/mag_hackernews.png
