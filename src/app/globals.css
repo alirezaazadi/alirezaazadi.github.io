@@ -305,18 +305,21 @@ img {
   max-height: 25vh;
   /* simple percentage limit */
   overflow-y: auto;
-  padding-right: 4px;
+  padding-right: 0;
   /* avoid scrollbar covering content */
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
+  scrollbar-width: none;
+  /* Hide scrollbar for Firefox */
+  -ms-overflow-style: none;
+  /* Hide scrollbar for IE/Edge */
 }
 
 .favorites-items::-webkit-scrollbar {
-  width: 3px;
+  display: none;
+  /* Hide scrollbar for Chrome/Safari */
 }
 
 .favorites-items::-webkit-scrollbar-thumb {
-  background: var(--border-color);
+  background: transparent;
   border-radius: 4px;
 }
 
@@ -2197,21 +2200,26 @@ img {
     bottom: 12px;
   }
 }
+
 /* Inline code styling - "shining" effect */
-:not(pre) > code {
-  background: rgba(59, 130, 246, 0.1); /* Subtle blue background */
-  color: #2563eb; /* Blue text */
+:not(pre)>code {
+  background: rgba(59, 130, 246, 0.1);
+  /* Subtle blue background */
+  color: #2563eb;
+  /* Blue text */
   padding: 2px 4px;
   border-radius: 4px;
   font-family: var(--font-mono);
   font-size: 0.9em;
   border: 1px solid rgba(59, 130, 246, 0.2);
-  box-shadow: 0 0 8px rgba(59, 130, 246, 0.1); /* subtle shine */
+  box-shadow: 0 0 8px rgba(59, 130, 246, 0.1);
+  /* subtle shine */
 }
 
-[data-theme="dark"] :not(pre) > code {
+[data-theme="dark"] :not(pre)>code {
   background: rgba(59, 130, 246, 0.15);
-  color: #60a5fa; /* Lighter blue for dark mode */
+  color: #60a5fa;
+  /* Lighter blue for dark mode */
   border-color: rgba(59, 130, 246, 0.3);
   box-shadow: 0 0 10px rgba(96, 165, 250, 0.15);
 }
