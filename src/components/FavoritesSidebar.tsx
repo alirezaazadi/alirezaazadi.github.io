@@ -57,7 +57,7 @@ function writeCollapsed(collapsed: boolean) {
     }
 }
 
-import { useRef } from "react";
+
 
 function FavoritesSection({
     title,
@@ -68,6 +68,35 @@ function FavoritesSection({
     icon: React.ReactNode;
     items: FavoriteItem[];
 }) {
+    const handleMouseEnter = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        const item = e.currentTarget;
+        const titleEl = item.querySelector<HTMLElement>(".favorite-title");
+        const subtitleEl = item.querySelector<HTMLElement>(".favorite-subtitle");
+        [titleEl, subtitleEl].forEach((el) => {
+            if (!el) return;
+            if (el.scrollWidth > el.clientWidth) {
+                const overflow = el.scrollWidth - el.clientWidth;
+                // Speed: ~40px/s so longer text takes proportionally longer
+                const duration = Math.max(1, overflow / 40);
+                el.style.transition = `transform ${duration}s linear`;
+                el.style.transform = `translateX(-${overflow}px)`;
+                el.style.textOverflow = "clip";
+            }
+        });
+    };
+
+    const handleMouseLeave = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        const item = e.currentTarget;
+        const titleEl = item.querySelector<HTMLElement>(".favorite-title");
+        const subtitleEl = item.querySelector<HTMLElement>(".favorite-subtitle");
+        [titleEl, subtitleEl].forEach((el) => {
+            if (!el) return;
+            el.style.transition = "transform 0.3s ease";
+            el.style.transform = "translateX(0)";
+            el.style.textOverflow = "ellipsis";
+        });
+    };
+
     return (
         <div className="favorites-section">
             <h3 className="favorites-section-title">
@@ -83,6 +112,8 @@ function FavoritesSection({
                             target="_blank"
                             rel="noopener noreferrer"
                             className="favorite-item"
+                            onMouseEnter={handleMouseEnter}
+                            onMouseLeave={handleMouseLeave}
                         >
                             {item.cover && (
                                 <img
@@ -105,6 +136,7 @@ function FavoritesSection({
         </div>
     );
 }
+
 
 function FavoritesContent({ favorites }: { favorites: Favorites }) {
     return (
