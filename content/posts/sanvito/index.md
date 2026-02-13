@@ -1,4 +1,5 @@
----title: "سفرنامه به جنوب"
+---
+title: "سفرنامه به جنوب"
 date: "2025-03-26"
 summary: "ماجرای سفر کاری از میلان به San Vito"
 categories: ['diary']
