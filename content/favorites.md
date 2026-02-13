@@ -77,4 +77,4 @@
 - title: Hacker News
   url: https://news.ycombinator.com/
   subtitle: Y Combinator
-  cover: /media/favorites/mag_hackernews.png
+  cover: /media/favorites/mag_hackernews.svg
