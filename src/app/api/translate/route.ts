@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { text, targetLang } = await request.json();
+        const { text, targetLang, model = "gemma-3-4b-it" } = await request.json();
 
         if (!text || !targetLang) {
             return NextResponse.json(
@@ -135,15 +135,35 @@ export async function POST(request: NextRequest) {
             return translated.replace(/__CODE_BLOCK_(\d+)__/g, (_, idx) => codeBlocks[Number(idx)] || _);
         }
 
+        // Handle explicit Google Translate selection
+        if (model === "google-translate") {
+            try {
+                const translatedText = await googleTranslateFallback(textWithPlaceholders, targetLang);
+                return NextResponse.json({
+                    translatedText: restoreCodeBlocks(translatedText),
+                    provider: "Google Translate"
+                });
+            } catch (error) {
+                return NextResponse.json(
+                    { error: "Google Translate failed" },
+                    { status: 502 }
+                );
+            }
+        }
+
         // Try Gemini first
         const apiKey = process.env.GEMINI_API_KEY;
         if (apiKey) {
             try {
                 const prompt = `Translate the following text to ${targetLang}. Preserve all markdown formatting and links. Keep any __CODE_BLOCK_N__ placeholders exactly as-is. Only output the translated text, nothing else.\n\n${textWithPlaceholders}`;
 
-                // Use gemini-flash-latest
+                // Map of friendly model names to API versions/names if needed, 
+                // but mostly we can pass the model ID directly to the URL.
+                // Supported: gemma-3-4b-it, gemini-flash-latest, gemini-2.0-flash-lite, gemini-2.0-flash
+                const modelId = model;
+
                 const res = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKey}`,
+                    `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`,
                     {
                         method: "POST",
                         headers: { "Content-Type": "application/json" },
@@ -156,7 +176,8 @@ export async function POST(request: NextRequest) {
                 // If Gemini returns error, log and fall through to fallback
                 if (!res.ok) {
                     const errorText = await res.text();
-                    console.warn(`Gemini API returned ${res.status}: ${errorText} — falling back to Google Translate`);
+                    console.error(`❌ Gemini API Error (${res.status}): ${errorText}`);
+                    console.warn(`Falling back to Google Translate due to Gemini error.`);
                 } else {
                     const data = await res.json();
                     const translatedText =

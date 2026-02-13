@@ -29,6 +29,14 @@ const LANGUAGES = [
     { code: "Hindi", label: "हिन्दी" },
 ];
 
+const MODELS = [
+    { id: "gemma-3-4b-it", label: "Gemma 3 (4B)" },
+    { id: "gemini-flash-latest", label: "Gemini Flash (Latest)" },
+    { id: "gemini-2.0-flash-lite", label: "Gemini 2.0 Flash Lite" },
+    { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
+    { id: "google-translate", label: "Google Translate (Legacy)" },
+];
+
 export function TranslateButton({
     originalContent,
     onTranslated,
@@ -40,6 +48,7 @@ export function TranslateButton({
     const [error, setError] = useState<string | null>(null);
     const [showLangPicker, setShowLangPicker] = useState(false);
     const [selectedLang, setSelectedLang] = useState(LANGUAGES[0]);
+    const [selectedModel, setSelectedModel] = useState(MODELS[0]);
     const pickerRef = useRef<HTMLDivElement>(null);
 
     // Close picker on outside click
@@ -65,7 +74,11 @@ export function TranslateButton({
             const res = await fetch("/api/translate", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ text: originalContent, targetLang: lang.code }),
+                body: JSON.stringify({
+                    text: originalContent,
+                    targetLang: lang.code,
+                    model: selectedModel.id
+                }),
             });
 
             const data = await res.json();
@@ -117,6 +130,30 @@ export function TranslateButton({
 
             {showLangPicker && (
                 <div className="lang-picker-popup">
+                    <div className="model-selector-section" style={{ padding: "8px", borderBottom: "1px solid var(--border-color)", marginBottom: "4px" }}>
+                        <div style={{ fontSize: "10px", opacity: 0.7, marginBottom: "4px" }}>TRANSLATOR MODEL</div>
+                        <select
+                            value={selectedModel.id}
+                            onChange={(e) => {
+                                const model = MODELS.find(m => m.id === e.target.value);
+                                if (model) setSelectedModel(model);
+                            }}
+                            onClick={(e) => e.stopPropagation()}
+                            style={{
+                                width: "100%",
+                                padding: "4px",
+                                fontSize: "12px",
+                                borderRadius: "4px",
+                                background: "var(--bg-secondary)",
+                                color: "var(--fg-primary)",
+                                border: "1px solid var(--border-color)"
+                            }}
+                        >
+                            {MODELS.map(m => (
+                                <option key={m.id} value={m.id}>{m.label}</option>
+                            ))}
+                        </select>
+                    </div>
                     {LANGUAGES.map((lang) => (
                         <button
                             key={lang.code}
