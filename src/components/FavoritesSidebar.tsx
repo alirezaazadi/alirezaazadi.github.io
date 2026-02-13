@@ -69,7 +69,7 @@ function FavoritesContent({ favorites }: { favorites: Favorites }) {
                             {label}
                         </h3>
                         <div className="favorites-items">
-                            {items.slice(0, 4).map((item) => (
+                            {items.map((item) => (
                                 <a
                                     key={item.url}
                                     href={item.url}

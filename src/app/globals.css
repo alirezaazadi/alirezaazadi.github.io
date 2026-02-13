@@ -158,8 +158,10 @@ img {
   padding: 32px 16px 64px 24px;
   position: sticky;
   top: var(--header-height);
-  height: calc(100vh - var(--header-height));
+  /* Use viewport height minus header, but allow sub-sections to scroll so sidebar fits */
+  max-height: calc(100vh - var(--header-height));
   overflow-y: auto;
+  /* Scroll sidebar if it still overflows */
   scrollbar-width: thin;
   scrollbar-color: var(--border-color) transparent;
 }
@@ -298,6 +300,22 @@ img {
   display: flex;
   flex-direction: column;
   gap: 6px;
+  max-height: 25vh;
+  /* simple percentage limit */
+  overflow-y: auto;
+  padding-right: 4px;
+  /* avoid scrollbar covering content */
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+}
+
+.favorites-items::-webkit-scrollbar {
+  width: 3px;
+}
+
+.favorites-items::-webkit-scrollbar-thumb {
+  background: var(--border-color);
+  border-radius: 4px;
 }
 
 .favorite-item {
