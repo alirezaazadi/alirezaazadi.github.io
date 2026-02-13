@@ -68,6 +68,20 @@ function FavoritesSection({
 }) {
     const listRef = useRef<HTMLDivElement>(null);
     const scrollInterval = useRef<NodeJS.Timeout | null>(null);
+    const [hasOverflow, setHasOverflow] = useState(false);
+
+    useEffect(() => {
+        const checkOverflow = () => {
+            const el = listRef.current;
+            if (el) {
+                setHasOverflow(el.scrollHeight > el.clientHeight);
+            }
+        };
+
+        checkOverflow();
+        window.addEventListener("resize", checkOverflow);
+        return () => window.removeEventListener("resize", checkOverflow);
+    }, [items]);
 
     const startScrolling = () => {
         if (scrollInterval.current) return;
@@ -139,26 +153,28 @@ function FavoritesSection({
                   "Transparent narrow down at the end"
                   Hovering this zone triggers the scroll.
                 */}
-                <div
-                    className="scroll-indicator-zone"
-                    onMouseEnter={startScrolling}
-                    onMouseLeave={stopScrolling}
-                    style={{
-                        position: "absolute",
-                        bottom: 0,
-                        left: 0,
-                        right: 0,
-                        height: "20px",
-                        background: "linear-gradient(to bottom, transparent, var(--bg-primary))",
-                        cursor: "s-resize",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        opacity: 0.7,
-                    }}
-                >
-                    <ChevronDown size={12} className="scroll-arrow" style={{ opacity: 0.5 }} />
-                </div>
+                {hasOverflow && (
+                    <div
+                        className="scroll-indicator-zone"
+                        onMouseEnter={startScrolling}
+                        onMouseLeave={stopScrolling}
+                        style={{
+                            position: "absolute",
+                            bottom: 0,
+                            left: 0,
+                            right: 0,
+                            height: "20px",
+                            background: "linear-gradient(to bottom, transparent, var(--bg-primary))",
+                            cursor: "s-resize",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            opacity: 0.7,
+                        }}
+                    >
+                        <ChevronDown size={12} className="scroll-arrow" style={{ opacity: 0.5 }} />
+                    </div>
+                )}
             </div>
         </div>
     );
