@@ -29,8 +29,20 @@
   url: https://www.youtube.com/watch?v=A3KeHydzojA
   subtitle: Youtube
   cover: /media/favorites/fav_sysn35yzv.jpg
-- title: John Wick: Chapter 3 - Parabellum
-  url: https://www.imdb.com/title/tt6146586/
+- title: Yip Man (2008)
+  url: https://www.imdb.com/title/tt6146586
+  subtitle: IMDB
+
+- title: Yip Man (2008)
+  url: https://www.imdb.com/title/tt6146586
+  subtitle: IMDB
+
+- title: Yip Man 2 (2010)
+  url: https://www.imdb.com/title/tt1386932
+  subtitle: IMDB
+
+- title: Yip Man 4: The Finale (2019)
+  url: https://www.imdb.com/title/tt2076298
   subtitle: IMDB
 
   cover: /media/favorites/fav_wm4mb84u6.jpg
