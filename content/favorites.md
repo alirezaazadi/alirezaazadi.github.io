@@ -33,12 +33,12 @@
   url: https://www.imdb.com/title/tt6146586
   subtitle: IMDB
 
-- title: Yip Man (2008)
-  url: https://www.imdb.com/title/tt6146586
-  subtitle: IMDB
-
 - title: Yip Man 2 (2010)
   url: https://www.imdb.com/title/tt1386932
+  subtitle: IMDB
+
+- title: Yip Man 3 (2015)
+  url: https://www.imdb.com/title/tt2888046
   subtitle: IMDB
 
 - title: Yip Man 4: The Finale (2019)
