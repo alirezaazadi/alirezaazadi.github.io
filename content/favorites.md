@@ -32,19 +32,18 @@
 - title: Yip Man (2008)
   url: https://www.imdb.com/title/tt6146586
   subtitle: IMDB
-
+  cover: /media/favorites/fav_m3lbh6dgi.jpg
 - title: Yip Man 2 (2010)
   url: https://www.imdb.com/title/tt1386932
   subtitle: IMDB
-
+  cover: /media/favorites/fav_qxz6hz87o.jpg
 - title: Yip Man 3 (2015)
   url: https://www.imdb.com/title/tt2888046
   subtitle: IMDB
-
+  cover: /media/favorites/fav_jfldjpxkb.jpg
 - title: Yip Man 4: The Finale (2019)
   url: https://www.imdb.com/title/tt2076298
   subtitle: IMDB
-
   cover: /media/favorites/fav_wm4mb84u6.jpg
 ## books
 - title: قتل با کتاب
