@@ -5,6 +5,7 @@ import { Header } from "@/components/Header";
 import { ContactSidebar } from "@/components/ContactSidebar";
 import { FavoritesSidebar } from "@/components/FavoritesSidebar";
 import { Analytics } from "@/components/Analytics";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorReportingInit } from "@/components/ErrorReportingInit";
 import { DevToolsDetector } from "@/components/DevToolsDetector";
@@ -56,6 +57,7 @@ export default async function RootLayout({
           </ErrorBoundary>
         </ThemeProvider>
         <Analytics />
+        <SpeedInsights />
         <ErrorReportingInit />
         <DevToolsDetector />
       </body>
