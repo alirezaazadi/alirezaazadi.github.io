@@ -152,10 +152,55 @@ export async function POST(request: NextRequest) {
         }
 
         // Try Gemini first
+        // Strip any prompt leakage or preamble from the AI response
+        function stripPromptLeakage(output: string, inputText: string): string {
+            let cleaned = output;
+
+            // Remove common preamble patterns (case-insensitive, multiline)
+            const preamblePatterns = [
+                /^(?:here(?:'s| is) the (?:translated|translation)[^:\n]*[:\n]\s*)/i,
+                /^(?:sure[!,.]?\s*(?:here(?:'s| is)[^:\n]*[:\n])?\s*)/i,
+                /^(?:the translation[^:\n]*[:\n]\s*)/i,
+                /^(?:translated text[:\n]\s*)/i,
+                /^(?:translation[:\n]\s*)/i,
+                /^(?:okay[,.]?\s*(?:here(?:'s| is)[^:\n]*[:\n])?\s*)/i,
+                /^(?:of course[!,.]?\s*(?:here(?:'s| is)[^:\n]*[:\n])?\s*)/i,
+            ];
+
+            for (const pattern of preamblePatterns) {
+                cleaned = cleaned.replace(pattern, "");
+            }
+
+            // If the model echoed the prompt instructions, strip everything before the actual content.
+            // Look for the prompt instruction fingerprint and remove everything up to it.
+            const promptFingerprints = [
+                "Only output the translated text",
+                "Preserve all markdown formatting",
+                "Do not include any preamble",
+                "IMPORTANT:",
+            ];
+            for (const fingerprint of promptFingerprints) {
+                const idx = cleaned.indexOf(fingerprint);
+                if (idx !== -1) {
+                    // Find the end of the line containing the fingerprint
+                    const afterFingerprint = cleaned.indexOf("\n", idx);
+                    if (afterFingerprint !== -1) {
+                        cleaned = cleaned.substring(afterFingerprint + 1).trimStart();
+                    }
+                }
+            }
+
+            return cleaned.trim();
+        }
+
         const apiKey = process.env.GEMINI_API_KEY;
         if (apiKey) {
             try {
-                const prompt = `Translate the following text to ${targetLang}. Preserve all markdown formatting and links. Keep any __CODE_BLOCK_N__ placeholders exactly as-is. Only output the translated text, nothing else.\n\n${textWithPlaceholders}`;
+                const prompt = `Translate the following text to ${targetLang}. Preserve all markdown formatting and links. Keep any __CODE_BLOCK_N__ placeholders exactly as-is.
+
+IMPORTANT: Output ONLY the translated text. Do not include any preamble, introduction, explanation, or the original text. Do not say "Here is the translation" or anything similar. Start directly with the translated content.
+
+${textWithPlaceholders}`;
 
                 // Map of friendly model names to API versions/names if needed, 
                 // but mostly we can pass the model ID directly to the URL.
@@ -180,10 +225,11 @@ export async function POST(request: NextRequest) {
                     console.warn(`Falling back to Google Translate due to Gemini error.`);
                 } else {
                     const data = await res.json();
-                    const translatedText =
+                    const rawTranslated =
                         data.candidates?.[0]?.content?.parts?.[0]?.text || "";
 
-                    if (translatedText) {
+                    if (rawTranslated) {
+                        const translatedText = stripPromptLeakage(rawTranslated, textWithPlaceholders);
                         return NextResponse.json({
                             translatedText: restoreCodeBlocks(translatedText),
                             provider: "Gemini"
