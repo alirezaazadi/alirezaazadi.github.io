@@ -11,13 +11,21 @@ interface PostEntry {
     categories: string[];
 }
 
+interface FavItem {
+    title: string;
+    subtitle: string;
+    url: string;
+}
+
 interface FSData {
     posts: PostEntry[];
     favorites: {
-        books: { title: string; subtitle: string; url: string }[];
-        music: { title: string; subtitle: string; url: string }[];
-        podcasts: { title: string; subtitle: string; url: string }[];
-        youtube: { title: string; subtitle: string; url: string }[];
+        books: FavItem[];
+        music: FavItem[];
+        podcasts: FavItem[];
+        youtube: FavItem[];
+        playlists: FavItem[];
+        magazines: FavItem[];
     };
     about: string;
     contact: Record<string, string>;
@@ -88,7 +96,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
     const getDirEntries = useCallback((): string[] => {
         if (cwd === "~") return ["posts/", "favorites/", "about/", "contact/"];
         if (cwd === "~/posts") return (fsData?.posts || []).map((p) => p.slug + ".md");
-        if (cwd === "~/favorites") return ["books/", "music/", "podcasts/", "youtube/"];
+        if (cwd === "~/favorites") return ["books/", "music/", "podcasts/", "youtube/", "playlists/", "magazines/"];
         if (cwd.startsWith("~/favorites/")) {
             const sub = cwd.split("/").pop() as keyof FSData["favorites"];
             const items = fsData?.favorites?.[sub];
@@ -113,13 +121,14 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                 case "help": {
                     const lines = [
                         "Available commands:",
-                        "  ls           List directory contents",
-                        "  cd <dir>     Change directory (cd .., cd posts)",
-                        "  cat <file>   Open a post or show file contents",
-                        "  grep <term>  Search posts by keyword",
-                        "  whoami       Display user info",
-                        "  clear        Clear terminal",
-                        "  exit         Close terminal",
+                        "  ls             List directory contents",
+                        "  cd <dir>       Change directory (cd .., cd posts)",
+                        "  cat <file>     Open a post or show file contents",
+                        "  grep <term>    Search posts by keyword",
+                        "  favs [section] List favorites (all or by section)",
+                        "  whoami         Display user info",
+                        "  clear          Clear terminal",
+                        "  exit           Close terminal",
                         "",
                         "Tab to autocomplete. ↑/↓ for command history.",
                     ];
@@ -153,7 +162,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                         const target = arg.replace(/\/$/, "");
                         const validDirs: Record<string, string[]> = {
                             "~": ["posts", "favorites", "about", "contact"],
-                            "~/favorites": ["books", "music", "podcasts", "youtube"],
+                            "~/favorites": ["books", "music", "podcasts", "youtube", "playlists", "magazines"],
                         };
                         const allowed = validDirs[cwd];
                         if (allowed && allowed.includes(target)) {
@@ -244,6 +253,51 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                             { text: `Found ${matches.length} match(es):`, type: "info" },
                             ...lines.map((t) => ({ text: t, type: "output" as const })),
                         ]);
+                    }
+                    break;
+                }
+
+                case "favs": {
+                    const sectionIcons: Record<string, string> = {
+                        books: "📚",
+                        music: "🎵",
+                        podcasts: "🎙️",
+                        youtube: "▶️",
+                        playlists: "📋",
+                        magazines: "📰",
+                    };
+                    const allSections = Object.keys(sectionIcons) as (keyof FSData["favorites"])[];
+                    const requestedSection = arg?.toLowerCase();
+                    const sections = requestedSection
+                        ? allSections.filter((s) => s === requestedSection)
+                        : allSections;
+
+                    if (requestedSection && sections.length === 0) {
+                        setOutput((prev) => [
+                            ...prev,
+                            { text: `Unknown section: ${arg}. Available: ${allSections.join(", ")}`, type: "error" },
+                        ]);
+                    } else {
+                        const lines: OutputLine[] = [];
+                        for (const section of sections) {
+                            const items = fsData?.favorites?.[section] || [];
+                            if (items.length === 0) continue;
+                            const icon = sectionIcons[section] || "";
+                            lines.push({ text: "", type: "output" });
+                            lines.push({ text: `${icon}  ${section.toUpperCase()}`, type: "info" });
+                            lines.push({ text: "─".repeat(30), type: "output" });
+                            for (const item of items) {
+                                const sub = item.subtitle ? ` — ${item.subtitle}` : "";
+                                lines.push({ text: `  ${item.title}${sub}`, type: "output" });
+                                if (item.url) {
+                                    lines.push({ text: `    ↳ ${item.url}`, type: "info" });
+                                }
+                            }
+                        }
+                        if (lines.length === 0) {
+                            lines.push({ text: "No favorites found.", type: "info" });
+                        }
+                        setOutput((prev) => [...prev, ...lines]);
                     }
                     break;
                 }
