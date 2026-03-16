@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<style>
+    body { font-size: 40px; font-family: Tahoma, Arial; }
+    b { color: red; } /* to clearly see the split */
+</style>
+</head>
+<body>
+    <div>Original: سلام عزیزم</div>
+    <div>Broken Bionic: <b>سل</b>ام ع<b>زی</b>زم</div>
+    <div>Fixed Bionic (ZWJ inside): <b>سل&zwj;</b>ام ع<b>زی&zwj;</b>زم</div>
+    <div>Fixed Bionic (ZWJ outside): <b>سل</b>&zwj;ام ع<b>زی</b>&zwj;زم</div>
+    <div>Fixed Bionic (ZWJ both): <b>سل&zwj;</b>&zwj;ام ع<b>زی&zwj;</b>&zwj;زم</div>
+</body>
+</html>

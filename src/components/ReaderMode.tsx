@@ -17,12 +17,21 @@ interface ReaderModeProps {
  */
 function applyBionicReading(html: string): string {
     // Split into HTML tags and text content
-    // This regex matches HTML tags (including self-closing and comments)
     return html.replace(/>([^<]+)</g, (match, textContent: string) => {
         const bionicText = textContent.replace(/[\p{L}\p{N}]+/gu, (word: string) => {
-            if (word.length <= 1) return `<b>${word}</b>`;
+            const isArabic = /[\p{Script=Arabic}]/u.test(word);
             const boldLen = Math.ceil(word.length * 0.4);
-            return `<b>${word.slice(0, boldLen)}</b>${word.slice(boldLen)}`;
+            const boldPart = word.slice(0, boldLen);
+            const restPart = word.slice(boldLen);
+
+            if (isArabic) {
+                if (word.length <= 1) return `<b>${word}</b>`;
+                // Inject Zero-Width Joiners to preserve cursive connection across the HTML tag boundary
+                return `<b>${boldPart}&zwj;</b>&zwj;${restPart}`;
+            }
+
+            if (word.length <= 1) return `<b>${word}</b>`;
+            return `<b>${boldPart}</b>${restPart}`;
         });
         return `>${bionicText}<`;
     });
