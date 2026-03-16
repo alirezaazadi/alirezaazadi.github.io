@@ -22,9 +22,8 @@
   cover: /media/favorites/fav_n3kef7r8p.jpg
 - title: دایجست
   url: https://open.spotify.com/show/0APHFnyp6hB6de0sf38Upi?si=993b27e61113419b
-
   cover: /media/favorites/fav_f9squkf1k.jpg
-## youtube
+## watching
 - title: Dark (2017-2020)
   url: https://www.imdb.com/title/tt5753856/
   cover: /media/favorites/fav_xrmahwusy.jpg
