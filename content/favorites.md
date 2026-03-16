@@ -25,26 +25,10 @@
 
   cover: /media/favorites/fav_f9squkf1k.jpg
 ## youtube
-- title: ماشین وارپ! آیا واقعاً می‌شود سریع‌تر از نور سفر کرد؟
-  url: https://www.youtube.com/watch?v=A3KeHydzojA
-  subtitle: Youtube
-  cover: /media/favorites/fav_sysn35yzv.jpg
-- title: Yip Man (2008)
-  url: https://www.imdb.com/title/tt6146586
+- title: Dark (2017-2020)
+  url: https://www.imdb.com/title/tt5753856/
+  cover: /media/favorites/fav_xrmahwusy.jpg
   subtitle: IMDB
-  cover: /media/favorites/fav_m3lbh6dgi.jpg
-- title: Yip Man 2 (2010)
-  url: https://www.imdb.com/title/tt1386932
-  subtitle: IMDB
-  cover: /media/favorites/fav_qxz6hz87o.jpg
-- title: Yip Man 3 (2015)
-  url: https://www.imdb.com/title/tt2888046
-  subtitle: IMDB
-  cover: /media/favorites/fav_jfldjpxkb.jpg
-- title: Yip Man 4: The Finale (2019)
-  url: https://www.imdb.com/title/tt2076298
-  subtitle: IMDB
-  cover: /media/favorites/fav_wm4mb84u6.jpg
 ## books
 - title: قتل با کتاب
   url: https://www.goodreads.com/book/show/242058484
@@ -58,24 +42,20 @@
   cover: /media/favorites/fav_lvujx1fj3.jpg
 - title: Fundamentals of Software Architecture
   url: https://www.goodreads.com/book/show/44144493-fundamentals-of-software-architecture?ref=nav_sb_ss_4_16
-
-  cover: /media/favorites/fav_u396lugad.jpg
+  cover: /media/favorites/fav_w9nsr4w1o.jpg
+- title: 100 Go Mistakes and How to Avoid Them
+  url: https://www.goodreads.com/book/show/58571862-100-go-mistakes-and-how-to-avoid-them
+  cover: /media/favorites/fav_cxxrbxzbd.jpg
 ## music
-- title: Think
-  url: https://open.spotify.com/track/4ppeeHhV4lYtxH6dhSig5a?si=5b8a4a9a99854f5e
-  subtitle: Kaleida
-  cover: /media/favorites/fav_gns9ytm92.jpg
-- title: Plastic Heart
-  url: https://open.spotify.com/track/7EPbzLbSzg9d94LZ9MnKFA?si=04e7936d67ed4398
-  cover: /media/favorites/fav_qicnts3j5.jpg
 - title: Aghoosh
   url: https://open.spotify.com/track/6mlxwOv29th9MVrxsA0TDp?si=1b230234ddb247a4
   cover: /media/favorites/fav_soac4h13e.jpg
 - title: The Way of the Ghost
   url: https://open.spotify.com/track/4amEa4NDuUC9ulTmpF9YRV?si=96a5ef9d5f144aaf
-
-
   cover: /media/favorites/fav_xc2wb8t2r.jpg
+- title: Piano & Kamancheh, Pt. 1 (Live Improvisation) - Peyman Yazdanian · Hesam Inanlou
+  url: https://www.youtube.com/watch?v=Htkm5ZnDzRk&list=RDHtkm5ZnDzRk&start_radio=1
+  cover: /media/favorites/fav_sh29nj0el.jpg
 ## magazines
 - title: How it works: Issue 212
   url: https://www.howitworksdaily.com/
