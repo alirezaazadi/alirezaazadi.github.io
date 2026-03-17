@@ -7,13 +7,15 @@ function askQuestion(query) {
     return new Promise(resolve => {
         let input = process.stdin;
         let output = process.stdout;
-        
-        try {
-            // Try to open /dev/tty to support interactive prompts during git pre-commit hooks
-            input = fsSync.createReadStream('/dev/tty');
-            output = fsSync.createWriteStream('/dev/tty');
-        } catch (e) {
-            // Fallback to standard IO
+
+        if (!process.env.NON_INTERACTIVE) {
+            try {
+                // Try to open /dev/tty to support interactive prompts during git pre-commit hooks
+                input = fsSync.createReadStream('/dev/tty');
+                output = fsSync.createWriteStream('/dev/tty');
+            } catch (e) {
+                // Fallback to standard IO
+            }
         }
 
         const rl = readline.createInterface({ input, output });
@@ -43,6 +45,8 @@ async function getFiles(dir, ext) {
 }
 
 async function main() {
+    const autoConfirm = process.argv.includes('--yes') || process.argv.includes('-y');
+
     console.log("Scanning for dangling images...");
     
     const contentDir = path.join(process.cwd(), "content");
@@ -104,7 +108,13 @@ async function main() {
         console.log(`  - ${item.url}`);
     }
 
-    const answer = await askQuestion(`\nDo you want to definitively delete these ${toDelete.length} image(s)? (y/N): `);
+    let answer;
+    if (autoConfirm) {
+        answer = 'y';
+        console.log(`\nAuto-confirming deletion (--yes flag).`);
+    } else {
+        answer = await askQuestion(`\nDo you want to definitively delete these ${toDelete.length} image(s)? (y/N): `);
+    }
     
     if (answer.toLowerCase() === 'y' || answer.toLowerCase() === 'yes') {
         let deletedCount = 0;

@@ -6,6 +6,9 @@ categories: ["Blog"]
 keywords: ["blog admin panel", "ai development tools", "blog content management", "blog automation scripts", "github blog deployment", "local blog editor", "hassle-free blogging", "static site content management", "developer workflow automation", "blogging productivity"]
 ---
 
+
+
+
 سلام. 
 الان که این پست رو می‌نویسم ساعت ۱:۴۲ صبحه. امروز خیلی نتونستم کار کنم و وقت‌هایی که در طی روز درست کار نمی‌کنم، شب‌ها تا صبح بیدار می‌مونم تا که کم‌کاری رو یک‌جوری جبران کرده باشم. 
 
@@ -28,9 +31,10 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
    - آپلود کاور پست‌ها از طریق پنل
    - تنظیم تگ‌های مخفی روی پست‌های بلاگ با کمک Gemini بر اساس محتوای پست برای بهبود سئو
    - اضافه کردن امکان آرشیو کردن پست بعد از انتشار در web.archive
-و درنهایت امکان انتشار تغییرات با یک دکمه که در پس‌زمینه، کامند‌های گیت رو اجرا می‌کنه. 
+- اضافه کردن بخش Site Settings برای فعال یا غیرفعال کردن بخش Contact و Fav
+- اضافه کردن deploy button و نمایش فاز‌های دیپلویمنت
 
-یک سری تغییرات ریز دیگه هم دادم که البته ربطی به بخش پنل ادمین نداره. مثل این که توی کامند‌های ترمینال، کامند favs رو اضافه کردم. یا امکان collaps کردن بخش‌های علاقه‌مندی‌ها و ارتباط و در حالت موبایل، امکان بستن بخش ارتباط با من رو. یا sitemap خودکار و یا مشکلی که توی bionic read برای متن‌های فارسی بود رو حل کردم و خلاصه یه سری کار مفت که واسه خودم بامزه بود.
+یک سری تغییرات ریز دیگه هم دادم که البته ربطی به بخش پنل ادمین نداره. مثل این که توی کامند‌های ترمینال، کامند favs رو اضافه کردم. یا امکان collaps کردن بخش‌های علاقه‌مندی‌ها و ارتباط و در حالت موبایل، امکان بستن بخش ارتباط با من رو. یا sitemap خودکار و یا مشکلی که توی bionic read برای متن‌های فارسی بود رو حل کردم. و همین‌طور امکان آرشیو کردن پست در webarchive و چند‌تا تغییر جزئی توی ظاهر. خلاصه یه سری کار مفت که واسه خودم بامزه بود.
 
 از نتیجه‌ی این کارم هم راضیم. به این خاطر که به اون هدفی که می‌خواستم رسیدم: فاصله‌ی بین فکر تا عمل رو به سمت کمینه میل دادم. بهونه رو از خودم گرفتم و حالا خیلی راحت‌تر و بدون وقت هدر دادن این پست رو نوشتم. برای منتشر کردنش هم فقط کافیه که یک کلیک بکنم و یک کامیت مسیج براش بنویسم و تمام. 
 
@@ -47,8 +51,6 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
 
 ![Manage Favourits](/media/posts/admin-panel/img_1773712226487_8i0so.png)
 
-![Admin panel sidebar](/media/posts/admin-panel/img_1773712226500_36c9d.png)
-
 ![New Post](/media/posts/admin-panel/img_1773712226516_hr1u6.png)
 
 ![Manage Post](/media/posts/admin-panel/img_1773712226529_ixp1u.png)
@@ -56,5 +58,15 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
 ![New Admin Button in the Topbar](/media/posts/admin-panel/img_1773712226540_byx4m.png)
 
 
+![Site Settings](/media/posts/admin-panel/img_1773749734344_jg11c.png)
+
+![Admin Panel Sidebar](/media/posts/admin-panel/img_1773749734391_3c3bc.png)
+
+![Deploy Window](/media/posts/admin-panel/img_1773750892455_lkumh.png)
+
+
+![Interactive Deployment](/media/posts/admin-panel/img_1773751148110_gzxam.png)
+
+![Interactive Deployment](/media/posts/admin-panel/img_1773751148188_kk6mp.png)
 
 
