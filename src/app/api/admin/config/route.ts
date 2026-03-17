@@ -81,6 +81,19 @@ export async function PUT(req: Request) {
 
         if (body.aboutMe !== undefined) {
             content = content.replace(/aboutMe:\s*`[\s\S]*?`/, `aboutMe: \`\n${body.aboutMe}\n  \``);
+
+            // Also update content/posts/about.md
+            try {
+                const aboutMdPath = path.join(process.cwd(), "content/posts/about.md");
+                const aboutMdContent = await fs.readFile(aboutMdPath, "utf-8");
+                const frontmatterMatch = aboutMdContent.match(/^(---\s*[\s\S]*?---)/);
+                if (frontmatterMatch) {
+                    const newAboutMdContent = `${frontmatterMatch[1]}\n${body.aboutMe}`;
+                    await fs.writeFile(aboutMdPath, newAboutMdContent, "utf-8");
+                }
+            } catch (e) {
+                console.error("Failed to update about.md:", e);
+            }
         }
 
         if (body.description !== undefined) {
