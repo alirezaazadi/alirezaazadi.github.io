@@ -8,12 +8,13 @@ import { InlineTranslate } from "@/components/InlineTranslate";
 import { ReplyButton } from "@/components/ReplyButton";
 import { ReaderMode } from "@/components/ReaderMode";
 import { ShareButton } from "@/components/ShareButton";
-import { ArrowLeft, BookOpen, Pencil, Landmark } from "lucide-react";
+import { ArrowLeft, BookOpen, Pencil, Landmark, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import type { Post } from "@/lib/post-utils";
 import { isRTL } from "@/lib/rtl";
 import { siteConfig } from "../../site.config";
 import { ExpandableImage } from "@/components/ExpandableImage";
+import { useClickAway } from "@uidotdev/usehooks";
 
 interface PostPageClientProps {
     post: Post;
@@ -25,7 +26,12 @@ export function PostPageClient({ post }: PostPageClientProps) {
     const [readerOpen, setReaderOpen] = useState(false);
     const [archiving, setArchiving] = useState(false);
     const [isDev, setIsDev] = useState(false);
+    const [showActionsDropdown, setShowActionsDropdown] = useState(false);
     const router = useRouter();
+
+    const dropdownRef = useClickAway<HTMLDivElement>(() => {
+        setShowActionsDropdown(false);
+    });
 
     useEffect(() => {
         // Safe check for dev mode
@@ -129,19 +135,23 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         isTranslated={isTranslated}
                         provider={translationProvider}
                     />
+
+                    {/* Secondary Actions - Inline on Desktop */}
                     <button
-                        className="btn"
+                        className="btn secondary-action"
                         onClick={() => setReaderOpen(true)}
                         title="ADHD-friendly reading mode: clean text-only view with optional Bionic Reading"
                     >
                         <BookOpen size={14} />
                         ADHD mode
                     </button>
-                    <ShareButton postUrl={postUrl} postTitle={post.title} />
+                    <div className="secondary-action">
+                        <ShareButton postUrl={postUrl} postTitle={post.title} />
+                    </div>
                     {isDev && (
                         <Link
                             href={`/admin/posts/${post.slug}`}
-                            className="btn"
+                            className="btn secondary-action"
                             title="Edit this post (only visible in dev mode)"
                         >
                             <Pencil size={14} />
@@ -149,7 +159,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         </Link>
                     )}
                     <button
-                        className="btn"
+                        className="btn secondary-action"
                         onClick={handleArchive}
                         disabled={archiving}
                         title="Archive this post on the Wayback Machine (web.archive.org)"
@@ -157,6 +167,53 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         <Landmark size={14} />
                         {archiving ? "Archiving..." : "Archive"}
                     </button>
+
+                    {/* Mobile Dropdown for Secondary Actions */}
+                    <div className="post-actions-dropdown" ref={dropdownRef}>
+                        <button 
+                            className="btn post-actions-toggle"
+                            onClick={() => setShowActionsDropdown(!showActionsDropdown)}
+                            title="More actions"
+                        >
+                            <MoreHorizontal size={16} />
+                        </button>
+                        {showActionsDropdown && (
+                            <div className="post-actions-menu">
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        setReaderOpen(true);
+                                        setShowActionsDropdown(false);
+                                    }}
+                                >
+                                    <BookOpen size={14} />
+                                    ADHD mode
+                                </button>
+                                <ShareButton postUrl={postUrl} postTitle={post.title} />
+                                {isDev && (
+                                    <Link
+                                        href={`/admin/posts/${post.slug}`}
+                                        className="btn"
+                                        onClick={() => setShowActionsDropdown(false)}
+                                    >
+                                        <Pencil size={14} />
+                                        Edit
+                                    </Link>
+                                )}
+                                <button
+                                    className="btn"
+                                    onClick={() => {
+                                        handleArchive();
+                                        setShowActionsDropdown(false);
+                                    }}
+                                    disabled={archiving}
+                                >
+                                    <Landmark size={14} />
+                                    Archive
+                                </button>
+                            </div>
+                        )}
+                    </div>
                 </div>
             </header>
 

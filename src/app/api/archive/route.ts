@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { siteConfig } from "@/../site.config";
 import * as Sentry from "@sentry/nextjs";
+import { after } from "next/server";
 
 export async function POST(req: Request) {
     try {
@@ -54,71 +55,81 @@ export async function POST(req: Request) {
         }
 
         // 2. Trigger Archival via SPN 2.0 (POST)
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 50000); // Server-side timeout (50s)
-
-        // We'll return to the client after 10s if IA is still pending
-        const clientTimeoutId = setTimeout(() => {}, 10000); 
-
         try {
-            // Start the fetch but don't strictly await it if it takes too long for the client
-            const archivePromise = fetch(`https://web.archive.org/save/`, {
+            // Try to archive within 8 seconds so the UI can be responsive
+            const res = await fetch(`https://web.archive.org/save/`, {
                 method: "POST",
-                signal: controller.signal,
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
                     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
                 },
-                body: new URLSearchParams({ url: targetUrl }).toString()
+                body: new URLSearchParams({ url: targetUrl }).toString(),
+                signal: AbortSignal.timeout(8000)
             });
 
-            // Race the archive promise against a 10s "slow connection" timer
-            const result = await Promise.race([
-                archivePromise,
-                new Promise((_, reject) => setTimeout(() => reject(new Error("SLOW_CONNECTION")), 10000))
-            ]) as Response;
-
-            clearTimeout(timeoutId);
-
-            if (result.ok) {
-                return NextResponse.json({ success: true, status: result.status });
-            } else {
-                const text = await result.text();
-                const errorMsg = `Web Archive returned ${result.status}: ${text.substring(0, 100)}`;
-                console.error(`[Archive] Error: ${errorMsg}`);
-                
-                Sentry.captureMessage(`Web Archive Error: ${result.status}`, {
-                    extra: { targetUrl, status: result.status, details: text.substring(0, 200) }
-                });
-
-                return NextResponse.json({
-                    error: `Web Archive returned ${result.status}`,
-                    details: text.substring(0, 100)
-                }, { status: result.status });
+            if (res.ok) {
+                return NextResponse.json({ success: true, status: res.status });
             }
+
+            const text = await res.text();
+            const errorMsg = `Web Archive returned ${res.status}: ${text.substring(0, 100)}`;
+            console.warn(`[Archive] Initial attempt: ${errorMsg}`);
+
+            // If it's a 5xx error, throw to move to background retry
+            if (res.status >= 500) {
+                throw new Error(`Server returned ${res.status}`);
+            }
+
+            Sentry.captureMessage(`Web Archive Error: ${res.status}`, {
+                extra: { targetUrl, status: res.status, details: text.substring(0, 200) }
+            });
+
+            return NextResponse.json({
+                error: `Web Archive returned ${res.status}`,
+                details: text.substring(0, 100)
+            }, { status: res.status });
+
         } catch (err: any) {
-            if (err.message === "SLOW_CONNECTION") {
-                console.log(`[Archive] Slow connection for ${targetUrl}, returning 'triggered' to client`);
-                return NextResponse.json({ 
-                    success: true, 
-                    triggered: true, 
-                    message: "Archiving has been triggered and is running in the background." 
-                });
-            }
-
-            clearTimeout(timeoutId);
-            const isTimeout = err.name === 'AbortError';
-            const message = isTimeout ? "Request timed out after 50s" : err.message;
+            console.warn(`[Archive] Initial attempt failed or timed out (${err.message}). Scheduling background retries.`);
             
-            console.error(`[Archive] Connection failed: ${message}`);
-            Sentry.captureException(err, {
-                extra: { targetUrl, isTimeout }
+            // Use Next.js after() to run background retries after sending the response
+            after(async () => {
+                for (let attempt = 1; attempt <= 3; attempt++) {
+                    try {
+                        console.log(`[Archive] Background retry attempt ${attempt} for ${targetUrl}`);
+                        const bgRes = await fetch(`https://web.archive.org/save/`, {
+                            method: "POST",
+                            headers: {
+                                "Content-Type": "application/x-www-form-urlencoded",
+                                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+                            },
+                            body: new URLSearchParams({ url: targetUrl }).toString(),
+                            signal: AbortSignal.timeout(15000)
+                        });
+                        
+                        if (bgRes.ok) {
+                            console.log(`[Archive] Background archive successful for ${targetUrl}`);
+                            return;
+                        }
+                        console.warn(`[Archive] Background attempt ${attempt} returned ${bgRes.status}`);
+                        if (bgRes.status < 500 && bgRes.status !== 429) {
+                            return; // Stop retrying on 4xx client errors (except 429)
+                        }
+                    } catch (bgErr: any) {
+                        console.warn(`[Archive] Background attempt ${attempt} failed: ${bgErr.message}`);
+                        if (attempt === 3) {
+                            Sentry.captureException(bgErr, { extra: { targetUrl, msg: "All background archive attempts failed" } });
+                        }
+                    }
+                    if (attempt < 3) await new Promise(r => setTimeout(r, 5000 * attempt));
+                }
             });
 
             return NextResponse.json({ 
-                error: isTimeout ? "Web Archive is taking too long to respond." : "Failed to connect to Web Archive", 
-                details: message 
-            }, { status: isTimeout ? 504 : 502 });
+                success: true, 
+                triggered: true, 
+                message: "Archiving is taking longer than expected and has been moved to the background." 
+            });
         }
     } catch (error: any) {
         Sentry.captureException(error);

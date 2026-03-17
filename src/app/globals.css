@@ -149,31 +149,27 @@ img {
   display: flex;
   flex: 1;
   width: 100%;
-  max-width: var(--max-width-wide);
-  margin: 0 auto;
+  max-width: 100%; /* Let the content and sidebar determine width */
   padding-top: var(--header-height);
-  /* Sidebars are fixed, so they don't affect this centered flow */
 }
 
 .main-content {
   flex: 1;
   min-width: 0;
   padding: 32px 24px 64px;
-  /* Reduced right padding to balance with left sidebar visually, assuming contact sidebar is small */
-  padding-right: calc(24px + 16px);
+  /* Balanced padding */
+  padding-right: calc(24px + 48px); /* Account for right contact sidebar */
   max-width: 900px;
-  /* Limit content width for readability and centering */
-  margin: 0 auto;
-  /* Center the content block within the flex area */
+  margin: 0 auto; /* This centers the content perfectly in the remaining flex space */
 }
 
 .favorites-sidebar {
   width: 220px;
-  position: fixed;
-  left: 0;
+  position: sticky;
   top: var(--header-height);
-  bottom: 0;
-  transition: width var(--transition-normal), transform var(--transition-normal);
+  height: calc(100vh - var(--header-height));
+  flex-shrink: 0;
+  transition: width var(--transition-normal), transform var(--transition-normal), margin var(--transition-normal);
   z-index: 40;
   background: var(--bg-primary);
   border-right: 1px solid var(--border-color);
@@ -206,8 +202,8 @@ img {
 
 .favorites-collapsed {
   width: 0;
-  transform: translateX(-100%);
   border-right: none;
+  overflow: hidden;
 }
 
 .favorites-sidebar-toggle {
@@ -1137,6 +1133,8 @@ img {
 
 .post-actions {
   display: flex;
+  align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   margin-top: 8px;
 }
@@ -1144,8 +1142,10 @@ img {
 .btn {
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
-  padding: 8px 16px;
+  padding: 0 16px;
+  height: 34px;
   border-radius: var(--radius-md);
   font-family: var(--font-mono);
   font-size: 12px;
@@ -1155,6 +1155,7 @@ img {
   background: var(--bg-card);
   color: var(--text-secondary);
   text-decoration: none;
+  box-sizing: border-box;
 }
 
 .btn:hover {
@@ -1176,6 +1177,42 @@ img {
 .btn.loading {
   opacity: 0.7;
   pointer-events: none;
+}
+
+/* ---- Post Actions Dropdown ---- */
+.post-actions-dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.post-actions-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  z-index: 50;
+  min-width: 140px;
+}
+
+/* On mobile, wrap extra buttons in a dropdown */
+@media (max-width: 768px) {
+  .post-actions .btn.secondary-action {
+    display: none;
+  }
+}
+
+/* On desktop, hide the dropdown toggle and menu */
+@media (min-width: 769px) {
+  .post-actions-dropdown {
+    display: none;
+  }
 }
 
 /* ---- Markdown Content ---- */
@@ -1795,7 +1832,7 @@ img {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
   border-left: none !important;
-  padding: 8px 8px !important;
+  padding: 0 8px !important;
 }
 
 .lang-picker-popup {
