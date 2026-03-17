@@ -32,4 +32,6 @@ Feel free to reach out!
   `.trim(),
 
   postsPerPage: 6,
+  showFavorites: true,
+  showContact: true,
 };

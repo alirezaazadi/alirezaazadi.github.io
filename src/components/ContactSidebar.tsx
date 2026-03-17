@@ -14,8 +14,7 @@ import {
     User,
     Star,
     ChevronLeft,
-    ChevronRight,
-    X
+    ChevronRight
 } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -63,12 +62,7 @@ export function ContactSidebar() {
                 onClick={() => setCollapsed(!collapsed)}
                 aria-label={collapsed ? "Expand contact sidebar" : "Collapse contact sidebar"}
             >
-                <div className="contact-icon-desktop">
-                    {collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
-                </div>
-                <div className="contact-icon-mobile">
-                    {collapsed ? <User size={20} /> : <X size={20} />}
-                </div>
+                {collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
             </div>
 
             <div className="contact-sidebar-menu">

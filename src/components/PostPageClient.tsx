@@ -124,6 +124,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                 <div className="post-actions">
                     <TranslateButton
                         originalContent={post.body}
+                        slug={post.slug}
                         onTranslated={(text, provider) => {
                             setTranslatedContent(text);
                             setTranslationProvider(provider);

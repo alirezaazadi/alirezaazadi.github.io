@@ -59,7 +59,11 @@ export default function AdminPostsPage() {
                 {posts.map(post => (
                     <div key={post.slug} style={{ display: "flex", justifyContent: "space-between", padding: 15, border: "1px solid var(--border-color)", borderRadius: 8, alignItems: "center" }}>
                         <div>
-                            <h3 style={{ margin: "0 0 5px 0" }}>{post.title}</h3>
+                            <Link href={`/admin/posts/${post.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
+                                <h3 className="admin-post-title" style={{ margin: "0 0 5px 0", cursor: "pointer", transition: "color 0.2s" }}>
+                                    {post.title}
+                                </h3>
+                            </Link>
                             <div style={{ fontSize: "0.85em", opacity: 0.7 }}>
                                 {post.date} &bull; {post.slug}
                             </div>

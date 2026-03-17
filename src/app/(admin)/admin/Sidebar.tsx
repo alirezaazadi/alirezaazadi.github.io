@@ -1,17 +1,20 @@
 import Link from "next/link";
 import { useState } from "react";
-import { FileText, Star, User, MessageSquare, UploadCloud, ChevronLeft, ChevronRight, Home } from "lucide-react";
+import { FileText, Star, Settings, MessageSquare, UploadCloud, ChevronLeft, ChevronRight, Home, CheckCircle, AlertCircle, Loader2 } from "lucide-react";
 import { ThemeToggle } from "@/components/ThemeToggle";
 
 export function AdminSidebar() {
     const [publishStatus, setPublishStatus] = useState<string | null>(null);
     const [isCollapsed, setIsCollapsed] = useState(false);
+    const [notification, setNotification] = useState<{ type: "success" | "error" | "info"; message: string } | null>(null);
 
     async function handlePublish() {
         const msg = prompt("Enter commit message for publish:");
         if (!msg) return;
 
         setPublishStatus("Publishing...");
+        setNotification({ type: "info", message: "Starting deployment..." });
+        
         try {
             const res = await fetch("/api/admin/publish", {
                 method: "POST",
@@ -21,14 +24,17 @@ export function AdminSidebar() {
             
             const data = await res.json();
             if (res.ok) {
-                alert("Published successfully!");
+                setNotification({ type: "success", message: "Published successfully! It will take a minute to go live." });
             } else {
-                alert("Error: " + (data.error || "Unknown"));
+                setNotification({ type: "error", message: "Error: " + (data.error || "Unknown") });
             }
         } catch (e) {
-            alert("Failed to publish.");
+            setNotification({ type: "error", message: "Failed to publish." });
         }
+        
         setPublishStatus(null);
+        // Hide notification after 10 seconds
+        setTimeout(() => setNotification(null), 10000);
     }
 
     return (
@@ -50,9 +56,9 @@ export function AdminSidebar() {
                     <Star size={18} />
                     {!isCollapsed && <span style={{ marginLeft: 10 }}>Favorites</span>}
                 </Link>
-                <Link href="/admin/config" className="btn" style={{ justifyContent: isCollapsed ? "center" : "flex-start" }} title="About / Contact">
-                    <User size={18} />
-                    {!isCollapsed && <span style={{ marginLeft: 10 }}>About / Contact</span>}
+                <Link href="/admin/config" className="btn" style={{ justifyContent: isCollapsed ? "center" : "flex-start" }} title="Site Settings">
+                    <Settings size={18} />
+                    {!isCollapsed && <span style={{ marginLeft: 10 }}>Site Settings</span>}
                 </Link>
                 <Link href="/admin/suggestions" className="btn" style={{ justifyContent: isCollapsed ? "center" : "flex-start" }} title="Suggestions">
                     <MessageSquare size={18} />
@@ -77,6 +83,17 @@ export function AdminSidebar() {
                     {isCollapsed ? <UploadCloud size={18} /> : (publishStatus || "Deploy / Publish")}
                 </button>
             </div>
+
+            {notification && (
+                <div className="toast-container">
+                    <div className={`toast ${notification.type}`}>
+                        {notification.type === "success" && <CheckCircle size={18} color="#10b981" />}
+                        {notification.type === "error" && <AlertCircle size={18} color="#ef4444" />}
+                        {notification.type === "info" && <Loader2 size={18} className="animate-spin" />}
+                        <span>{notification.message}</span>
+                    </div>
+                </div>
+            )}
         </aside>
     );
 }

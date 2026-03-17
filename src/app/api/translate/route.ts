@@ -142,6 +142,10 @@ export async function POST(request: NextRequest) {
                 return NextResponse.json({
                     translatedText: restoreCodeBlocks(translatedText),
                     provider: "Google Translate"
+                }, {
+                    headers: {
+                        "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=43200"
+                    }
                 });
             } catch (error) {
                 return NextResponse.json(
@@ -233,6 +237,10 @@ ${textWithPlaceholders}`;
                         return NextResponse.json({
                             translatedText: restoreCodeBlocks(translatedText),
                             provider: "Gemini"
+                        }, {
+                            headers: {
+                                "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=43200"
+                            }
                         });
                     }
                 }

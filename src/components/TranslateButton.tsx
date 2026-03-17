@@ -5,6 +5,7 @@ import { Languages, ChevronDown } from "lucide-react";
 
 interface TranslateButtonProps {
     originalContent: string;
+    slug: string;
     onTranslated: (text: string, provider?: string) => void;
     onRevert: () => void;
     isTranslated: boolean;
@@ -37,8 +38,43 @@ const MODELS = [
     { id: "google-translate", label: "Google Translate (Legacy)" },
 ];
 
+const TRANSLATION_CACHE_KEY = "blog-translation-cache";
+
+function getCachedTranslation(slug: string, lang: string, model: string) {
+    if (typeof window === "undefined") return null;
+    try {
+        const cache = JSON.parse(localStorage.getItem(TRANSLATION_CACHE_KEY) || "{}");
+        const key = `${slug}:${lang}:${model}`;
+        return cache[key];
+    } catch {
+        return null;
+    }
+}
+
+function setCachedTranslation(slug: string, lang: string, model: string, result: { translatedText: string, provider: string }) {
+    if (typeof window === "undefined") return;
+    try {
+        const cache = JSON.parse(localStorage.getItem(TRANSLATION_CACHE_KEY) || "{}");
+        const key = `${slug}:${lang}:${model}`;
+        cache[key] = result;
+        
+        // Cache rotation: keep only last 100 translations (slug-based keys are smaller)
+        const keys = Object.keys(cache);
+        if (keys.length > 100) {
+            delete cache[keys[0]];
+        }
+        
+        localStorage.setItem(TRANSLATION_CACHE_KEY, JSON.stringify(cache));
+    } catch (e) {
+        console.warn("Failed to save translation to cache", e);
+    }
+}
+
+// simpleHash removed as we are now using post slugs for cache keys
+
 export function TranslateButton({
     originalContent,
+    slug,
     onTranslated,
     onRevert,
     isTranslated,
@@ -67,9 +103,16 @@ export function TranslateButton({
     async function handleTranslate(lang: typeof LANGUAGES[number]) {
         setSelectedLang(lang);
         setShowLangPicker(false);
-        setLoading(true);
         setError(null);
 
+        // Check local cache first
+        const cached = getCachedTranslation(slug, lang.code, selectedModel.id);
+        if (cached) {
+            onTranslated(cached.translatedText, `${cached.provider} (cached)`);
+            return;
+        }
+
+        setLoading(true);
         try {
             const res = await fetch("/api/translate", {
                 method: "POST",
@@ -89,6 +132,12 @@ export function TranslateButton({
                 setError(errorMessage);
                 return;
             }
+
+            // Save to cache
+            setCachedTranslation(slug, lang.code, selectedModel.id, {
+                translatedText: data.translatedText,
+                provider: data.provider
+            });
 
             onTranslated(data.translatedText, data.provider);
         } catch (err) {

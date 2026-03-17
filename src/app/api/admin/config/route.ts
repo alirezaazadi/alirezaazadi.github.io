@@ -25,7 +25,13 @@ export async function GET() {
             }
         }
         
-        return NextResponse.json({ aboutMe, social });
+        // Extract showFavorites and showContact
+        const showFavoritesMatch = content.match(/showFavorites:\s*(true|false)/);
+        const showFavorites = showFavoritesMatch ? showFavoritesMatch[1] === "true" : true;
+        const showContactMatch = content.match(/showContact:\s*(true|false)/);
+        const showContact = showContactMatch ? showContactMatch[1] === "true" : true;
+        
+        return NextResponse.json({ aboutMe, social, showFavorites, showContact });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
     }
@@ -33,7 +39,7 @@ export async function GET() {
 
 export async function PUT(req: Request) {
     try {
-        const { aboutMe, social } = await req.json();
+        const { aboutMe, social, showFavorites, showContact } = await req.json();
         let content = await fs.readFile(configPath, "utf-8");
         
         // Replace aboutMe
@@ -51,6 +57,16 @@ export async function PUT(req: Request) {
             }
             socialString += "  } as Record";
             content = content.replace(/social:\s*{[\s\S]*?}\s*as\s*Record/, socialString);
+        }
+
+        // Replace showFavorites
+        if (showFavorites !== undefined) {
+            content = content.replace(/showFavorites:\s*(true|false)/, `showFavorites: ${showFavorites}`);
+        }
+
+        // Replace showContact
+        if (showContact !== undefined) {
+            content = content.replace(/showContact:\s*(true|false)/, `showContact: ${showContact}`);
         }
         
         await fs.writeFile(configPath, content, "utf-8");

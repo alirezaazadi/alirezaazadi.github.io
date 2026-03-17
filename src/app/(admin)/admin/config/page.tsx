@@ -6,6 +6,8 @@ import { RichEditor } from "@/components/RichEditor";
 export default function AdminConfigPage() {
     const [aboutMe, setAboutMe] = useState("");
     const [social, setSocial] = useState<Record<string, string>>({});
+    const [showFavorites, setShowFavorites] = useState(true);
+    const [showContact, setShowContact] = useState(true);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
 
@@ -15,6 +17,8 @@ export default function AdminConfigPage() {
             .then(data => {
                 setAboutMe(data.aboutMe || "");
                 setSocial(data.social || {});
+                setShowFavorites(data.showFavorites ?? true);
+                setShowContact(data.showContact ?? true);
                 setLoading(false);
             })
             .catch(e => {
@@ -30,7 +34,7 @@ export default function AdminConfigPage() {
             const res = await fetch("/api/admin/config", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ aboutMe, social })
+                body: JSON.stringify({ aboutMe, social, showFavorites, showContact })
             });
             if (res.ok) {
                 alert("Saved successfully!");
@@ -69,10 +73,34 @@ export default function AdminConfigPage() {
     return (
         <form onSubmit={handleSave} style={{ maxWidth: 800, margin: "0 auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                <h1>About & Contact</h1>
+                <h1>Site Settings</h1>
                 <button type="submit" className="btn" disabled={saving}>
                     {saving ? "Saving..." : "Save Config"}
                 </button>
+            </div>
+
+            <div style={{ marginBottom: 30, padding: "20px", background: "var(--bg-secondary)", borderRadius: "12px", border: "1px solid var(--border-color)" }}>
+                <h2 style={{ marginBottom: "15px", fontSize: "16px" }}>Blog Sections Visibility</h2>
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                        <input 
+                            type="checkbox" 
+                            checked={showFavorites} 
+                            onChange={e => setShowFavorites(e.target.checked)}
+                            style={{ width: "18px", height: "18px", cursor: "pointer" }}
+                        />
+                        <span style={{ fontSize: "14px" }}>Enable Favorites Section (Sidebar)</span>
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+                        <input 
+                            type="checkbox" 
+                            checked={showContact} 
+                            onChange={e => setShowContact(e.target.checked)}
+                            style={{ width: "18px", height: "18px", cursor: "pointer" }}
+                        />
+                        <span style={{ fontSize: "14px" }}>Enable Contact Sidebar (About, Socials)</span>
+                    </label>
+                </div>
             </div>
 
             <div style={{ marginBottom: 30 }}>

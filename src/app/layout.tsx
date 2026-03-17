@@ -44,7 +44,9 @@ export default async function RootLayout({
             <div className="layout">
               <Header />
               <div className="layout-body">
-                <FavoritesSidebar favorites={favorites} />
+                {siteConfig.showFavorites && (
+                  <FavoritesSidebar favorites={favorites} />
+                )}
                 <main className="main-content">{children}</main>
               </div>
               <footer className="footer">
@@ -53,7 +55,7 @@ export default async function RootLayout({
                 </span>
               </footer>
             </div>
-            <ContactSidebar />
+            {siteConfig.showContact && <ContactSidebar />}
           </ErrorBoundary>
         </ThemeProvider>
         <Analytics />

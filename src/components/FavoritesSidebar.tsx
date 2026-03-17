@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Book, Music, Podcast, Film, ListMusic, ChevronLeft, ChevronRight, X, Newspaper } from "lucide-react";
+import { Book, Music, Podcast, Film, ListMusic, ChevronLeft, ChevronRight, X, Newspaper, Star } from "lucide-react";
 
 interface FavoriteItem {
     title: string;
