@@ -8,9 +8,10 @@ interface RichEditorProps {
     value: string;
     onChange: (value: string) => void;
     id?: string;
+    slug?: string;
 }
 
-export function RichEditor({ value, onChange, id = "md-editor" }: RichEditorProps) {
+export function RichEditor({ value, onChange, id = "md-editor", slug }: RichEditorProps) {
     const [viewMode, setViewMode] = useState<"write" | "preview">("write");
 
     async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
@@ -22,6 +23,9 @@ export function RichEditor({ value, onChange, id = "md-editor" }: RichEditorProp
             const formData = new FormData();
             formData.append("file", file);
             formData.append("type", "post");
+            if (slug) {
+                formData.append("slug", slug);
+            }
             try {
                 const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
                 const data = await res.json();

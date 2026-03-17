@@ -23,7 +23,7 @@ export async function PUT(req: Request, context: any) {
      const params = await context.params;
      const slug = params.slug;
     try {
-        const { title, summary, date, categories, keywords, content, image, archive } = await req.json();
+        const { title, summary, date, categories, keywords, content, image, archive, hidden } = await req.json();
 
         if (!title || !date || !content) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -50,6 +50,9 @@ export async function PUT(req: Request, context: any) {
         }
         if (image) {
             fileContent += `image: "${image}"\n`;
+        }
+        if (hidden) {
+            fileContent += `hidden: true\n`;
         }
         fileContent += `---\n\n`;
         fileContent += content;

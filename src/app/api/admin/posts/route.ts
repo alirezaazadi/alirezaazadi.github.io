@@ -15,7 +15,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
     try {
-        const { slug, title, summary, date, categories, keywords, content, image, archive } = await req.json();
+        const { slug, title, summary, date, categories, keywords, content, image, archive, hidden } = await req.json();
 
         if (!slug || !title || !date || !content) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -49,6 +49,9 @@ export async function POST(req: Request) {
         }
         if (image) {
             fileContent += `image: "${image}"\n`;
+        }
+        if (hidden) {
+            fileContent += `hidden: true\n`;
         }
         fileContent += `---\n\n`;
         fileContent += content;

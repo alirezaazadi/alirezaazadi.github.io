@@ -18,6 +18,7 @@ export default function PostEditor({ params }: PostEditorProps) {
     const router = useRouter();
     const [loading, setLoading] = useState(!isNew);
     const [saving, setSaving] = useState(false);
+    const [autoSaving, setAutoSaving] = useState(false);
     
     const [slug, setSlug] = useState("");
     const [title, setTitle] = useState("");
@@ -57,12 +58,20 @@ export default function PostEditor({ params }: PostEditorProps) {
         }
     }, [slugParam, isNew, router]);
 
-    async function handleSave(e: React.FormEvent) {
-        e.preventDefault();
-        setSaving(true);
+    const savePost = async (isAutoSave = false) => {
+        const currentSlug = isNew ? slug : slugParam;
+        if (!currentSlug) return;
+        
+        // Don't auto-save if required explicit fields for creation are empty
+        if (isAutoSave && (!title || !content)) {
+             return;
+        }
+
+        if (!isAutoSave) setSaving(true);
+        else setAutoSaving(true);
         
         const payload = {
-            slug: isNew ? slug : slugParam,
+            slug: currentSlug,
             title,
             date,
             summary,
@@ -70,11 +79,12 @@ export default function PostEditor({ params }: PostEditorProps) {
             keywords: keywords.split(",").map(k => k.trim()).filter(Boolean),
             image,
             content,
-            archive
+            archive,
+            hidden: isAutoSave ? true : false // If auto-saved, keep it hidden/draft until manually published
         };
 
         const method = isNew ? "POST" : "PUT";
-        const url = isNew ? "/api/admin/posts" : `/api/admin/posts/${slugParam}`;
+        const url = isNew ? "/api/admin/posts" : `/api/admin/posts/${currentSlug}`;
 
         try {
             const res = await fetch(url, {
@@ -84,19 +94,36 @@ export default function PostEditor({ params }: PostEditorProps) {
             });
             const data = await res.json();
             
-            if (res.ok) {
+            if (res.ok && !isAutoSave) {
                 if (isNew) {
                     router.push(`/admin/posts/${data.slug}`);
                 } else {
                     alert("Saved successfully.");
                 }
-            } else {
+            } else if (!res.ok && !isAutoSave) {
                 alert("Error: " + data.error);
             }
         } catch (e: any) {
-            alert("Failed to save post.");
+            if (!isAutoSave) alert("Failed to save post.");
         }
-        setSaving(false);
+        
+        if (!isAutoSave) setSaving(false);
+        else setAutoSaving(false);
+    };
+
+    // Auto-save every 10 seconds if content exists
+    useEffect(() => {
+        const interval = setInterval(() => {
+            if (content || title) {
+                savePost(true);
+            }
+        }, 10000);
+        return () => clearInterval(interval);
+    }, [content, title, slug, summary, categories, keywords, image, date]);
+
+    async function handleSave(e: React.FormEvent) {
+        e.preventDefault();
+        savePost(false);
     }
 
     async function generateAITags() {
@@ -129,6 +156,10 @@ export default function PostEditor({ params }: PostEditorProps) {
         const formData = new FormData();
         formData.append("file", file);
         formData.append("type", "post");
+        const currentSlug = isNew ? slug : slugParam;
+        if (currentSlug) {
+            formData.append("slug", currentSlug);
+        }
         try {
             const res = await fetch("/api/admin/upload", { method: "POST", body: formData });
             const data = await res.json();
@@ -158,6 +189,7 @@ export default function PostEditor({ params }: PostEditorProps) {
                     <button type="submit" className="btn" disabled={saving}>
                         {saving ? "Saving..." : "Save Post"}
                     </button>
+                    {autoSaving && <span style={{ fontSize: 12, opacity: 0.5 }}>Saving draft...</span>}
                 </div>
             </div>
 
@@ -203,7 +235,7 @@ export default function PostEditor({ params }: PostEditorProps) {
                 </div>
             </div>
 
-            <RichEditor value={content} onChange={setContent} />
+            <RichEditor value={content} onChange={setContent} slug={isNew ? slug : slugParam} />
         </form>
     );
 }

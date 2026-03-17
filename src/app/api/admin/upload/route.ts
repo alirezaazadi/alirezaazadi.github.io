@@ -7,6 +7,7 @@ export async function POST(req: Request) {
         const formData = await req.formData();
         const file = formData.get("file") as File;
         const uploadType = formData.get("type") as string; // 'post' or 'favorite'
+        const slug = formData.get("slug") as string | null;
 
         if (!file) {
             return NextResponse.json({ error: "No file uploaded." }, { status: 400 });
@@ -24,7 +25,13 @@ export async function POST(req: Request) {
         const filename = `${uploadType === "favorite" ? "fav_" : "img_"}${Date.now()}_${Math.random().toString(36).substring(2, 7)}${ext}`;
         
         // Determine the destination directory
-        const subdir = uploadType === "favorite" ? "favorites" : "posts";
+        let subdir = uploadType === "favorite" ? "favorites" : "posts";
+        if (uploadType === "post" && slug) {
+            // Clean the slug to prevent directory traversal
+            const safeSlug = slug.replace(/[^a-zA-Z0-9-]/g, "").toLowerCase();
+            subdir = path.join("posts", safeSlug);
+        }
+        
         const destDir = path.join(process.cwd(), "public", "media", subdir);
         
         // Ensure directory exists (it should, but safety first)

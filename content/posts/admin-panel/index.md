@@ -4,7 +4,10 @@ summary: "تلاش کردم برای این که بتونم راحت‌تر مح
 date: "2026-03-17"
 categories: ["Blog"]
 keywords: ["blog admin panel", "ai development tools", "blog content management", "blog automation scripts", "github blog deployment", "local blog editor", "hassle-free blogging", "static site content management", "developer workflow automation", "blogging productivity"]
+hidden: true
 ---
+
+
 
 
 سلام. 
@@ -44,18 +47,18 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
 پی‌نوشت: از اون‌جایی که پنل ادمین رو شما نمی‌تونید ببنید، با خودم گفتم که بد نیست که چند تااسکرین‌شات بگیرم و بذارم که اینجا باشه. 
 
 
-![About and Contact](/media/posts/img_1773710334636_brh0b.png)
+![About and Contact](/media/posts/admin-panel/img_1773712226446_3lqz4.png)
 
-![Manage Favorits](/media/posts/img_1773710397934_kkutn.png)
+![Manage Favourits](/media/posts/admin-panel/img_1773712226487_8i0so.png)
 
-![Admin panel sidebar](/media/posts/img_1773710408856_s76sq.png)
+![Admin panel sidebar](/media/posts/admin-panel/img_1773712226500_36c9d.png)
 
-![New Post](/media/posts/img_1773710429099_u915d.png)
+![New Post](/media/posts/admin-panel/img_1773712226516_hr1u6.png)
 
-![Manage Posts](/media/posts/img_1773710452029_anot4.png)
+![Manage Post](/media/posts/admin-panel/img_1773712226529_ixp1u.png)
 
+![New Admin Button in the Topbar](/media/posts/admin-panel/img_1773712226540_byx4m.png)
 
-![Blog Topbar New Admin Button](/media/posts/img_1773710502554_b3418.png)
 
 
 
