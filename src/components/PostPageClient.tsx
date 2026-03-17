@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
 import { TranslateButton } from "@/components/TranslateButton";
@@ -24,7 +24,16 @@ export function PostPageClient({ post }: PostPageClientProps) {
     const [translationProvider, setTranslationProvider] = useState<string | undefined>(undefined);
     const [readerOpen, setReaderOpen] = useState(false);
     const [archiving, setArchiving] = useState(false);
+    const [isDev, setIsDev] = useState(false);
     const router = useRouter();
+
+    useEffect(() => {
+        // Safe check for dev mode
+        if (process.env.NODE_ENV === "development") {
+            setIsDev(true);
+        }
+    }, []);
+
     const isTranslated = translatedContent !== null;
     const displayContent = translatedContent || post.body;
     const titleRtl = isRTL(post.title);
@@ -46,7 +55,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
     const handleArchive = async () => {
         setArchiving(true);
         try {
-            const res = await fetch("/api/admin/archive", {
+            const res = await fetch("/api/archive", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ slug: post.slug })
@@ -114,7 +123,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         ADHD mode
                     </button>
                     <ShareButton postUrl={postUrl} postTitle={post.title} />
-                    {process.env.NODE_ENV === "development" && (
+                    {isDev && (
                         <Link
                             href={`/admin/posts/${post.slug}`}
                             className="btn"
@@ -124,17 +133,15 @@ export function PostPageClient({ post }: PostPageClientProps) {
                             Edit
                         </Link>
                     )}
-                    {process.env.NODE_ENV === "development" && (
-                        <button
-                            className="btn"
-                            onClick={handleArchive}
-                            disabled={archiving}
-                            title="Manually trigger Web Archive crawler (dev mode only)"
-                        >
-                            <Landmark size={14} />
-                            {archiving ? "Archiving..." : "Archive"}
-                        </button>
-                    )}
+                    <button
+                        className="btn"
+                        onClick={handleArchive}
+                        disabled={archiving}
+                        title="Archive this post on the Wayback Machine (web.archive.org)"
+                    >
+                        <Landmark size={14} />
+                        {archiving ? "Archiving..." : "Archive"}
+                    </button>
                 </div>
             </header>
 
