@@ -211,30 +211,41 @@ export async function POST(req: Request) {
                 try {
                     const q = await fs.readFile(queuePath, "utf-8");
                     const queue: string[] = JSON.parse(q);
-                    if (queue.length > 0) {
+                    const isLocalhost = siteConfig.url.includes("localhost") || siteConfig.url.includes("127.0.0.1");
+                    if (queue.length > 0 && !isLocalhost) {
                         archiveScheduled = true;
-                        setTimeout(async () => {
-                            for (const slug of queue) {
-                                const targetUrl = `${siteConfig.url}/post/${slug}`;
-                                try {
-                                    const r = await fetch(`https://web.archive.org/save/${targetUrl}`);
-                                    console.log(`[Archive] Triggered for ${targetUrl}: ${r.status}`);
-                                } catch (err) {
-                                    console.error(`[Archive] Failed:`, err);
-                                }
+                        send({ step: "archive-wait", status: "running" });
+
+                        // Wait 2 minutes for the deployment to propagate
+                        await new Promise(r => setTimeout(r, 120000));
+
+                        for (const slug of queue) {
+                            const targetUrl = `${siteConfig.url}/post/${slug}`;
+                            try {
+                                const r = await fetch("https://web.archive.org/save/", {
+                                    method: "POST",
+                                    headers: {
+                                        "Content-Type": "application/x-www-form-urlencoded",
+                                        "User-Agent": "Mozilla/5.0 (compatible; BlogArchiver/1.0)",
+                                    },
+                                    body: new URLSearchParams({ url: targetUrl }).toString(),
+                                    signal: AbortSignal.timeout(15000),
+                                });
+                                console.log(`[Archive] Triggered for ${targetUrl}: ${r.status}`);
+                            } catch (err) {
+                                console.error(`[Archive] Failed for ${targetUrl}:`, err);
                             }
-                        }, 120000);
+                        }
+                        send({ step: "archive-wait", status: "done" });
+                    }
+                    if (queue.length > 0) {
                         await fs.writeFile(queuePath, "[]", "utf-8");
                     }
                 } catch {
                     // queue file may not exist
                 }
 
-                send({
-                    step: "complete",
-                    status: "done",
-                    ...(archiveScheduled ? { error: "archive" } : {}),
-                });
+                send({ step: "complete", status: "done" });
             } catch (error: any) {
                 const isCancelled = error.message === "Deployment cancelled";
                 send({

@@ -52,7 +52,6 @@ export function AdminSidebar() {
     const [isDeploying, setIsDeploying] = useState(false);
     const [deploySteps, setDeploySteps] = useState<DeployStep[] | null>(null);
     const [deployError, setDeployError] = useState<string | null>(null);
-    const [archiveScheduled, setArchiveScheduled] = useState(false);
     const [sessionId, setSessionId] = useState<string | null>(null);
     const [activePrompt, setActivePrompt] = useState<ActivePrompt | null>(null);
     const [wasCancelled, setWasCancelled] = useState(false);
@@ -76,7 +75,6 @@ export function AdminSidebar() {
         setShowCommitModal(false);
         setIsDeploying(true);
         setDeployError(null);
-        setArchiveScheduled(false);
         setActivePrompt(null);
         setWasCancelled(false);
         setSessionId(null);
@@ -117,7 +115,6 @@ export function AdminSidebar() {
                         }
 
                         if (event.step === "complete") {
-                            if (event.error === "archive") setArchiveScheduled(true);
                             continue;
                         }
 
@@ -139,11 +136,16 @@ export function AdminSidebar() {
                             setActivePrompt(event.prompt);
                         }
 
-                        setDeploySteps(prev =>
-                            prev?.map(s =>
+                        setDeploySteps(prev => {
+                            if (!prev) return prev;
+                            const exists = prev.some(s => s.id === event.step);
+                            if (!exists && event.step === "archive-wait") {
+                                return [...prev, { id: "archive-wait", label: "Archive to Wayback Machine", group: "git" as const, status: event.status }];
+                            }
+                            return prev.map(s =>
                                 s.id === event.step ? { ...s, status: event.status } : s
-                            ) ?? null
-                        );
+                            );
+                        });
                     } catch {
                         // skip malformed lines
                     }
@@ -153,7 +155,6 @@ export function AdminSidebar() {
             setIsDeploying(false);
             setTimeout(() => {
                 setDeploySteps(null);
-                setArchiveScheduled(false);
             }, 15000);
         } catch {
             setDeployError("Failed to connect to publish API");
@@ -202,7 +203,6 @@ export function AdminSidebar() {
     function dismissToast() {
         setDeploySteps(null);
         setDeployError(null);
-        setArchiveScheduled(false);
         setWasCancelled(false);
         setActivePrompt(null);
     }
@@ -380,12 +380,7 @@ export function AdminSidebar() {
                                     </div>
                                 )}
 
-                                {archiveScheduled && (
-                                    <div className="deploy-toast-archive">
-                                        Web archive scheduled (2 min delay)
-                                    </div>
-                                )}
-                                {allDone && !archiveScheduled && (
+                                {allDone && (
                                     <div className="deploy-toast-archive">
                                         It will take a minute to go live.
                                     </div>
