@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { RichEditor } from "@/components/RichEditor";
 
 export default function AdminConfigPage() {
     const [aboutMe, setAboutMe] = useState("");
@@ -97,11 +98,10 @@ export default function AdminConfigPage() {
 
             <div>
                 <h2>About Me</h2>
-                <p style={{ opacity: 0.7, marginBottom: 15 }}>This text appears on the /about page and in the terminal. Markdown is supported.</p>
-                <textarea 
-                    style={{ ...inputStyle, minHeight: 400, fontFamily: "monospace", fontSize: 14 }}
+                <RichEditor 
+                    id="about-editor"
                     value={aboutMe}
-                    onChange={e => setAboutMe(e.target.value)}
+                    onChange={setAboutMe}
                 />
             </div>
         </form>

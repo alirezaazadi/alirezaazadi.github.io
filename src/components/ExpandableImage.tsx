@@ -37,7 +37,7 @@ export function ExpandableImage({ src, alt, className, style }: ExpandableImageP
 
     return (
         <>
-            <div
+            <span
                 className={`expandable-image-container ${className || ""}`}
                 style={{ position: "relative", display: "inline-block", ...style }}
             >
@@ -76,7 +76,7 @@ export function ExpandableImage({ src, alt, className, style }: ExpandableImageP
                 >
                     <Maximize2 size={16} />
                 </button>
-            </div>
+            </span>
 
             {isOpen && (
                 <div

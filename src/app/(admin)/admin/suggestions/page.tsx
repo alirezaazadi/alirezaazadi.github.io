@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { RichEditor } from "@/components/RichEditor";
 
 export default function AdminSuggestionsPage() {
     const slug = "suggestions"; // The post slug for suggestions
@@ -85,13 +86,10 @@ export default function AdminSuggestionsPage() {
             <p style={{ opacity: 0.7, marginBottom: 20 }}>
                 This edits the `content/posts/suggestions.md` file, which powers the /suggestions page. Markdown is fully supported.
             </p>
-
-            <textarea 
-                style={{ ...inputStyle, minHeight: 600, fontFamily: "monospace", fontSize: 14 }} 
-                required 
+            <RichEditor 
+                id="suggestions-editor"
                 value={content} 
-                onChange={e => setContent(e.target.value)} 
-                placeholder="Write your markdown here..."
+                onChange={setContent} 
             />
         </form>
     );

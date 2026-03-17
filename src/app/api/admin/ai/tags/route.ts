@@ -35,7 +35,7 @@ Content snippet: ${content.substring(0, 3000)}...
         // Parse exactly
         const tags = text
             .split(',')
-            .map(t => t.trim().toLowerCase().replace(/[^a-z0-9\s-]/g, ''))
+            .map(t => t.trim().toLowerCase())
             .filter(Boolean);
 
         return NextResponse.json({ tags });

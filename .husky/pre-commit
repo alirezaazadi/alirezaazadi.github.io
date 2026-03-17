@@ -5,6 +5,7 @@ npx lint-staged
 # fetch-covers needs to run globally as it might fetch new covers.
 
 node scripts/fetch-covers.mjs
+node scripts/remove-dangling-images.mjs
 
 # If fetch-covers modified files, add them to the commit?
 # The user said "before any commit and push".

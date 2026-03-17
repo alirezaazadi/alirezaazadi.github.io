@@ -22,7 +22,8 @@ export async function POST(req: Request) {
         }
 
         const safeSlug = slug.replace(/[^a-z0-9-]/g, "").toLowerCase();
-        const filePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
+        const folderPath = path.join(process.cwd(), "content", "posts", safeSlug);
+        const filePath = path.join(folderPath, "index.md");
 
         // Check if exists
         try {
@@ -52,7 +53,7 @@ export async function POST(req: Request) {
         fileContent += `---\n\n`;
         fileContent += content;
 
-        await fs.mkdir(path.join(process.cwd(), "content", "posts"), { recursive: true });
+        await fs.mkdir(folderPath, { recursive: true });
         await fs.writeFile(filePath, fileContent, "utf-8");
 
         if (archive) {

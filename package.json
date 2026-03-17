@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "update-covers": "node scripts/fetch-covers.mjs",
+    "clean-images": "node scripts/remove-dangling-images.mjs",
     "prepare": "husky"
   },
   "dependencies": {

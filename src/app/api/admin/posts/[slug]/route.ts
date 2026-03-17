@@ -9,9 +9,13 @@ export async function GET(req: Request, context: any) {
     const slug = params.slug;
     try {
         const post = await getPostBySlug(slug);
-        return NextResponse.json(post);
+        if (!post) {
+            return NextResponse.json({ error: "Post not found" }, { status: 404 });
+        }
+        // Frontend editor expects `content` instead of `body`
+        return NextResponse.json({ ...post, content: post.body });
     } catch (e: any) {
-        return NextResponse.json({ error: e.message }, { status: 404 });
+        return NextResponse.json({ error: e.message }, { status: 500 });
     }
 }
 
@@ -26,7 +30,10 @@ export async function PUT(req: Request, context: any) {
         }
 
         const safeSlug = slug.replace(/[^a-z0-9-]/g, "").toLowerCase();
-        const filePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
+        
+        const folderPath = path.join(process.cwd(), "content", "posts", safeSlug);
+        const newFilePath = path.join(folderPath, "index.md");
+        const oldFilePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
 
         const cats = categories ? `[${categories.map((c: string) => `"${c}"`).join(", ")}]` : "[]";
         const kw = keywords ? `[${keywords.map((k: string) => `"${k}"`).join(", ")}]` : "[]";
@@ -47,7 +54,16 @@ export async function PUT(req: Request, context: any) {
         fileContent += `---\n\n`;
         fileContent += content;
 
-        await fs.writeFile(filePath, fileContent, "utf-8");
+        await fs.mkdir(folderPath, { recursive: true });
+        await fs.writeFile(newFilePath, fileContent, "utf-8");
+        
+        // Cleanup old flat format file if we just migrated it to a folder
+        try {
+            await fs.access(oldFilePath);
+            await fs.unlink(oldFilePath);
+        } catch (e) {
+            // Old file doesn't exist, meaning it was already in folder format. Safe to ignore.
+        }
 
         if (archive) {
             const queuePath = path.join(process.cwd(), "content", ".archive-queue.json");

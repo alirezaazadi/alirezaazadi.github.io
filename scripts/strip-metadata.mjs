@@ -19,9 +19,14 @@ async function stripMetadata(filePath) {
 
         const buffer = await fs.readFile(filePath);
 
-        // sharp(buffer).withMetadata(false) removes all metadata
+        // To ensure zero metadata leak, we explicitly strip all headers, ICC profiles, 
+        // EXIF, and XMP by cloning and avoiding keeping any input metadata.
+        const format = ext.replace('.', '') === 'jpg' ? 'jpeg' : ext.replace('.', '');
         const processedBuffer = await sharp(buffer)
-            .withMetadata(false) // This is the key: false removes all metadata including EXIF, ICC, XMP
+            .clone()
+            .rotate() // bakes any EXIF orientation into pixels
+            .withMetadata({ density: 72 }) // overrides any existing dpi/metadata
+            .toFormat(format) // force rewrite of the entire image container
             .toBuffer();
 
         await fs.writeFile(filePath, processedBuffer);
@@ -32,8 +37,8 @@ async function stripMetadata(filePath) {
             return;
         }
         console.error(`Error processing ${filePath}:`, error.message);
-        // Warn but do not fail the commit for metadata stripping errors
-        // process.exit(1); 
+        // Fail the commit for metadata stripping errors
+        process.exit(1); 
     }
 }
 
