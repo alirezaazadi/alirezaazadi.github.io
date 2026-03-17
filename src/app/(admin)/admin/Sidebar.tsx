@@ -24,7 +24,7 @@ type ActivePrompt = {
 
 const INITIAL_STEPS: DeployStep[] = [
     { id: "git-add", label: "Stage changes", group: "git", status: "pending" },
-    { id: "lint-staged", label: "Lint staged files", group: "pre-commit", status: "pending" },
+    { id: "lint-staged", label: "Strip image metadata", group: "pre-commit", status: "pending" },
     { id: "fetch-covers", label: "Fetch covers", group: "pre-commit", status: "pending" },
     { id: "remove-dangling", label: "Remove dangling images", group: "pre-commit", status: "pending" },
     { id: "stage-media", label: "Stage media files", group: "pre-commit", status: "pending" },

@@ -67,6 +67,6 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
 
 ![Interactive Deployment](/media/posts/admin-panel/img_1773751148110_gzxam.png)
 
-![Interactive Deployment](/media/posts/admin-panel/img_1773751148188_kk6mp.png)
+![Interactive Deployment[link](url)](/media/posts/admin-panel/img_1773751148188_kk6mp.png)
 
 
