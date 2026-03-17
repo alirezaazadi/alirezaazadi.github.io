@@ -1,9 +1,11 @@
 ---
 title: "مکانیزم Multi-Leader Replication و مصائب Write Conflict"
-date: "2025-08-22"
 summary: "داشتم دیروز کتاب Designing Data Intensive Application رو مرور می‌کردم و رسیدم به مبحث Multi-Leader Replication و بحث Conflict Resolution. کتاب اشاره‌ی جزئی‌ای به روش‌ها رفع خودکار Conflict کرده بود و توی یک از اون‌ها به CRDTs اشاره‌ی خیلی مختصری کرد. برای من که اخیرا توی یک پروژه از این روش استفاده کردم تا بتونم Collaborative Editor پیاده کنم مواجه‌ی دوباره‌ش جالب بود و انگیزه‌ای شد که یک کم بیشتر راجع‌بهش بخونم و نتیجه‌ش شد این پست."
-categories: ['software engineering']
+date: "2025-08-22"
+categories: ["Software engineering"]
+keywords: ["مکانیزم multi-leader replication", "write conflict", "ناسازگاری داده ها", "replication دیتابیس", "دیتابیس توزیع شده", "last write wins", "high availability دیتابیس", "مقیاس پذیری دیتابیس", "رفع conflict", "دیتابیس master-master"]
 ---
+
 
 نمیدونم چقدر راجع‌به مکانیزم Multi-Leader Replications توی دیتابیس‌ها می‌دونید. به‌طور خلاصه اینه که به‌جای این‌که یک نود مستر (Leader، Main یا هرچی) داشته باشیم که درخواست‌های رایت فقط روی اون serve بشند، چندین نود داشته باشیم که این کار رو برای ما انجام بدن. درواقع، Writeهایی که روی هر کدوم از نودها میان، روی باقی نودها Propagate می‌شن.
 

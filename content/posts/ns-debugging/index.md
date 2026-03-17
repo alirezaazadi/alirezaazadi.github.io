@@ -1,10 +1,12 @@
 ---
 title: "از دهن افتاده: روایت چند روز خطایابیی پر خطای Celery"
-date: "2025-11-04"
 summary: "چند تا از تسک‌های سلری درست با SQS مچ نمی‌شدند. ماجرایی که برای حلش وقت زیادی صرف شد. زمانی که می‌تونست خیلی کم‌تر از این باشه. تجربه‌ای که باز بهم یادآوری کرد خطایابی نیازمند پیاده‌سازی یک روش علمیه. بازیه در نقش یک کارآگاه دانشمند"
-categories: ['software engineering']
+date: "2025-11-04"
+categories: ["Software engineering"]
+keywords: ["celery", "sqs", "celery sqs integration", "celery dlq", "failed celery tasks", "celery troubleshooting", "sqs visibility timeout", "acks_on_timeout_or_failure", "celery acknowledge", "celery retry"]
 image: "./media/poster.webp"
 ---
+
 
 مثل غذایی که هوسش رو کنی ولی اون موقع نخوریش، مثل کبابی که سرد شده، اگر یک مشکل رو سر وقتش حل نکنی دیگه حل شدنش نمیچسبه.
 

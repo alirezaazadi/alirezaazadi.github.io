@@ -30,6 +30,7 @@ export default function PostEditor({ params }: PostEditorProps) {
     const [content, setContent] = useState("");
     const [generatingTags, setGeneratingTags] = useState(false);
     const [archive, setArchive] = useState(false);
+    const [hidden, setHidden] = useState(false);
 
     useEffect(() => {
         if (!isNew) {
@@ -49,6 +50,7 @@ export default function PostEditor({ params }: PostEditorProps) {
                     setKeywords((data.keywords || []).join(", "));
                     setImage(data.image || "");
                     setContent(data.content || "");
+                    setHidden(data.hidden || false);
                     setLoading(false);
                 })
                 .catch(e => {
@@ -80,7 +82,7 @@ export default function PostEditor({ params }: PostEditorProps) {
             image,
             content,
             archive,
-            hidden: isAutoSave ? true : false // If auto-saved, keep it hidden/draft until manually published
+            hidden: isAutoSave && isNew ? true : hidden // auto-save new posts as hidden, but respect current status for existing/manual saves
         };
 
         const method = isNew ? "POST" : "PUT";
@@ -184,6 +186,10 @@ export default function PostEditor({ params }: PostEditorProps) {
                         <Landmark size={14} />
                         <input type="checkbox" checked={archive} onChange={e => setArchive(e.target.checked)} />
                         Archive on Publish
+                    </label>
+                    <label style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontSize: 13, color: "var(--fg-secondary)" }}>
+                        <input type="checkbox" checked={hidden} onChange={e => setHidden(e.target.checked)} />
+                        Hidden (Draft)
                     </label>
                     <Link href="/admin/posts" className="btn">Cancel</Link>
                     <button type="submit" className="btn" disabled={saving}>

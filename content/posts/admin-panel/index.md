@@ -4,7 +4,6 @@ summary: " برای این که بتونم راحت‌تر محتوای بلاگ
 date: "2026-03-17"
 categories: ["Blog"]
 keywords: ["blog admin panel", "ai development tools", "blog content management", "blog automation scripts", "github blog deployment", "local blog editor", "hassle-free blogging", "static site content management", "developer workflow automation", "blogging productivity"]
-hidden: true
 ---
 
 

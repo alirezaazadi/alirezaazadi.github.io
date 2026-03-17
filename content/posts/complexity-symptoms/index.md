@@ -1,9 +1,11 @@
 ---
 title: "پیچیدگی و نشانه‌های آن"
-date: "2024-12-27"
 summary: "کتاب A Philosophy of Software Design نوشته‌ی John Ousterhout، میاد و سه نشانه (manifestation) از پیچیدگی در سیستم مطرح میکنه و اینجا میخوام این سه مورد رو باهم مرور کنیم:"
-categories: ['software engineering']
+date: "2024-12-27"
+categories: ["Software engineering"]
+keywords: ["پیچیدگی نرم افزار", "نشانه‌های پیچیدگی", "بار شناختی", "تغییرات مضاعف", "ناشناخته‌های ناشناخته", "طراحی نرم افزار", "اصول طراحی نرم افزار", "کاهش پیچیدگی کد", "a philosophy of software design", "پیچیدگی سیستم"]
 ---
+
 
 **کتاب A Philosophy of Software Design نوشته‌ی John Ousterhout، میاد و سه نشانه (manifestation) از پیچیدگی در سیستم مطرح میکنه و اینجا میخوام این سه رو مرور کنیم**
 

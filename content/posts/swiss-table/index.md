@@ -1,9 +1,11 @@
 ---
 title: "از انواع جدول‌های درهم‌سازی: جدول سوئیسی"
-date: "2025-10-08"
 summary: "هرچند ماه یک بار که با رفقا می‌شینیم به گپ زدن و از زمین و زمان صحبت می‌کنیم، برای من فرصت خوبیه که چیز‌هایی رو بشنوم که کنجکاوی جدید برام به‌وجود میاره. توی یکی از این نشست‌ها هم صحبت از Swiss Table شد. Hash Table ای که درست شد برای این که سریع‌تر از جدول‌های درهم سازی یا همون هش تیبل‌هایی که ما میشناسیم باشه. اینجا بیشتر راجع‌بهش نوشتم وسعی کردم کمی راجع‌بهش توضیح بدم و از کاربرد‌هاش بگم و همینطور  مورد‌های مشابه رو هم توضیح بدم."
-categories: ['software engineering']
+date: "2025-10-08"
+categories: ["Software engineering"]
+keywords: ["swiss table", "hashmap", "hash table", "open addressing", "collision resolution", "data structures", "rust hashmap", "simd optimization", "cpu performance", "chaining hash table"]
 ---
+
 
 روش‌های مرسوم رفع تصادم (collision) توی hashmap رو تو درس ساختمان داده خوندیم:
 

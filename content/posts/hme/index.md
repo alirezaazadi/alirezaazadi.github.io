@@ -1,9 +1,11 @@
 ---
 title: "عملیات روی داده‌های رمز شده: رمزنگاری هم‌ریختی یا Homomorphic encryption"
-date: "2025-10-19"
 summary: "احتمالا به فکرتون رسیده که چقدر خوب میشد بدون این که داده‌ای که رمز‌ شده رو رمزگشایی کنیم می‌تونستیم تغییرش بدیم. چیزی که بیشتر شبیه به یک خیال خوشه، واقعیت اما اینه که ده‌هاست که این ماجرا رویا نیست و من این رو تازه فهمیدم. کمی راجع‌به این امکان که اخیرا خوندم و یاد گرفتم اینجا نوشتم. درباره‌ی عملکردش و چالش‌های استفاده‌ ازش در دنیایی واقعی. امیدوارم که برای شما هم جالب باشه."
-categories: ['software engineering']
+date: "2025-10-19"
+categories: ["Software engineering"]
+keywords: ["homomorphic encryption", "رمزنگاری هم‌ریختی", "fully homomorphic encryption", "data privacy", "encrypted data processing", "cloud computing security", "secure data operations", "fhe", "privacy-preserving computation", "machine learning homomorphic encryption"]
 ---
+
 
 فرض کنید که می‌خوایید عبارتی رو گوگل کنید ولی گوگل نه بدونه چی ازش پرسیدین و نه بدونه چه جوابی به شما داده ولی با این حال جوابش به شما متناسب بوده.
 
