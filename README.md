@@ -9,8 +9,8 @@ A personal blog built with **Next.js App Router**, featuring a built-in CMS admi
 - Markdown-based content stored in `content/posts/`
 - Categories, tags, date, reading time, and cover images
 - Obsidian-style image sizing: `![alt|400](url)`, `![alt|400x300](url)`, `![alt|x100](url)`
-- Video embeds (`{% video URL %}` for YouTube, Vimeo, Aparat)
-- Spotify embeds (`{% spotify URL %}`)
+- Video embeds (YouTube, Vimeo, Aparat via custom embed syntax)
+- Spotify embeds (tracks, albums, playlists, episodes)
 - Configurable default image max-width via admin settings
 - Pagination with configurable posts-per-page
 
