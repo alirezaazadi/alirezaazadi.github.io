@@ -23,7 +23,7 @@ interface FSData {
         books: FavItem[];
         music: FavItem[];
         podcasts: FavItem[];
-        youtube: FavItem[];
+        movies: FavItem[];
         playlists: FavItem[];
         magazines: FavItem[];
     };
@@ -96,7 +96,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
     const getDirEntries = useCallback((): string[] => {
         if (cwd === "~") return ["posts/", "favorites/", "about/", "contact/"];
         if (cwd === "~/posts") return (fsData?.posts || []).map((p) => p.slug + ".md");
-        if (cwd === "~/favorites") return ["books/", "music/", "podcasts/", "youtube/", "playlists/", "magazines/"];
+        if (cwd === "~/favorites") return ["books/", "music/", "podcasts/", "movies/", "playlists/", "magazines/"];
         if (cwd.startsWith("~/favorites/")) {
             const sub = cwd.split("/").pop() as keyof FSData["favorites"];
             const items = fsData?.favorites?.[sub];
@@ -162,7 +162,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                         const target = arg.replace(/\/$/, "");
                         const validDirs: Record<string, string[]> = {
                             "~": ["posts", "favorites", "about", "contact"],
-                            "~/favorites": ["books", "music", "podcasts", "youtube", "playlists", "magazines"],
+                            "~/favorites": ["books", "music", "podcasts", "movies", "playlists", "magazines"],
                         };
                         const allowed = validDirs[cwd];
                         if (allowed && allowed.includes(target)) {
@@ -262,7 +262,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                         books: "📚",
                         music: "🎵",
                         podcasts: "🎙️",
-                        youtube: "▶️",
+                        movies: "🎬",
                         playlists: "📋",
                         magazines: "📰",
                     };

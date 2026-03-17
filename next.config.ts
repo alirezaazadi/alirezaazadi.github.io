@@ -52,8 +52,8 @@ const nextConfig: NextConfig = {
     return [
       {
         // Exclude files with common extensions and prevent multi-segment matching (loop)
-        // Also exclude /post itself to avoid redirecting /post -> /post/post
-        source: "/:slug((?!post$|.*\\.(?:ico|png|jpg|jpeg|svg|css|js|json|xml|txt)$)[^/]+)",
+        // Also exclude /post, /admin, and /api itself to avoid redirecting
+        source: "/:slug((?!post$|admin$|api$|.*\\.(?:ico|png|jpg|jpeg|svg|css|js|json|xml|txt)$)[^/]+)",
         destination: "/post/:slug",
         permanent: true,
         // Only redirect if the slug doesn't match a known page or file

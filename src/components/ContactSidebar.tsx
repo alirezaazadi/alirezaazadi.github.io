@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { siteConfig } from "../../site.config";
 import {
@@ -12,6 +13,8 @@ import {
     Camera,
     User,
     Star,
+    ChevronLeft,
+    ChevronRight
 } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -42,6 +45,8 @@ function getIcon(key: string) {
 }
 
 export function ContactSidebar() {
+    const [collapsed, setCollapsed] = useState(false);
+    
     const socialEntries = Object.entries(siteConfig.social).filter(
         ([, url]) => url && url.length > 0
     );
@@ -51,7 +56,15 @@ export function ContactSidebar() {
     };
 
     return (
-        <aside className="contact-sidebar">
+        <aside className={`contact-sidebar ${collapsed ? "collapsed" : ""}`}>
+            <div 
+                className="contact-sidebar-toggle" 
+                onClick={() => setCollapsed(!collapsed)}
+                aria-label={collapsed ? "Expand contact sidebar" : "Collapse contact sidebar"}
+            >
+                {collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+            </div>
+
             {/* About Me link */}
             <Link href="/about" aria-label="About me">
                 <User size={16} />

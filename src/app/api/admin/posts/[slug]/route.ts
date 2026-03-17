@@ -1,0 +1,65 @@
+import { NextResponse } from "next/server";
+import { getPostBySlug } from "@/lib/posts";
+import fs from "fs/promises";
+import path from "path";
+
+export async function GET(req: Request, context: any) {
+    const params = await context.params;
+    const slug = params.slug;
+    try {
+        const post = await getPostBySlug(slug);
+        return NextResponse.json(post);
+    } catch (e: any) {
+        return NextResponse.json({ error: e.message }, { status: 404 });
+    }
+}
+
+export async function PUT(req: Request, context: any) {
+     const params = await context.params;
+     const slug = params.slug;
+    try {
+        const { title, summary, date, categories, content, image } = await req.json();
+
+        if (!title || !date || !content) {
+            return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
+        }
+
+        const safeSlug = slug.replace(/[^a-z0-9-]/g, "").toLowerCase();
+        const filePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
+
+        const cats = categories ? `[${categories.map((c: string) => `"${c}"`).join(", ")}]` : "[]";
+        
+        let fileContent = `---\n`;
+        fileContent += `title: "${title.replace(/"/g, '\\"')}"\n`;
+        fileContent += `summary: "${(summary || "").replace(/"/g, '\\"')}"\n`;
+        fileContent += `date: "${date}"\n`;
+        if (categories && categories.length > 0) {
+            fileContent += `categories: ${cats}\n`;
+        }
+        if (image) {
+            fileContent += `image: "${image}"\n`;
+        }
+        fileContent += `---\n\n`;
+        fileContent += content;
+
+        await fs.writeFile(filePath, fileContent, "utf-8");
+
+        return NextResponse.json({ success: true });
+    } catch (e: any) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    }
+}
+
+export async function DELETE(req: Request, context: any) {
+    const params = await context.params;
+    const slug = params.slug;
+    try {
+        const safeSlug = slug.replace(/[^a-z0-9-]/g, "").toLowerCase();
+        const filePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
+        
+        await fs.unlink(filePath);
+        return NextResponse.json({ success: true });
+    } catch (e: any) {
+        return NextResponse.json({ error: e.message }, { status: 500 });
+    }
+}

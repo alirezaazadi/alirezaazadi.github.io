@@ -166,51 +166,82 @@ img {
   /* Center the content block within the flex area */
 }
 
-/* ---- Favorites Sidebar (Left) ---- */
 .favorites-sidebar {
   width: 220px;
   flex-shrink: 0;
-  padding: 32px 16px 64px 24px;
   position: sticky;
   top: var(--header-height);
-  /* Use viewport height minus header, but allow sub-sections to scroll so sidebar fits */
-  max-height: calc(100vh - var(--header-height));
-  overflow-y: auto;
-  /* Scroll sidebar if it still overflows */
-  scrollbar-width: thin;
-  scrollbar-color: var(--border-color) transparent;
+  transition: width var(--transition-normal);
+  z-index: 40;
 }
 
-.favorites-toggle {
+.favorites-content-wrapper {
+  padding: 32px 16px 64px 24px;
+  max-height: calc(100vh - var(--header-height));
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-color) transparent;
+  width: 220px;
+}
+
+.favorites-header {
   display: flex;
   align-items: center;
   gap: 6px;
-  background: none;
-  border: none;
   color: var(--text-muted);
   font-family: var(--font-mono);
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.08em;
-  cursor: pointer;
-  padding: 4px 0;
   margin-bottom: 16px;
-  transition: color 0.15s;
+  white-space: nowrap;
 }
 
-.favorites-toggle:hover {
+/* removed duplicate favorites-sidebar */
+
+.favorites-collapsed {
+  width: 0;
+}
+
+.favorites-sidebar-toggle {
+  position: absolute;
+  right: -28px;
+  top: calc(50vh - var(--header-height));
+  transform: translateY(-50%);
+  width: 28px;
+  height: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: none;
+  border-radius: 0 8px 8px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  box-shadow: 2px 0 5px rgba(0,0,0,0.05);
+  font-family: var(--font-mono);
+  z-index: 10;
+  transition: right var(--transition-normal), left var(--transition-normal);
+}
+
+.favorites-collapsed .favorites-sidebar-toggle {
+  position: fixed;
+  left: 0;
+  right: auto;
+  top: 50%;
+}
+
+.favorites-sidebar-toggle:hover {
   color: var(--accent);
 }
 
-.favorites-collapsed {
-  width: 220px;
-}
-
-.favorites-sidebar::-webkit-scrollbar {
+.favorites-content-wrapper::-webkit-scrollbar {
   width: 4px;
 }
 
-.favorites-sidebar::-webkit-scrollbar-thumb {
+.favorites-content-wrapper::-webkit-scrollbar-thumb {
   background: var(--border-color);
   border-radius: 4px;
 }
@@ -491,6 +522,35 @@ img {
   border-radius: var(--radius-lg);
   padding: 8px;
   box-shadow: var(--shadow-md);
+  transition: transform var(--transition-normal);
+}
+
+.contact-sidebar.collapsed {
+  transform: translateY(-50%) translateX(calc(100% + 24px));
+}
+
+.contact-sidebar-toggle {
+  position: absolute;
+  left: -28px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 40px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: var(--text-secondary);
+  box-shadow: -2px 0 5px rgba(0,0,0,0.05);
+  font-family: var(--font-mono);
+}
+
+.contact-sidebar-toggle:hover {
+  color: var(--accent);
 }
 
 .contact-sidebar a {

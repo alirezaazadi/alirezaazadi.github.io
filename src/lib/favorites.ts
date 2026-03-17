@@ -12,14 +12,14 @@ export interface Favorites {
     books: FavoriteItem[];
     music: FavoriteItem[];
     podcasts: FavoriteItem[];
-    youtube: FavoriteItem[];
+    movies: FavoriteItem[];
     playlists: FavoriteItem[];
     magazines: FavoriteItem[];
 }
 
 /**
  * Parses the structured favorites.md file.
- * Format: sections start with ## (books, music, podcasts, youtube, playlists)
+ * Format: sections start with ## (books, music, podcasts, movies, playlists)
  * Items are lines starting with "- key: value"
  */
 export function parseFavorites(content: string): Favorites {
@@ -27,7 +27,7 @@ export function parseFavorites(content: string): Favorites {
         books: [],
         music: [],
         podcasts: [],
-        youtube: [],
+        movies: [],
         playlists: [],
         magazines: [],
     };
@@ -66,7 +66,7 @@ export function parseFavorites(content: string): Favorites {
             const key = trimmed.split(":")[0].trim();
             const value = extractValue(trimmed);
 
-            if (key === "author" || key === "artist" || key === "host" || key === "channel" || key === "platform") {
+            if (key === "author" || key === "artist" || key === "host" || key === "channel" || key === "platform" || key === "subtitle") {
                 currentItem.subtitle = value;
             } else if (key === "cover") {
                 currentItem.cover = value;
@@ -103,6 +103,31 @@ function flushItem(
             url: item.url || "",
         });
     }
+}
+
+/**
+ * Stringifies the Favorites object back into markdown format.
+ */
+export function stringifyFavorites(favorites: Favorites): string {
+    let md = "";
+    
+    const sections = Object.keys(favorites) as Array<keyof Favorites>;
+    
+    for (const section of sections) {
+        if (!favorites[section] || favorites[section].length === 0) continue;
+        
+        md += `## ${section}\n`;
+        
+        for (const item of favorites[section]) {
+            md += `- title: ${item.title}\n`;
+            if (item.url) md += `  url: ${item.url}\n`;
+            if (item.cover) md += `  cover: ${item.cover}\n`;
+            if (item.subtitle) md += `  subtitle: ${item.subtitle}\n`;
+        }
+        md += "\n";
+    }
+    
+    return md.trim() + "\n";
 }
 
 /**

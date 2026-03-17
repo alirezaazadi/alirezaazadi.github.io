@@ -23,7 +23,7 @@
 - title: دایجست
   url: https://open.spotify.com/show/0APHFnyp6hB6de0sf38Upi?si=993b27e61113419b
   cover: /media/favorites/fav_f9squkf1k.jpg
-## watching
+## movies
 - title: Dark (2017-2020)
   url: https://www.imdb.com/title/tt5753856/
   cover: /media/favorites/fav_xrmahwusy.jpg

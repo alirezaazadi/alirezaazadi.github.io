@@ -29,6 +29,11 @@ export function Header() {
                 </nav>
             </div>
             <div className="header-right">
+                {process.env.NODE_ENV === 'development' && (
+                    <Link href="/admin" className="btn" style={{ fontSize: "12px", padding: "4px 8px", marginRight: "10px" }}>
+                        Admin
+                    </Link>
+                )}
                 <TerminalButton />
                 <ThemeToggle />
             </div>

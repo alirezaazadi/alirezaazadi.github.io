@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Book, Music, Podcast, Youtube, ListMusic, ChevronDown, ChevronRight, X, Newspaper } from "lucide-react";
+import { Book, Music, Podcast, Film, ListMusic, ChevronLeft, ChevronRight, X, Newspaper } from "lucide-react";
 
 interface FavoriteItem {
     title: string;
@@ -14,7 +14,7 @@ interface Favorites {
     books: FavoriteItem[];
     music: FavoriteItem[];
     podcasts: FavoriteItem[];
-    youtube: FavoriteItem[];
+    movies: FavoriteItem[];
     playlists: FavoriteItem[];
     magazines: FavoriteItem[];
 }
@@ -30,7 +30,7 @@ const sectionConfig = [
     { key: "magazines" as const, label: "Magazines", icon: <Newspaper size={14} /> },
     { key: "music" as const, label: "Listening", icon: <Music size={14} /> },
     { key: "podcasts" as const, label: "Podcasts", icon: <Podcast size={14} /> },
-    { key: "youtube" as const, label: "Watching", icon: <Youtube size={14} /> },
+    { key: "movies" as const, label: "Movies", icon: <Film size={14} /> },
     { key: "playlists" as const, label: "Playlists", icon: <ListMusic size={14} /> },
 ];
 
@@ -201,25 +201,24 @@ export function FavoritesSidebar({ favorites }: FavoritesSidebarProps) {
         <>
             {/* Desktop sidebar */}
             <aside className={`favorites-sidebar ${collapsed ? "favorites-collapsed" : ""}`}>
-                <button
-                    className="favorites-toggle"
+                <div 
+                    className="favorites-sidebar-toggle" 
                     onClick={toggle}
                     aria-label={collapsed ? "Expand favorites" : "Collapse favorites"}
-                    aria-expanded={!collapsed}
                 >
-                    {collapsed ? <ChevronRight size={14} /> : <ChevronDown size={14} />}
-                    <span>Favorites</span>
-                </button>
+                    {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
+                </div>
 
                 <div
-                    className="favorites-content"
-                    style={{
-                        maxHeight: !mounted ? "none" : collapsed ? "0px" : "2000px",
-                        overflow: "hidden",
-                        transition: mounted ? "max-height 0.35s ease" : "none",
-                    }}
+                    className="favorites-content-wrapper"
+                    style={{ display: collapsed ? "none" : "block" }}
                 >
-                    <FavoritesContent favorites={favorites} />
+                    <div className="favorites-header">
+                        <span>Favorites</span>
+                    </div>
+                    <div className="favorites-content">
+                        <FavoritesContent favorites={favorites} />
+                    </div>
                 </div>
             </aside>
 

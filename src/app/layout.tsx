@@ -38,7 +38,7 @@ export default async function RootLayout({
 
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
-      <body>
+      <body suppressHydrationWarning>
         <ThemeProvider>
           <ErrorBoundary>
             <div className="layout">

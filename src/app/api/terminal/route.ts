@@ -20,7 +20,7 @@ export async function GET() {
                 date: p.date,
                 categories: p.categories,
             })),
-            favorites: favorites || { books: [], music: [], podcasts: [], youtube: [], playlists: [], magazines: [] },
+            favorites: favorites || { books: [], music: [], podcasts: [], movies: [], playlists: [], magazines: [] },
             about: siteConfig.aboutMe,
         };
 
