@@ -8,6 +8,7 @@ import "highlight.js/styles/github-dark.css";
 import { getDirection } from "@/lib/rtl";
 import type { Components } from "react-markdown";
 import { ExpandableImage } from "@/components/ExpandableImage";
+import { siteConfig } from "../../site.config";
 
 interface MarkdownRendererProps {
     content: string;
@@ -136,7 +137,6 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
         ),
         img: ({ src, alt, style, ...props }) => {
             let finalSrc = (src as string) || "";
-            // Fix local images in markdown (e.g. ./media/foo.png or media/foo.png -> /post/slug/media/foo.png)
             if (slug) {
                 if (finalSrc.startsWith("./")) {
                     const cleanPath = finalSrc.replace(/^\.\//, "");
@@ -146,11 +146,17 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
                 }
             }
 
+            let finalStyle = style;
+            const dw = siteConfig.defaultImageWidth;
+            if (dw > 0 && !style) {
+                finalStyle = { maxWidth: `${dw}px`, height: "auto" };
+            }
+
             return (
                 <ExpandableImage
                     src={finalSrc}
                     alt={alt as string}
-                    style={style}
+                    style={finalStyle}
                     {...props}
                 />
             );

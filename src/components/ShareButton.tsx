@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Share2, Linkedin, Send, Link, Check } from "lucide-react";
+import { siteConfig } from "../../site.config";
 
 interface ShareButtonProps {
     postUrl: string;
@@ -9,6 +10,7 @@ interface ShareButtonProps {
 }
 
 export function ShareButton({ postUrl, postTitle }: ShareButtonProps) {
+    const opts = siteConfig.shareOptions?.length ? siteConfig.shareOptions : ["linkedin", "telegram", "copyLink"];
     const [showMenu, setShowMenu] = useState(false);
     const [copied, setCopied] = useState(false);
     const menuRef = useRef<HTMLDivElement>(null);
@@ -79,18 +81,24 @@ export function ShareButton({ postUrl, postTitle }: ShareButtonProps) {
 
             {showMenu && (
                 <div className="share-menu">
-                    <button className="share-option" onClick={shareToLinkedIn}>
-                        <Linkedin size={14} />
-                        LinkedIn
-                    </button>
-                    <button className="share-option" onClick={shareToTelegram}>
-                        <Send size={14} />
-                        Telegram
-                    </button>
-                    <button className="share-option" onClick={copyLink}>
-                        {copied ? <Check size={14} /> : <Link size={14} />}
-                        {copied ? "Copied!" : "Copy link"}
-                    </button>
+                    {opts.includes("linkedin") && (
+                        <button className="share-option" onClick={shareToLinkedIn}>
+                            <Linkedin size={14} />
+                            LinkedIn
+                        </button>
+                    )}
+                    {opts.includes("telegram") && (
+                        <button className="share-option" onClick={shareToTelegram}>
+                            <Send size={14} />
+                            Telegram
+                        </button>
+                    )}
+                    {opts.includes("copyLink") && (
+                        <button className="share-option" onClick={copyLink}>
+                            {copied ? <Check size={14} /> : <Link size={14} />}
+                            {copied ? "Copied!" : "Copy link"}
+                        </button>
+                    )}
                 </div>
             )}
         </div>

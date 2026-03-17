@@ -34,4 +34,17 @@ Feel free to reach out!
   postsPerPage: 6,
   showFavorites: true,
   showContact: true,
+
+  showTranslation: true,
+  showAdhdMode: true,
+  showArchive: true,
+  showShare: true,
+  showSuggestions: true,
+  showAbout: true,
+  showTerminal: true,
+
+  shareOptions: ["linkedin", "telegram", "copyLink"] as string[],
+  terminalCommands: ["help", "ls", "cd", "cat", "grep", "favs", "whoami", "clear", "exit"] as string[],
+  translateLanguages: ["English", "French", "German", "Spanish", "Arabic", "Turkish", "Persian", "Chinese", "Japanese", "Korean", "Russian", "Portuguese", "Italian", "Dutch", "Hindi"] as string[],
+  defaultImageWidth: 0,
 };

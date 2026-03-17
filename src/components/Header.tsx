@@ -20,12 +20,16 @@ export function Header() {
                     <Link href="/" className={pathname === "/" ? "active" : ""}>
                         posts
                     </Link>
-                    <Link href="/about" className={pathname === "/about" ? "active" : ""}>
-                        about
-                    </Link>
-                    <Link href="/suggestions" className={pathname === "/suggestions" ? "active" : ""}>
-                        suggestions
-                    </Link>
+                    {siteConfig.showAbout && (
+                        <Link href="/about" className={pathname === "/about" ? "active" : ""}>
+                            about
+                        </Link>
+                    )}
+                    {siteConfig.showSuggestions && (
+                        <Link href="/suggestions" className={pathname === "/suggestions" ? "active" : ""}>
+                            suggestions
+                        </Link>
+                    )}
                 </nav>
             </div>
             <div className="header-right">
@@ -34,7 +38,7 @@ export function Header() {
                         Admin
                     </Link>
                 )}
-                <TerminalButton />
+                {siteConfig.showTerminal && <TerminalButton />}
                 <ThemeToggle />
             </div>
         </header>

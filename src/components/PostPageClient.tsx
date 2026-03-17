@@ -122,33 +122,39 @@ export function PostPageClient({ post }: PostPageClientProps) {
                     ))}
                 </div>
                 <div className="post-actions">
-                    <TranslateButton
-                        originalContent={post.body}
-                        slug={post.slug}
-                        onTranslated={(text, provider) => {
-                            setTranslatedContent(text);
-                            setTranslationProvider(provider);
-                        }}
-                        onRevert={() => {
-                            setTranslatedContent(null);
-                            setTranslationProvider(undefined);
-                        }}
-                        isTranslated={isTranslated}
-                        provider={translationProvider}
-                    />
+                    {siteConfig.showTranslation && (
+                        <TranslateButton
+                            originalContent={post.body}
+                            slug={post.slug}
+                            onTranslated={(text, provider) => {
+                                setTranslatedContent(text);
+                                setTranslationProvider(provider);
+                            }}
+                            onRevert={() => {
+                                setTranslatedContent(null);
+                                setTranslationProvider(undefined);
+                            }}
+                            isTranslated={isTranslated}
+                            provider={translationProvider}
+                        />
+                    )}
 
                     {/* Secondary Actions - Inline on Desktop */}
-                    <button
-                        className="btn secondary-action"
-                        onClick={() => setReaderOpen(true)}
-                        title="ADHD-friendly reading mode: clean text-only view with optional Bionic Reading"
-                    >
-                        <BookOpen size={14} />
-                        ADHD mode
-                    </button>
-                    <div className="secondary-action">
-                        <ShareButton postUrl={postUrl} postTitle={post.title} />
-                    </div>
+                    {siteConfig.showAdhdMode && (
+                        <button
+                            className="btn secondary-action"
+                            onClick={() => setReaderOpen(true)}
+                            title="ADHD-friendly reading mode: clean text-only view with optional Bionic Reading"
+                        >
+                            <BookOpen size={14} />
+                            ADHD mode
+                        </button>
+                    )}
+                    {siteConfig.showShare && (
+                        <div className="secondary-action">
+                            <ShareButton postUrl={postUrl} postTitle={post.title} />
+                        </div>
+                    )}
                     {isDev && (
                         <Link
                             href={`/admin/posts/${post.slug}`}
@@ -159,15 +165,17 @@ export function PostPageClient({ post }: PostPageClientProps) {
                             Edit
                         </Link>
                     )}
-                    <button
-                        className="btn secondary-action"
-                        onClick={handleArchive}
-                        disabled={archiving}
-                        title="Archive this post on the Wayback Machine (web.archive.org)"
-                    >
-                        <Landmark size={14} />
-                        {archiving ? "Archiving..." : "Archive"}
-                    </button>
+                    {siteConfig.showArchive && (
+                        <button
+                            className="btn secondary-action"
+                            onClick={handleArchive}
+                            disabled={archiving}
+                            title="Archive this post on the Wayback Machine (web.archive.org)"
+                        >
+                            <Landmark size={14} />
+                            {archiving ? "Archiving..." : "Archive"}
+                        </button>
+                    )}
 
                     {/* Mobile Dropdown for Secondary Actions */}
                     <div className="post-actions-dropdown" ref={dropdownRef}>
@@ -180,17 +188,21 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         </button>
                         {showActionsDropdown && (
                             <div className="post-actions-menu">
-                                <button
-                                    className="btn"
-                                    onClick={() => {
-                                        setReaderOpen(true);
-                                        setShowActionsDropdown(false);
-                                    }}
-                                >
-                                    <BookOpen size={14} />
-                                    ADHD mode
-                                </button>
-                                <ShareButton postUrl={postUrl} postTitle={post.title} />
+                                {siteConfig.showAdhdMode && (
+                                    <button
+                                        className="btn"
+                                        onClick={() => {
+                                            setReaderOpen(true);
+                                            setShowActionsDropdown(false);
+                                        }}
+                                    >
+                                        <BookOpen size={14} />
+                                        ADHD mode
+                                    </button>
+                                )}
+                                {siteConfig.showShare && (
+                                    <ShareButton postUrl={postUrl} postTitle={post.title} />
+                                )}
                                 {isDev && (
                                     <Link
                                         href={`/admin/posts/${post.slug}`}
@@ -201,17 +213,19 @@ export function PostPageClient({ post }: PostPageClientProps) {
                                         Edit
                                     </Link>
                                 )}
-                                <button
-                                    className="btn"
-                                    onClick={() => {
-                                        handleArchive();
-                                        setShowActionsDropdown(false);
-                                    }}
-                                    disabled={archiving}
-                                >
-                                    <Landmark size={14} />
-                                    Archive
-                                </button>
+                                {siteConfig.showArchive && (
+                                    <button
+                                        className="btn"
+                                        onClick={() => {
+                                            handleArchive();
+                                            setShowActionsDropdown(false);
+                                        }}
+                                        disabled={archiving}
+                                    >
+                                        <Landmark size={14} />
+                                        Archive
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>

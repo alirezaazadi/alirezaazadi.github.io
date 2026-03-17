@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import { siteConfig } from "../../site.config";
 
 interface PostEntry {
     slug: string;
@@ -105,6 +106,10 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
         return [];
     }, [cwd, fsData]);
 
+    const enabledCmds = siteConfig.terminalCommands?.length
+        ? siteConfig.terminalCommands
+        : ["help", "ls", "cd", "cat", "grep", "favs", "whoami", "clear", "exit"];
+
     const handleCommand = useCallback(
         (raw: string) => {
             const trimmed = raw.trim();
@@ -116,19 +121,31 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
 
             const [cmd, ...args] = trimmed.split(/\s+/);
             const arg = args.join(" ");
+            const cmdLower = cmd.toLowerCase();
 
-            switch (cmd.toLowerCase()) {
+            if (cmdLower !== "help" && !enabledCmds.includes(cmdLower)) {
+                setOutput((prev) => [
+                    ...prev,
+                    { text: `Command disabled: ${cmd}. Type 'help' for available commands.`, type: "error" },
+                ]);
+                return;
+            }
+
+            switch (cmdLower) {
                 case "help": {
+                    const allHelp: Record<string, string> = {
+                        ls: "  ls             List directory contents",
+                        cd: "  cd <dir>       Change directory (cd .., cd posts)",
+                        cat: "  cat <file>     Open a post or show file contents",
+                        grep: "  grep <term>    Search posts by keyword",
+                        favs: "  favs [section] List favorites (all or by section)",
+                        whoami: "  whoami         Display user info",
+                        clear: "  clear          Clear terminal",
+                        exit: "  exit           Close terminal",
+                    };
                     const lines = [
                         "Available commands:",
-                        "  ls             List directory contents",
-                        "  cd <dir>       Change directory (cd .., cd posts)",
-                        "  cat <file>     Open a post or show file contents",
-                        "  grep <term>    Search posts by keyword",
-                        "  favs [section] List favorites (all or by section)",
-                        "  whoami         Display user info",
-                        "  clear          Clear terminal",
-                        "  exit           Close terminal",
+                        ...enabledCmds.filter(c => c !== "help").map(c => allHelp[c]).filter(Boolean),
                         "",
                         "Tab to autocomplete. ↑/↓ for command history.",
                     ];
@@ -329,7 +346,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                 }
             }
         },
-        [cwd, fsData, getDirEntries, onClose, router]
+        [cwd, fsData, getDirEntries, onClose, router, enabledCmds]
     );
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {

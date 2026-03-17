@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useMemo } from "react";
 import { Languages, ChevronDown } from "lucide-react";
+import { siteConfig } from "../../site.config";
 
 interface TranslateButtonProps {
     originalContent: string;
@@ -12,7 +13,7 @@ interface TranslateButtonProps {
     provider?: string;
 }
 
-const LANGUAGES = [
+const ALL_LANGUAGES = [
     { code: "English", label: "English" },
     { code: "French", label: "Français" },
     { code: "German", label: "Deutsch" },
@@ -80,6 +81,12 @@ export function TranslateButton({
     isTranslated,
     provider
 }: TranslateButtonProps) {
+    const LANGUAGES = useMemo(() => {
+        const allowed = siteConfig.translateLanguages;
+        if (!allowed || allowed.length === 0) return ALL_LANGUAGES;
+        return ALL_LANGUAGES.filter(l => allowed.includes(l.code));
+    }, []);
+
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [showLangPicker, setShowLangPicker] = useState(false);

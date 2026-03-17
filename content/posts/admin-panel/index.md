@@ -9,6 +9,7 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
 
 
 
+
 سلام. 
 الان که این پست رو می‌نویسم ساعت ۱:۴۲ صبحه. امروز خیلی نتونستم کار کنم و وقت‌هایی که در طی روز درست کار نمی‌کنم، شب‌ها تا صبح بیدار می‌مونم تا که کم‌کاری رو یک‌جوری جبران کرده باشم. 
 
@@ -57,16 +58,20 @@ keywords: ["blog admin panel", "ai development tools", "blog content management"
 
 ![New Admin Button in the Topbar](/media/posts/admin-panel/img_1773712226540_byx4m.png)
 
-
-![Site Settings](/media/posts/admin-panel/img_1773749734344_jg11c.png)
-
 ![Admin Panel Sidebar](/media/posts/admin-panel/img_1773749734391_3c3bc.png)
 
 ![Deploy Window](/media/posts/admin-panel/img_1773750892455_lkumh.png)
 
-
 ![Interactive Deployment](/media/posts/admin-panel/img_1773751148110_gzxam.png)
 
 ![Interactive Deployment[link](url)](/media/posts/admin-panel/img_1773751148188_kk6mp.png)
+
+
+![Site Settings](/media/posts/admin-panel/img_1773752659728_3j6ku.png)
+
+![Site Settings](/media/posts/admin-panel/img_1773752659742_8vivj.png)
+
+![Site Settings](/media/posts/admin-panel/img_1773752659763_vozur.png)
+
 
 

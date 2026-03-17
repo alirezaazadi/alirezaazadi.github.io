@@ -177,10 +177,7 @@ export async function POST(req: Request) {
 
                 checkCancelled();
                 send({ step: "remove-dangling", status: "running" });
-                await spawnInteractive(
-                    "node", ["scripts/remove-dangling-images.mjs"],
-                    cwd, sessionId, send, "remove-dangling",
-                );
+                await execTracked("node scripts/remove-dangling-images.mjs --yes", cwd, sessionId);
                 send({ step: "remove-dangling", status: "done" });
 
                 checkCancelled();
