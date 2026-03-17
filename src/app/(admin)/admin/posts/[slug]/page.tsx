@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Landmark } from "lucide-react";
+import { ArrowLeft, Save, Sparkles, Image as ImageIcon } from "lucide-react";
 import { RichEditor } from "@/components/RichEditor";
 
 interface PostEditorProps {
@@ -19,6 +19,7 @@ export default function PostEditor({ params }: PostEditorProps) {
     const [loading, setLoading] = useState(!isNew);
     const [saving, setSaving] = useState(false);
     const [autoSaving, setAutoSaving] = useState(false);
+    const [lastSaved, setLastSaved] = useState<string>("");
     
     const [slug, setSlug] = useState("");
     const [title, setTitle] = useState("");
@@ -51,6 +52,20 @@ export default function PostEditor({ params }: PostEditorProps) {
                     setImage(data.image || "");
                     setContent(data.content || "");
                     setHidden(data.hidden || false);
+                    
+                    // Initialize last saved state
+                    const initialState = JSON.stringify({
+                        title: data.title || "",
+                        date: data.date || "",
+                        summary: data.summary || "",
+                        categories: (data.categories || []).join(", "),
+                        keywords: (data.keywords || []).join(", "),
+                        image: data.image || "",
+                        content: data.content || "",
+                        hidden: data.hidden || false
+                    });
+                    setLastSaved(initialState);
+                    
                     setLoading(false);
                 })
                 .catch(e => {
@@ -71,6 +86,23 @@ export default function PostEditor({ params }: PostEditorProps) {
 
         if (!isAutoSave) setSaving(true);
         else setAutoSaving(true);
+
+        const currentData = {
+            title,
+            date,
+            summary,
+            categories: categories.trim(),
+            keywords: keywords.trim(),
+            image,
+            content,
+            hidden
+        };
+        const currentDataStr = JSON.stringify(currentData);
+
+        if (isAutoSave && currentDataStr === lastSaved) {
+            setAutoSaving(false);
+            return;
+        }
         
         const payload = {
             slug: currentSlug,
@@ -96,11 +128,14 @@ export default function PostEditor({ params }: PostEditorProps) {
             });
             const data = await res.json();
             
-            if (res.ok && !isAutoSave) {
-                if (isNew) {
-                    router.push(`/admin/posts/${data.slug}`);
-                } else {
-                    alert("Saved successfully.");
+            if (res.ok) {
+                setLastSaved(currentDataStr);
+                if (!isAutoSave) {
+                    if (isNew) {
+                        router.push(`/admin/posts/${data.slug}`);
+                    } else {
+                        alert("Saved successfully.");
+                    }
                 }
             } else if (!res.ok && !isAutoSave) {
                 alert("Error: " + data.error);
@@ -183,7 +218,6 @@ export default function PostEditor({ params }: PostEditorProps) {
                 <h1>{isNew ? "New Post" : "Edit Post"}</h1>
                 <div style={{ display: "flex", gap: 15, alignItems: "center" }}>
                     <label style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontSize: 13, color: "var(--fg-secondary)" }} title="When you Publish this site, the current post URL will be securely archived on web.archive.org">
-                        <Landmark size={14} />
                         <input type="checkbox" checked={archive} onChange={e => setArchive(e.target.checked)} />
                         Archive on Publish
                     </label>
@@ -192,10 +226,12 @@ export default function PostEditor({ params }: PostEditorProps) {
                         Hidden (Draft)
                     </label>
                     <Link href="/admin/posts" className="btn">Cancel</Link>
-                    <button type="submit" className="btn" disabled={saving}>
-                        {saving ? "Saving..." : "Save Post"}
-                    </button>
-                    {autoSaving && <span style={{ fontSize: 12, opacity: 0.5 }}>Saving draft...</span>}
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 140, justifyContent: "flex-end" }}>
+                        {autoSaving && <span style={{ fontSize: 11, opacity: 0.5, animation: "pulse 2s infinite" }}>Saving...</span>}
+                        <button type="submit" className="btn" disabled={saving} style={{ minWidth: 100 }}>
+                            {saving ? "Saving..." : "Save Post"}
+                        </button>
+                    </div>
                 </div>
             </div>
 

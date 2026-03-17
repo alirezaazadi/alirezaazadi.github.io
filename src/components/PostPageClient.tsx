@@ -8,7 +8,7 @@ import { InlineTranslate } from "@/components/InlineTranslate";
 import { ReplyButton } from "@/components/ReplyButton";
 import { ReaderMode } from "@/components/ReaderMode";
 import { ShareButton } from "@/components/ShareButton";
-import { ArrowLeft, BookOpen } from "lucide-react";
+import { ArrowLeft, BookOpen, Pencil, Landmark } from "lucide-react";
 import Link from "next/link";
 import type { Post } from "@/lib/post-utils";
 import { isRTL } from "@/lib/rtl";
@@ -23,6 +23,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
     const [translatedContent, setTranslatedContent] = useState<string | null>(null);
     const [translationProvider, setTranslationProvider] = useState<string | undefined>(undefined);
     const [readerOpen, setReaderOpen] = useState(false);
+    const [archiving, setArchiving] = useState(false);
     const router = useRouter();
     const isTranslated = translatedContent !== null;
     const displayContent = translatedContent || post.body;
@@ -40,6 +41,26 @@ export function PostPageClient({ post }: PostPageClientProps) {
             }
         }
         router.push("/");
+    };
+
+    const handleArchive = async () => {
+        setArchiving(true);
+        try {
+            const res = await fetch("/api/admin/archive", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ slug: post.slug })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                alert("Successfully sent to Web Archive!");
+            } else {
+                alert("Archive failed: " + (data.error || "Unknown error"));
+            }
+        } catch (e) {
+            alert("Archive request failed.");
+        }
+        setArchiving(false);
     };
 
     return (
@@ -93,6 +114,27 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         ADHD mode
                     </button>
                     <ShareButton postUrl={postUrl} postTitle={post.title} />
+                    {process.env.NODE_ENV === "development" && (
+                        <Link
+                            href={`/admin/posts/${post.slug}`}
+                            className="btn"
+                            title="Edit this post (only visible in dev mode)"
+                        >
+                            <Pencil size={14} />
+                            Edit
+                        </Link>
+                    )}
+                    {process.env.NODE_ENV === "development" && (
+                        <button
+                            className="btn"
+                            onClick={handleArchive}
+                            disabled={archiving}
+                            title="Manually trigger Web Archive crawler (dev mode only)"
+                        >
+                            <Landmark size={14} />
+                            {archiving ? "Archiving..." : "Archive"}
+                        </button>
+                    )}
                 </div>
             </header>
 

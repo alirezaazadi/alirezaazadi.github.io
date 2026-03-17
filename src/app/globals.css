@@ -149,9 +149,10 @@ img {
   display: flex;
   flex: 1;
   width: 100%;
-  max-width: calc(var(--max-width-wide) + 260px);
+  max-width: var(--max-width-wide);
   margin: 0 auto;
   padding-top: var(--header-height);
+  /* Sidebars are fixed, so they don't affect this centered flow */
 }
 
 .main-content {
@@ -168,16 +169,19 @@ img {
 
 .favorites-sidebar {
   width: 220px;
-  flex-shrink: 0;
-  position: sticky;
+  position: fixed;
+  left: 0;
   top: var(--header-height);
-  transition: width var(--transition-normal);
+  bottom: 0;
+  transition: width var(--transition-normal), transform var(--transition-normal);
   z-index: 40;
+  background: var(--bg-primary);
+  border-right: 1px solid var(--border-color);
 }
 
 .favorites-content-wrapper {
   padding: 32px 16px 64px 24px;
-  max-height: calc(100vh - var(--header-height));
+  height: 100%;
   overflow-y: auto;
   overflow-x: hidden;
   scrollbar-width: thin;
@@ -202,11 +206,13 @@ img {
 
 .favorites-collapsed {
   width: 0;
+  transform: translateX(-100%);
+  border-right: none;
 }
 
 .favorites-sidebar-toggle {
   position: absolute;
-  right: -28px;
+  left: 100%;
   top: calc(50vh - var(--header-height));
   transform: translateY(-50%);
   width: 28px;
@@ -226,12 +232,7 @@ img {
   transition: right var(--transition-normal), left var(--transition-normal);
 }
 
-.favorites-collapsed .favorites-sidebar-toggle {
-  position: fixed;
-  left: 0;
-  right: auto;
-  top: 50%;
-}
+/* .favorites-collapsed .favorites-sidebar-toggle inherits position from .favorites-sidebar-toggle */
 
 .favorites-sidebar-toggle:hover {
   color: var(--accent);
@@ -1485,8 +1486,8 @@ img {
 
 /* ---- Responsive ---- */
 @media (max-width: 1024px) {
-  .favorites-sidebar {
-    display: none;
+  .layout-body {
+    padding-left: 0;
   }
 
   .favorites-mobile-btn {
