@@ -1,10 +1,12 @@
 ---
 title: "پنل ادمین"
-summary: "تلاش کردم برای این که بتونم راحت‌تر محتوای بلاگ رو مدیریت کنم و راحت‌تر پست‌هام رو بنویسم و از همه مهم‌تر، بهونه‌ی کم‌تری دست خودم بدم برای این که این‌جا رو سریع‌تر آپدیت نکنم، تصمیم گرفتم که یک پنل ادمین برای بلاگ آماده کنم. پنلی برای مدیریت محتوا."
+summary: " برای این که بتونم راحت‌تر محتوای بلاگ رو مدیریت کنم و راحت‌تر پست‌هام رو بنویسم و از همه مهم‌تر، بهونه‌ی کم‌تری دست خودم بدم برای این که این‌جا رو سریع‌تر آپدیت نکنم، تصمیم گرفتم که یک پنل ادمین برای بلاگ آماده کنم. پنلی برای مدیریت محتوا."
 date: "2026-03-17"
 categories: ["Blog"]
 keywords: ["blog admin panel", "ai development tools", "blog content management", "blog automation scripts", "github blog deployment", "local blog editor", "hassle-free blogging", "static site content management", "developer workflow automation", "blogging productivity"]
+hidden: true
 ---
+
 
 
 
