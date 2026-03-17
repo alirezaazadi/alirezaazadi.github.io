@@ -61,13 +61,28 @@ export function PostPageClient({ post }: PostPageClientProps) {
                 body: JSON.stringify({ slug: post.slug })
             });
             const data = await res.json();
+            
             if (res.ok) {
-                alert("Successfully sent to Web Archive!");
+                if (data.alreadyArchived) {
+                    alert("This page was archived very recently. You can find it on the Wayback Machine!");
+                } else if (data.triggered) {
+                    alert("The archival has been triggered and is running in the background. It might take a minute to show up on web.archive.org.");
+                } else {
+                    alert("Successfully archived on the Wayback Machine!");
+                }
             } else {
-                alert("Archive failed: " + (data.error || "Unknown error"));
+                const manualUrl = `https://web.archive.org/save/${postUrl}`;
+                const errorMessage = data.error || "Unknown error";
+                
+                if (confirm(`Archive failed: ${errorMessage}\n\nWould you like to try archiving manually on web.archive.org?`)) {
+                    window.open(manualUrl, "_blank");
+                }
             }
         } catch (e) {
-            alert("Archive request failed.");
+            const manualUrl = `https://web.archive.org/save/${postUrl}`;
+            if (confirm("Archive request failed due to a connection issue.\n\nWould you like to try archiving manually on web.archive.org?")) {
+                window.open(manualUrl, "_blank");
+            }
         }
         setArchiving(false);
     };
