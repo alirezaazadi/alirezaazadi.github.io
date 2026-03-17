@@ -529,6 +529,18 @@ img {
   transform: translateY(-50%) translateX(calc(100% + 24px));
 }
 
+.contact-sidebar-menu {
+  display: contents;
+}
+
+.contact-icon-desktop {
+  display: flex;
+}
+
+.contact-icon-mobile {
+  display: none;
+}
+
 .contact-sidebar-toggle {
   position: absolute;
   left: -28px;
@@ -1494,19 +1506,70 @@ img {
     color: var(--accent);
   }
 
+  .contact-icon-desktop { display: none; }
+  .contact-icon-mobile { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+
   .contact-sidebar {
     position: fixed;
-    left: 50%;
-    transform: translateX(-50%);
-    right: auto;
-    top: auto;
+    right: 24px;
     bottom: 24px;
-    flex-direction: row;
-    border-radius: 9999px;
-    padding: 6px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    left: auto;
+    top: auto;
+    transform: none;
+    flex-direction: column-reverse;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    padding: 0;
+    align-items: center;
+    gap: 16px;
+    border-radius: 0;
+  }
+
+  .contact-sidebar-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
+    border-radius: 30px;
+    padding: 12px 8px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    transform-origin: bottom center;
+    visibility: visible;
+  }
+
+  .contact-sidebar.collapsed .contact-sidebar-menu {
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(20px) scale(0.9);
+    pointer-events: none;
+  }
+
+  .contact-sidebar.collapsed {
+    transform: none;
+  }
+
+  .contact-sidebar-toggle {
+    position: relative;
+    left: auto;
+    top: auto;
+    transform: none;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--bg-card);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    z-index: 60;
+  }
+
+  .contact-sidebar-toggle svg {
+    transform: none;
   }
 
   .contact-sidebar a .tooltip {

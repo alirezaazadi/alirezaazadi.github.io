@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getPostBySlug } from "@/lib/posts";
 import fs from "fs/promises";
 import path from "path";
+import { siteConfig } from "../../../../../../site.config";
 
 export async function GET(req: Request, context: any) {
     const params = await context.params;
@@ -18,7 +19,7 @@ export async function PUT(req: Request, context: any) {
      const params = await context.params;
      const slug = params.slug;
     try {
-        const { title, summary, date, categories, content, image } = await req.json();
+        const { title, summary, date, categories, keywords, content, image, archive } = await req.json();
 
         if (!title || !date || !content) {
             return NextResponse.json({ error: "Missing required fields" }, { status: 400 });
@@ -28,6 +29,7 @@ export async function PUT(req: Request, context: any) {
         const filePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
 
         const cats = categories ? `[${categories.map((c: string) => `"${c}"`).join(", ")}]` : "[]";
+        const kw = keywords ? `[${keywords.map((k: string) => `"${k}"`).join(", ")}]` : "[]";
         
         let fileContent = `---\n`;
         fileContent += `title: "${title.replace(/"/g, '\\"')}"\n`;
@@ -36,6 +38,9 @@ export async function PUT(req: Request, context: any) {
         if (categories && categories.length > 0) {
             fileContent += `categories: ${cats}\n`;
         }
+        if (keywords && keywords.length > 0) {
+            fileContent += `keywords: ${kw}\n`;
+        }
         if (image) {
             fileContent += `image: "${image}"\n`;
         }
@@ -43,6 +48,21 @@ export async function PUT(req: Request, context: any) {
         fileContent += content;
 
         await fs.writeFile(filePath, fileContent, "utf-8");
+
+        if (archive) {
+            const queuePath = path.join(process.cwd(), "content", ".archive-queue.json");
+            let queue: string[] = [];
+            try {
+                const q = await fs.readFile(queuePath, "utf-8");
+                queue = JSON.parse(q);
+            } catch (e) {
+                // Ignore if file doesn't exist
+            }
+            if (!queue.includes(safeSlug)) {
+                queue.push(safeSlug);
+                await fs.writeFile(queuePath, JSON.stringify(queue), "utf-8");
+            }
+        }
 
         return NextResponse.json({ success: true });
     } catch (e: any) {

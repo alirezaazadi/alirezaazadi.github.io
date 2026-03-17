@@ -24,6 +24,7 @@ export async function generateMetadata({
     return {
         title: post.title,
         description,
+        keywords: post.keywords?.length ? post.keywords.join(", ") : undefined,
         openGraph: {
             title: post.title,
             description,

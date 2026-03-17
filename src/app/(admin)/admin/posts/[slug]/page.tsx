@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { MarkdownRenderer } from "@/components/MarkdownRenderer";
-import { Bold, Italic, List, Heading, Quote, Code, Link2 } from "lucide-react";
+import { Bold, Italic, List, Heading, Quote, Code, Link2, Landmark } from "lucide-react";
 
 interface PostEditorProps {
     params: Promise<{ slug: string }>;
@@ -24,8 +24,11 @@ export default function PostEditor({ params }: PostEditorProps) {
     const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
     const [summary, setSummary] = useState("");
     const [categories, setCategories] = useState("");
+    const [keywords, setKeywords] = useState("");
     const [image, setImage] = useState("");
     const [content, setContent] = useState("");
+    const [generatingTags, setGeneratingTags] = useState(false);
+    const [archive, setArchive] = useState(false);
     const [viewMode, setViewMode] = useState<"write" | "preview">("write");
 
     useEffect(() => {
@@ -43,6 +46,7 @@ export default function PostEditor({ params }: PostEditorProps) {
                     setDate(data.date || "");
                     setSummary(data.summary || "");
                     setCategories((data.categories || []).join(", "));
+                    setKeywords((data.keywords || []).join(", "));
                     setImage(data.image || "");
                     setContent(data.content || "");
                     setLoading(false);
@@ -64,8 +68,10 @@ export default function PostEditor({ params }: PostEditorProps) {
             date,
             summary,
             categories: categories.split(",").map(c => c.trim()).filter(Boolean),
+            keywords: keywords.split(",").map(k => k.trim()).filter(Boolean),
             image,
-            content
+            content,
+            archive
         };
 
         const method = isNew ? "POST" : "PUT";
@@ -147,6 +153,30 @@ export default function PostEditor({ params }: PostEditorProps) {
         });
     }
 
+    async function generateAITags() {
+        if (!content.trim() && !title.trim()) {
+            alert("Please write some content or a title first so AI can generate tags.");
+            return;
+        }
+        setGeneratingTags(true);
+        try {
+            const res = await fetch("/api/admin/ai/tags", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, content })
+            });
+            const data = await res.json();
+            if (res.ok && data.tags) {
+                setKeywords(data.tags.join(", "));
+            } else {
+                alert("Failed to generate tags: " + (data.error || "Unknown error"));
+            }
+        } catch (e: any) {
+            alert("Error calling AI: " + e.message);
+        }
+        setGeneratingTags(false);
+    }
+
     function insertFormatting(prefix: string, suffix: string, defaultText = "text") {
         const textarea = document.getElementById("md-editor") as HTMLTextAreaElement;
         if (!textarea) return;
@@ -182,7 +212,12 @@ export default function PostEditor({ params }: PostEditorProps) {
         <form onSubmit={handleSave} style={{ maxWidth: 800, margin: "0 auto" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                 <h1>{isNew ? "New Post" : "Edit Post"}</h1>
-                <div style={{ display: "flex", gap: 10 }}>
+                <div style={{ display: "flex", gap: 15, alignItems: "center" }}>
+                    <label style={{ display: "flex", alignItems: "center", gap: 5, cursor: "pointer", fontSize: 13, color: "var(--fg-secondary)" }} title="When you Publish this site, the current post URL will be securely archived on web.archive.org">
+                        <Landmark size={14} />
+                        <input type="checkbox" checked={archive} onChange={e => setArchive(e.target.checked)} />
+                        Archive on Publish
+                    </label>
                     <Link href="/admin/posts" className="btn">Cancel</Link>
                     <button type="submit" className="btn" disabled={saving}>
                         {saving ? "Saving..." : "Save Post"}
@@ -207,6 +242,14 @@ export default function PostEditor({ params }: PostEditorProps) {
 
                     <label style={{ display: "block", marginBottom: 5 }}>Categories (comma separated)</label>
                     <input style={inputStyle} value={categories} onChange={e => setCategories(e.target.value)} placeholder="tech, personal" />
+                    
+                    <label style={{ display: "block", marginBottom: 5 }}>Hidden SEO Keywords</label>
+                    <div style={{ display: "flex", gap: 10, marginBottom: 15 }}>
+                        <input style={{ ...inputStyle, marginBottom: 0 }} value={keywords} onChange={e => setKeywords(e.target.value)} placeholder="react, nextjs, blog" />
+                        <button type="button" className="btn" onClick={generateAITags} disabled={generatingTags} title="Generate SEO Tags automatically using Gemini">
+                            {generatingTags ? "..." : "AI ✨"}
+                        </button>
+                    </div>
                 </div>
                 
                 <div style={{ flex: 1 }}>
@@ -260,14 +303,15 @@ export default function PostEditor({ params }: PostEditorProps) {
                 {viewMode === "write" ? (
                     <textarea 
                         id="md-editor"
-                        style={{ width: "100%", minHeight: 600, padding: 15, fontFamily: "monospace", fontSize: 14, border: "none", background: "transparent", color: "var(--fg-primary)", outline: "none", resize: "vertical" }} 
+                        style={{ width: "100%", minHeight: 600, padding: 15, fontSize: 14, border: "none", background: "transparent", color: "var(--fg-primary)", outline: "none", resize: "vertical" }} 
                         required 
                         value={content} 
                         onChange={e => setContent(e.target.value)} 
                         placeholder="Write your markdown here..."
+                        dir="auto"
                     />
                 ) : (
-                    <div style={{ minHeight: 600, padding: 25, background: "var(--bg-primary)" }}>
+                    <div style={{ minHeight: 600, padding: 25, background: "var(--bg-primary)" }} dir="auto">
                         <MarkdownRenderer content={content} slug={slug || slugParam} />
                     </div>
                 )}

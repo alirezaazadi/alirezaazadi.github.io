@@ -23,6 +23,7 @@ function parsePost(filename: string, raw: string): Post {
         categories: (data.categories || []).map((c: string) =>
             c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()
         ),
+        keywords: data.keywords || [],
         image: data.image || "",
         body: content,
         readingTime: calculateReadingTime(content),
@@ -43,6 +44,7 @@ function parsePostMeta(filename: string, raw: string): PostMeta {
         categories: (data.categories || []).map((c: string) =>
             c.charAt(0).toUpperCase() + c.slice(1).toLowerCase()
         ),
+        keywords: data.keywords || [],
         image: data.image || "",
         readingTime: calculateReadingTime(content),
         hidden: data.hidden || false,

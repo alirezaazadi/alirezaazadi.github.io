@@ -9,6 +9,7 @@ export interface Post {
     summary: string;
     date: string;
     categories: string[];
+    keywords?: string[];
     image: string;
     readingTime: string; // e.g. "5 min read"
     body: string;
@@ -21,6 +22,7 @@ export interface PostMeta {
     summary: string;
     date: string;
     categories: string[];
+    keywords?: string[];
     image: string;
     readingTime: string;
     hidden?: boolean;

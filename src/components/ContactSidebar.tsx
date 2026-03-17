@@ -14,7 +14,8 @@ import {
     User,
     Star,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    X
 } from "lucide-react";
 
 const iconMap: Record<string, React.ReactNode> = {
@@ -62,14 +63,20 @@ export function ContactSidebar() {
                 onClick={() => setCollapsed(!collapsed)}
                 aria-label={collapsed ? "Expand contact sidebar" : "Collapse contact sidebar"}
             >
-                {collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                <div className="contact-icon-desktop">
+                    {collapsed ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
+                </div>
+                <div className="contact-icon-mobile">
+                    {collapsed ? <User size={20} /> : <X size={20} />}
+                </div>
             </div>
 
-            {/* About Me link */}
-            <Link href="/about" aria-label="About me">
-                <User size={16} />
-                <span className="tooltip">about me</span>
-            </Link>
+            <div className="contact-sidebar-menu">
+                {/* About Me link */}
+                <Link href="/about" aria-label="About me">
+                    <User size={16} />
+                    <span className="tooltip">about me</span>
+                </Link>
 
             <div className="sidebar-divider" />
 
@@ -86,14 +93,15 @@ export function ContactSidebar() {
                 </a>
             ))}
 
-            {/* Favorites button — visible only on mobile via CSS */}
-            <button
-                className="favorites-mobile-btn"
-                onClick={openFavorites}
-                aria-label="Show favorites"
-            >
-                <Star size={16} fill="currentColor" />
-            </button>
+                {/* Favorites button — visible only on mobile via CSS */}
+                <button
+                    className="favorites-mobile-btn"
+                    onClick={openFavorites}
+                    aria-label="Show favorites"
+                >
+                    <Star size={16} fill="currentColor" />
+                </button>
+            </div>
         </aside>
     );
 }
