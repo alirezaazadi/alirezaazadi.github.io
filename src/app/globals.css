@@ -1194,6 +1194,17 @@ img {
   color: var(--accent) !important;
 }
 
+/* ---- Admin Font Inheritance ----
+   Browsers do not inherit font-family into form elements by default.
+   Force Vazirmatn (applied on the .admin-layout wrapper via Next.js font class)
+   to cascade into all inputs, textareas, selects, and buttons. */
+.admin-layout input,
+.admin-layout textarea,
+.admin-layout select,
+.admin-layout button {
+  font-family: inherit;
+}
+
 /* ---- Post Actions Dropdown ---- */
 .post-actions-dropdown {
   position: relative;
