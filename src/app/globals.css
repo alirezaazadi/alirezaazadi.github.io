@@ -516,23 +516,38 @@ img {
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  z-index: 50;
   background: var(--bg-card);
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 8px;
   box-shadow: var(--shadow-md);
-  transition: transform var(--transition-normal);
+  z-index: 50;
+  width: 48px;
+  transition: border-radius 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
 }
 
 .contact-sidebar.collapsed {
-  transform: translateY(-50%) translateX(calc(100% + 24px));
-  /* overflow hidden removed if present to allow toggle visibility */
+  border-radius: 24px;
 }
 
-.contact-sidebar-menu {
-  display: contents;
+.contact-sidebar-content-wrapper {
+  max-height: 400px;
+  opacity: 1;
+  transition: max-height 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), margin 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-sidebar.collapsed .contact-sidebar-content-wrapper {
+  max-height: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.contact-sidebar-content {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
 }
 
 .contact-icon-desktop {
@@ -544,33 +559,51 @@ img {
 }
 
 .contact-sidebar-toggle {
-  position: absolute;
-  left: -24px;
-  top: 12px;
-  width: 24px;
-  height: 48px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-right: none;
-  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  position: relative;
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  background: none;
+  border: none;
+  border-radius: var(--radius-sm);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   color: var(--text-muted);
   z-index: 60;
-  transition: all var(--transition-normal);
-}
-
-.contact-sidebar.collapsed .contact-sidebar-toggle {
-  left: -24px;
-  background: var(--bg-primary);
-  border-right: 1px solid var(--border-color);
-  border-radius: var(--radius-sm) 0 0 var(--radius-sm);
+  transition: all var(--transition-fast);
 }
 
 .contact-sidebar-toggle:hover {
   color: var(--accent);
+  background: var(--accent-soft);
+}
+
+/* Smooth icon crossfade */
+.contact-sidebar-toggle svg {
+  position: absolute;
+  transition: opacity 0.4s cubic-bezier(0.16, 1, 0.3, 1), transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.contact-sidebar-toggle .icon-user {
+  opacity: 0;
+  transform: scale(0.5) rotate(-90deg);
+}
+
+.contact-sidebar.collapsed .contact-sidebar-toggle .icon-user {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.contact-sidebar-toggle .icon-x {
+  opacity: 1;
+  transform: scale(1) rotate(0deg);
+}
+
+.contact-sidebar.collapsed .contact-sidebar-toggle .icon-x {
+  opacity: 0;
+  transform: scale(0.5) rotate(90deg);
 }
 
 .contact-sidebar a {
@@ -1579,61 +1612,47 @@ img {
 
   .contact-sidebar {
     position: fixed;
-    right: 24px;
+    right: 12px;
     bottom: 24px;
     left: auto;
     top: auto;
     transform: none;
     flex-direction: column-reverse;
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    padding: 0;
-    align-items: center;
-    gap: 16px;
-    border-radius: 0;
-  }
-
-  .contact-sidebar-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
     background: var(--bg-card);
     border: 1px solid var(--border-color);
-    border-radius: 30px;
-    padding: 12px 8px;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.3s;
-    opacity: 1;
-    transform: translateY(0) scale(1);
-    transform-origin: bottom center;
-    visibility: visible;
-  }
-
-  .contact-sidebar.collapsed .contact-sidebar-menu {
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(20px) scale(0.9);
-    pointer-events: none;
+    padding: 8px;
+    align-items: center;
+    gap: 0;
+    border-radius: 30px;
   }
 
   .contact-sidebar.collapsed {
+    border-radius: 24px;
     transform: none;
   }
 
   .contact-sidebar-toggle {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: none;
+    color: var(--text-primary);
+    border: none;
+    box-shadow: none;
+    z-index: 60;
     position: relative;
     left: auto;
     top: auto;
     transform: none;
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    background: var(--bg-card);
-    color: var(--text-primary);
-    border: 1px solid var(--border-color);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    z-index: 60;
+  }
+
+  .contact-sidebar.collapsed .contact-sidebar-toggle {
+    width: 32px;
+    height: 32px;
+    background: none;
+    border: none;
+    box-shadow: none;
   }
 
   .contact-sidebar-toggle svg {
