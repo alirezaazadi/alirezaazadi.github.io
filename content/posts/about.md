@@ -21,6 +21,10 @@ summary: About Alireza Azadi - Software Engineer and Writer
 
 مرسی که تا اینجا خوندین. 
 
+### ارتباط امن (Secure Communication)
+برای ارتباط امن، می‌توانید از کلید عمومی GPG من استفاده کنید. تمامی پست‌های این بلاگ نیز (در گیت‌هاب) با این کلید امضا می‌شوند.
+- **دریافت فایل کلید عمومی:** [publickey.asc](/keys/publickey.asc)
+- **اثر انگشت (Fingerprint):** `FF35 BF3B 1855 267A 7827  B879 1665 7D2D 34A0 E9E1`
 
 ارادتمند،
 علیرضا آزادی
