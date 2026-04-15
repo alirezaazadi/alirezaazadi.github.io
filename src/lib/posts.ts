@@ -73,7 +73,7 @@ export async function getAllPosts(): Promise<Post[]> {
  * Fetches all post metadata (without body) — used for listing/pagination.
  * Much lighter than getAllPosts since we still parse frontmatter but skip body content.
  */
-export async function getAllPostsMeta(): Promise<PostMeta[]> {
+export async function getAllPostsMeta(includeHidden = false): Promise<PostMeta[]> {
     const files = await fetchPostsList();
 
     const metas = await Promise.all(
@@ -84,7 +84,7 @@ export async function getAllPostsMeta(): Promise<PostMeta[]> {
     );
 
     return metas
-        .filter((meta) => !meta.hidden)
+        .filter((meta) => includeHidden || !meta.hidden)
         .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 

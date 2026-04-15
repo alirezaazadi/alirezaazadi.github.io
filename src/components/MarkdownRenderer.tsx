@@ -8,6 +8,7 @@ import "highlight.js/styles/github-dark.css";
 import { getDirection } from "@/lib/rtl";
 import type { Components } from "react-markdown";
 import { ExpandableImage } from "@/components/ExpandableImage";
+import { MermaidChart } from "@/components/MermaidChart";
 import { siteConfig } from "../../site.config";
 
 interface MarkdownRendererProps {
@@ -135,6 +136,25 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
                 {children}
             </a>
         ),
+        code: ({ className, children, ...props }) => {
+            if (className?.includes("language-mermaid")) {
+                // Extract plain text from children (may be nested nodes after rehype)
+                const extractText = (node: unknown): string => {
+                    if (typeof node === "string") return node;
+                    if (Array.isArray(node)) return node.map(extractText).join("");
+                    if (node && typeof node === "object" && "props" in (node as any)) {
+                        return extractText((node as any).props?.children);
+                    }
+                    return String(node ?? "");
+                };
+                return <MermaidChart chart={extractText(children)} />;
+            }
+            return (
+                <code className={className} {...props}>
+                    {children}
+                </code>
+            );
+        },
         img: ({ src, alt, style, ...props }) => {
             let finalSrc = (src as string) || "";
             if (slug) {
@@ -167,7 +187,7 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
         <div className={`markdown-body ${adhdMode ? "adhd-friendly" : ""}`} dir={dir}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, rehypeHighlight]}
+                rehypePlugins={[rehypeRaw, [rehypeHighlight, { ignoreMissing: true }]]}
                 components={components}
             >
                 {processed}

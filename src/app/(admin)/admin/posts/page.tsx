@@ -9,6 +9,7 @@ interface Post {
     title: string;
     date: string;
     categories: string[];
+    hidden?: boolean;
 }
 
 export default function AdminPostsPage() {
@@ -60,8 +61,11 @@ export default function AdminPostsPage() {
                     <div key={post.slug} style={{ display: "flex", justifyContent: "space-between", padding: 15, border: "1px solid var(--border-color)", borderRadius: 8, alignItems: "center" }}>
                         <div>
                             <Link href={`/admin/posts/${post.slug}`} style={{ textDecoration: "none", color: "inherit" }}>
-                                <h3 className="admin-post-title" style={{ margin: "0 0 5px 0", cursor: "pointer", transition: "color 0.2s" }}>
+                                <h3 className="admin-post-title" style={{ margin: "0 0 5px 0", cursor: "pointer", transition: "color 0.2s", display: "flex", alignItems: "center", gap: 8 }}>
                                     {post.title}
+                                    {post.hidden && (
+                                        <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(234, 179, 8, 0.15)", color: "#eab308", border: "1px solid rgba(234, 179, 8, 0.3)", fontWeight: 500, letterSpacing: 0.5, lineHeight: 1, whiteSpace: "nowrap" }}>Draft</span>
+                                    )}
                                 </h3>
                             </Link>
                             <div style={{ fontSize: "0.85em", opacity: 0.7 }}>

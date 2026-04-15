@@ -94,9 +94,21 @@ export async function DELETE(req: Request, context: any) {
     const slug = params.slug;
     try {
         const safeSlug = slug.replace(/[^a-z0-9-]/g, "").toLowerCase();
-        const filePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
-        
-        await fs.unlink(filePath);
+        const folderPath = path.join(process.cwd(), "content", "posts", safeSlug);
+        const flatFilePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
+
+        // Try folder format first (slug/index.md), then flat file (slug.md)
+        let deleted = false;
+        try {
+            await fs.access(folderPath);
+            await fs.rm(folderPath, { recursive: true });
+            deleted = true;
+        } catch {}
+
+        if (!deleted) {
+            await fs.unlink(flatFilePath);
+        }
+
         return NextResponse.json({ success: true });
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, use } from "react";
+import { useState, useEffect, useRef, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Save, Sparkles, Image as ImageIcon } from "lucide-react";
@@ -20,6 +20,9 @@ export default function PostEditor({ params }: PostEditorProps) {
     const [saving, setSaving] = useState(false);
     const [autoSaving, setAutoSaving] = useState(false);
     const [lastSaved, setLastSaved] = useState<string>("");
+    const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
+    const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+    const created = useRef(false); // tracks if a "new" post has been persisted already
     
     const [slug, setSlug] = useState("");
     const [title, setTitle] = useState("");
@@ -117,8 +120,9 @@ export default function PostEditor({ params }: PostEditorProps) {
             hidden: isAutoSave && isNew ? true : hidden // auto-save new posts as hidden, but respect current status for existing/manual saves
         };
 
-        const method = isNew ? "POST" : "PUT";
-        const url = isNew ? "/api/admin/posts" : `/api/admin/posts/${currentSlug}`;
+        const needsCreate = isNew && !created.current;
+        const method = needsCreate ? "POST" : "PUT";
+        const url = needsCreate ? "/api/admin/posts" : `/api/admin/posts/${currentSlug}`;
 
         try {
             const res = await fetch(url, {
@@ -130,12 +134,11 @@ export default function PostEditor({ params }: PostEditorProps) {
             
             if (res.ok) {
                 setLastSaved(currentDataStr);
-                if (!isAutoSave) {
-                    if (isNew) {
-                        router.push(`/admin/posts/${data.slug}`);
-                    } else {
-                        alert("Saved successfully.");
-                    }
+                setLastSavedAt(new Date());
+                if (needsCreate) {
+                    created.current = true;
+                    // Navigate to the real edit URL so future page loads work
+                    router.replace(`/admin/posts/${data.slug}`);
                 }
             } else if (!res.ok && !isAutoSave) {
                 alert("Error: " + data.error);
@@ -148,15 +151,35 @@ export default function PostEditor({ params }: PostEditorProps) {
         else setAutoSaving(false);
     };
 
-    // Auto-save every 10 seconds if content exists
+    // Debounced auto-save: triggers 1 second after the last change
+    // Also falls back to a 10-second interval save
+    const fieldKey = JSON.stringify({ title, date, summary, categories, keywords, image, content, hidden });
+
+    useEffect(() => {
+        if (loading) return;
+        if (!title && !content) return;
+
+        // Clear previous debounce
+        if (debounceTimer.current) clearTimeout(debounceTimer.current);
+
+        debounceTimer.current = setTimeout(() => {
+            savePost(true);
+        }, 1000);
+
+        return () => {
+            if (debounceTimer.current) clearTimeout(debounceTimer.current);
+        };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [fieldKey]);
+
+    // Fallback interval every 10 seconds
     useEffect(() => {
         const interval = setInterval(() => {
-            if (content || title) {
-                savePost(true);
-            }
+            if (content || title) savePost(true);
         }, 10000);
         return () => clearInterval(interval);
-    }, [content, title, slug, summary, categories, keywords, image, date]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [content, title, slug, summary, categories, keywords, image, date, hidden]);
 
     async function handleSave(e: React.FormEvent) {
         e.preventDefault();
@@ -226,11 +249,23 @@ export default function PostEditor({ params }: PostEditorProps) {
                         Hidden (Draft)
                     </label>
                     <Link href="/admin/posts" className="btn">Cancel</Link>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, minWidth: 140, justifyContent: "flex-end" }}>
-                        {autoSaving && <span style={{ fontSize: 11, opacity: 0.5, animation: "pulse 2s infinite" }}>Saving...</span>}
-                        <button type="submit" className="btn" disabled={saving} style={{ minWidth: 100 }}>
-                            {saving ? "Saving..." : "Save Post"}
-                        </button>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 4, minWidth: 140 }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            {autoSaving && (
+                                <span style={{ fontSize: 11, color: "var(--accent)", display: "flex", alignItems: "center" }}>
+                                    <span className="autosave-dot" />
+                                    Saving…
+                                </span>
+                            )}
+                            {!autoSaving && lastSavedAt && (
+                                <span style={{ fontSize: 11, opacity: 0.45, whiteSpace: "nowrap" }}>
+                                    Saved {lastSavedAt.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                                </span>
+                            )}
+                            <button type="submit" className="btn" disabled={saving} style={{ minWidth: 100 }}>
+                                {saving ? "Saving..." : "Save"}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

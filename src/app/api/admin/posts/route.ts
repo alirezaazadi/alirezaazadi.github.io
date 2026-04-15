@@ -6,7 +6,7 @@ import { siteConfig } from "../../../../../site.config";
 
 export async function GET() {
     try {
-        const posts = await getAllPostsMeta();
+        const posts = await getAllPostsMeta(true);
         return NextResponse.json(posts);
     } catch (e: any) {
         return NextResponse.json({ error: e.message }, { status: 500 });
