@@ -364,7 +364,7 @@ http
     }
   }
 }
-````
+```
 
 ### دسترسی به شبکه‌ی خونه از خارج: VPN
 
@@ -516,7 +516,7 @@ graph TD
   style VLAN60S fill:#0a1a2e,stroke:#4d8ef755,color:#d4dce8
   style INFRA fill:#111a2e,stroke:#3dc9c255,color:#d4dce8
   style TUNNELS fill:#111a2e,stroke:#e8943a44,color:#d4dce8
-````
+```
 
 ### طراحی فیزیکی سیستم
 
@@ -584,7 +584,7 @@ graph LR
   style AP fill:#0a1a2e,stroke:#4d8ef7,color:#d4dce8
   style XBOX fill:#1a2e1a,stroke:#34c77b,color:#d4dce8
   style PHONES fill:#1e1a2e,stroke:#a87bdf,color:#d4dce8
-````
+```
 
 لیست کابل‌های مورد نیاز هم از این قراره (فاصله‌ها تخمینین):
 
@@ -660,7 +660,7 @@ graph TD
   style VMBR40 fill:#2e1e0a,stroke:#e8943a,color:#e8943a
   style VMBR50 fill:#1e1a2e,stroke:#a87bdf,color:#a87bdf
   style VMBR60 fill:#0a1a2e,stroke:#4d8ef7,color:#4d8ef7
-````
+```
 
 ### media stack از تورنت تا چیزی شبیه نت‌فلیکس
 
@@ -732,7 +732,7 @@ graph LR
   style GLUETUN fill:#2e1e0a,stroke:#e8943a,color:#e8943a
   style SURFSHARK fill:#2e1e0a,stroke:#e8943a,color:#e8943a
   style INTERNET fill:#1c2a42,stroke:#3d4f68,color:#d4dce8
-````
+```
 
 قضیه این نیست که qBittorrent (در صورت قطعی VPN) بخواد به IP واقعی برگرده یا اصطلاحاً Fall back کنه. این برنامه اساساً هیچ IP واقعی‌ای نداره! هیچ اینترفیس شبکه‌ای به جز تونل Gluetun بهش داده نشده. اگه تونل قطع بشه، اتصال qBittorrent به شبکه مطلقاً صفر می‌شه. از لحاظ معماری، این ستاپ کاملاً ضد نشت (leak-proof) طراحی شده؛ چون اصلاً اینترفیسِ دیگه‌ای وجود نداره که دیتایی بخواد ازش نشت کنه.
 
@@ -744,7 +744,7 @@ graph LR
   style QB fill:#1a2e1a,stroke:#34c77b,color:#34c77b
   style GLUETUN fill:#2e1a1a,stroke:#e5534b,color:#e5534b
   style NOTHING fill:#2e1a1a,stroke:#e5534b,color:#e5534b
-````
+```
 
 از طرفی VPN تنها برای این مورد استفاده نمیشه. در زیر بخش‌های حریم خصوصی، در لایه‌ی اول، از VPN استفاده‌ می‌کنند. و در ادامه درخواست‌ها از طریق [Tor](https://www.torproject.org/) یا [I2P](https://geti2p.net/en/) به اینترنت می‌رسه. این‌طوری ISP متوجه استفاده از Tor نمیشه و تنها ترافیک رمزنگاری شده با VPN رو می‌بینه. تفاوت بین این دو رو [اینجا](https://windscribe.com/blog/i2p-vs-tor/) می‌تونین بخونین.
 
@@ -770,7 +770,7 @@ graph LR
   style MIDDLE fill:#2e1a1a,stroke:#e5534b,color:#e5534b
   style EXIT fill:#2e1a1a,stroke:#e5534b,color:#e5534b
   style DEST fill:#1c2a42,stroke:#3d4f68,color:#d4dce8
-````
+```
 
 تنظیمات شبکه‌ی Workstation فقط و فقط یه گیت‌وی (Gateway) رو می‌شناسه: `IP `10.152.152.10 (یعنی همون [Whonix Gateway](https://www.whonix.org/wiki/Whonix-Gateway)). این ماشین هیچ route یا مسیری به `192.168.1.1` (روتر TIM) و هیچ IP پابلیک دیگه‌ای نداره. حتی اگه یه بدافزار روی ورک‌استیشن اجرا بشه و تلاش کنه تا IP رو پیدا کنه، نهایتاً فقط می‌تونه به همون گیت‌وی برسه، که اونم چیزی جز یه مدار تور ([Tor circuit](https://tb-manual.torproject.org/about/)) رو در اختیارش نمی‌ذاره. در نتیجه، اون بدافزار به جای IP واقعیِ، فقط یه IP مربوط به شبکه Tor رو می‌بینه.
 
@@ -787,7 +787,7 @@ graph TD
   style WS fill:#1e1a2e,stroke:#a87bdf,color:#a87bdf
   style GW fill:#1e1a2e,stroke:#a87bdf,color:#a87bdf
   style INTERNET fill:#1c2a42,stroke:#3d4f68,color:#d4dce8
-````
+```
 
 در حالت سوم که حداکثر پرایوسی در نظر گرفته شده و از سیستم‌عامل [Qubes OS](https://www.qubes-os.org/) استفاده شده، سیستم بر این مبنا کار می‌کنه:
 
@@ -833,30 +833,30 @@ graph TD
   style SYSTOR fill:#2e1a1a,stroke:#e5534b,color:#e5534b
   style SYSI2P fill:#2e1a1a,stroke:#e5534b,color:#e5534b
   style MULLVAD fill:#2e1e0a,stroke:#e8943a,color:#e8943a
-````
+```
 
 مسیر Routing در Qubes به این صورته:
 
 زنجیره اول: وب‌گردی ناشناس مبتنی بر [Tor](https://www.torproject.org/)
-````
+```
 anon-browser → sys-tor → sys-VPN → sys-firewall → sys-net → WiFi → VLAN 70 → Internet
          ↓      ↓
        Tor encrypts  Mullvad encrypts
        (3 layers)   (WireGuard)
-````
+```
 
 زنجیره دوم: [I2P](https://geti2p.net/en/) Network Access
 
-````
+```
 i2p-browser → sys-i2p → sys-VPN → sys-firewall → sys-net → WiFi → VLAN 70 → Internet
          ↓      ↓
        I2P garlic  Mullvad encrypts
        routing    (WireGuard)
-````
+```
 
 و زنجیره‌ی سوم، مبتنی بر VPN تنها:
 
-````
+```
 VPN-browse → sys-VPN → sys-firewall → sys-net → WiFi → VLAN 70 → Internet
         ↓
       Mullvad encrypts
@@ -890,7 +890,7 @@ graph TD
   style MEDIA fill:#1a2e1a,stroke:#34c77b,color:#d4dce8
   style WHONIX fill:#1e1a2e,stroke:#a87bdf,color:#d4dce8
   style QUBESOS fill:#0a1a2e,stroke:#4d8ef7,color:#d4dce8
-````
+```
 
 | | Media (VLAN 20) | Whonix (VLAN 50) | Qubes (VLAN 70) |
 |--|----------------|------------------|-----------------|
@@ -928,7 +928,7 @@ graph TD
   style NODEX_PI fill:#1a2e1a,stroke:#34c77b,color:#34c77b
   style NODEX_PX fill:#1a2e1a,stroke:#34c77b,color:#34c77b
   style TELEGRAM fill:#0a1a2e,stroke:#4d8ef7,color:#4d8ef7
-````
+```
 
 نوتیفیکیشن‌ها هم از طریق یک بات تلگرام ارسال می‌شن. مواردی مثل: افت VPN، پر شدن دیسک، تشخیص حمله توسط [CrowdSec](https://www.crowdsec.net/)، اتصال مهمان جدید، تلاش ناموفق لاگین SSH و از دسترس خارج شدن سرویس‌ها. راه‌اندازی بات هم ساده‌ست: ساخت بات از طریق [@BotFather](https://t.me/BotFather) در تلگرام، گرفتن chat_id و تنظیمش به عنوان Contact Point در Grafana Alerting.
 
