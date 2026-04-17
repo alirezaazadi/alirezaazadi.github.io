@@ -1,13 +1,20 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
-import { Languages, ChevronDown } from "lucide-react";
+import { Languages, ChevronDown, X } from "lucide-react";
 import { siteConfig } from "../../site.config";
 
 interface TranslateButtonProps {
     originalContent: string;
     slug: string;
+    /** Called with full translated text (from cache or after all chunks finish) */
     onTranslated: (text: string, provider?: string) => void;
+    /** Called when progressive translation starts — provides the original chunks for rendering */
+    onTranslationStart: (originalChunks: string[]) => void;
+    /** Called when a chunk begins translating (for highlight animation) */
+    onChunkStart: (chunkIndex: number) => void;
+    /** Called when a chunk finishes translating */
+    onChunkDone: (chunkIndex: number, translatedText: string) => void;
     onRevert: () => void;
     isTranslated: boolean;
     provider?: string;
@@ -71,12 +78,83 @@ function setCachedTranslation(slug: string, lang: string, model: string, result:
     }
 }
 
-// simpleHash removed as we are now using post slugs for cache keys
+// ---- Client-side chunking utilities ----
+
+const MAX_CHUNK_SIZE = 4000;
+
+/**
+ * Extract code blocks from markdown, replace with placeholders,
+ * then split into translatable chunks at paragraph boundaries.
+ */
+function prepareChunks(text: string): { chunks: string[]; codeBlocks: string[] } {
+    // Extract code blocks first so they can't be split across chunks
+    const codeBlocks: string[] = [];
+    const textWithPlaceholders = text.replace(
+        /(```[\s\S]*?```|`[^`\n]+`)/g,
+        (match) => {
+            codeBlocks.push(match);
+            return `__CODE_BLOCK_${codeBlocks.length - 1}__`;
+        }
+    );
+
+    const chunks = splitAtParagraphs(textWithPlaceholders, MAX_CHUNK_SIZE);
+    return { chunks, codeBlocks };
+}
+
+function splitAtParagraphs(text: string, maxSize: number): string[] {
+    if (text.length <= maxSize) return [text];
+
+    const chunks: string[] = [];
+    const paragraphs = text.split(/\n\n/);
+    let currentChunk = "";
+
+    for (const para of paragraphs) {
+        const candidate = currentChunk ? currentChunk + "\n\n" + para : para;
+
+        if (candidate.length > maxSize && currentChunk.length > 0) {
+            chunks.push(currentChunk);
+            // If a single paragraph exceeds maxSize, split further by lines
+            if (para.length > maxSize) {
+                const lines = para.split("\n");
+                let lineChunk = "";
+                for (const line of lines) {
+                    const lc = lineChunk ? lineChunk + "\n" + line : line;
+                    if (lc.length > maxSize && lineChunk.length > 0) {
+                        chunks.push(lineChunk);
+                        lineChunk = line;
+                    } else {
+                        lineChunk = lc;
+                    }
+                }
+                currentChunk = lineChunk;
+            } else {
+                currentChunk = para;
+            }
+        } else {
+            currentChunk = candidate;
+        }
+    }
+
+    if (currentChunk.length > 0) {
+        chunks.push(currentChunk);
+    }
+
+    return chunks;
+}
+
+function restoreCodeBlocks(text: string, codeBlocks: string[]): string {
+    return text.replace(/__CODE_BLOCK_(\d+)__/g, (_, idx) => codeBlocks[Number(idx)] || _);
+}
+
+// ---- Component ----
 
 export function TranslateButton({
     originalContent,
     slug,
     onTranslated,
+    onTranslationStart,
+    onChunkStart,
+    onChunkDone,
     onRevert,
     isTranslated,
     provider
@@ -92,7 +170,9 @@ export function TranslateButton({
     const [showLangPicker, setShowLangPicker] = useState(false);
     const [selectedLang, setSelectedLang] = useState(LANGUAGES[0]);
     const [selectedModel, setSelectedModel] = useState(MODELS[0]);
+    const [progress, setProgress] = useState<{ current: number; total: number } | null>(null);
     const pickerRef = useRef<HTMLDivElement>(null);
+    const abortRef = useRef<AbortController | null>(null);
 
     // Close picker on outside click
     useEffect(() => {
@@ -107,6 +187,16 @@ export function TranslateButton({
         }
     }, [showLangPicker]);
 
+    function handleCancel() {
+        if (abortRef.current) {
+            abortRef.current.abort();
+            abortRef.current = null;
+        }
+        setLoading(false);
+        setProgress(null);
+        onRevert();
+    }
+
     async function handleTranslate(lang: typeof LANGUAGES[number]) {
         setSelectedLang(lang);
         setShowLangPicker(false);
@@ -120,43 +210,79 @@ export function TranslateButton({
         }
 
         setLoading(true);
+        const abort = new AbortController();
+        abortRef.current = abort;
+
         try {
-            const res = await fetch("/api/translate", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    text: originalContent,
-                    targetLang: lang.code,
-                    model: selectedModel.id
-                }),
-            });
+            // Split text into chunks (code blocks are extracted so they won't be split)
+            const { chunks, codeBlocks } = prepareChunks(originalContent);
 
-            const data = await res.json();
+            // Send display-ready chunks (with real code blocks) to parent
+            const displayChunks = chunks.map(c => restoreCodeBlocks(c, codeBlocks));
+            onTranslationStart(displayChunks);
+            setProgress({ current: 0, total: chunks.length });
 
-            if (!res.ok) {
-                // Try to parse error message from response
-                const errorMessage = data.error?.message || data.error || "Translation failed";
-                setError(errorMessage);
-                return;
+            const translatedChunks: string[] = [];
+            let lastProvider = "Gemini";
+
+            for (let i = 0; i < chunks.length; i++) {
+                if (abort.signal.aborted) return;
+
+                // Notify parent to highlight this chunk
+                onChunkStart(i);
+
+                const res = await fetch("/api/translate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        text: chunks[i],
+                        targetLang: lang.code,
+                        model: selectedModel.id
+                    }),
+                    signal: abort.signal,
+                });
+
+                if (abort.signal.aborted) return;
+
+                const data = await res.json();
+
+                if (!res.ok) {
+                    throw new Error(data.error || "Translation failed");
+                }
+
+                // Restore code blocks in the translated chunk before sending to parent
+                const translatedChunk = restoreCodeBlocks(data.translatedText, codeBlocks);
+                translatedChunks.push(translatedChunk);
+                lastProvider = data.provider || lastProvider;
+
+                // Notify parent this chunk is done
+                onChunkDone(i, translatedChunk);
+                setProgress({ current: i + 1, total: chunks.length });
             }
 
-            // Save to cache
+            // All chunks done — join, cache, and signal completion
+            const fullTranslation = translatedChunks.join("\n\n");
+
             setCachedTranslation(slug, lang.code, selectedModel.id, {
-                translatedText: data.translatedText,
-                provider: data.provider
+                translatedText: fullTranslation,
+                provider: lastProvider
             });
 
-            onTranslated(data.translatedText, data.provider);
-        } catch (err) {
-            setError("Network error — check your connection");
+            onTranslated(fullTranslation, lastProvider);
+        } catch (err: any) {
+            if (err.name === "AbortError") return;
+            setError(err.message || "Translation failed");
+            onRevert();
         } finally {
             setLoading(false);
+            setProgress(null);
+            abortRef.current = null;
         }
     }
 
-    if (isTranslated) {
+    if (isTranslated && !loading) {
         return (
-            <button className="btn" onClick={onRevert}>
+            <button className="btn" onClick={handleCancel}>
                 <Languages size={14} />
                 show original {provider ? `(translated by ${provider})` : ""}
             </button>
@@ -166,25 +292,39 @@ export function TranslateButton({
     return (
         <div className="translate-wrapper" ref={pickerRef}>
             <div className="translate-btn-group">
-                <button
-                    className={`btn ${loading ? "loading" : ""}`}
-                    onClick={() => handleTranslate(selectedLang)}
-                    disabled={loading}
-                >
-                    <Languages size={14} />
-                    {loading ? "translating..." : `translate → ${selectedLang.label}`}
-                </button>
-                <button
-                    className="btn translate-lang-toggle"
-                    onClick={() => setShowLangPicker(!showLangPicker)}
-                    disabled={loading}
-                    aria-label="Choose language"
-                >
-                    <ChevronDown size={12} />
-                </button>
+                {loading ? (
+                    <button
+                        className="btn translate-progress-btn"
+                        onClick={handleCancel}
+                        title="Click to cancel translation"
+                    >
+                        <span className="spinner" />
+                        {progress
+                            ? `translating… ${progress.current}/${progress.total}`
+                            : "preparing…"}
+                        <X size={12} className="translate-cancel-icon" />
+                    </button>
+                ) : (
+                    <>
+                        <button
+                            className="btn"
+                            onClick={() => handleTranslate(selectedLang)}
+                        >
+                            <Languages size={14} />
+                            {`translate → ${selectedLang.label}`}
+                        </button>
+                        <button
+                            className="btn translate-lang-toggle"
+                            onClick={() => setShowLangPicker(!showLangPicker)}
+                            aria-label="Choose language"
+                        >
+                            <ChevronDown size={12} />
+                        </button>
+                    </>
+                )}
             </div>
 
-            {showLangPicker && (
+            {showLangPicker && !loading && (
                 <div className="lang-picker-popup">
                     <div className="model-selector-section" style={{
                         padding: "12px",

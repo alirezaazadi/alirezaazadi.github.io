@@ -20,9 +20,18 @@ interface PostPageClientProps {
     post: Post;
 }
 
+/** Tracks progressive translation state chunk-by-chunk */
+interface ChunkState {
+    originals: string[];
+    translations: (string | null)[];
+    activeIndex: number; // -1 when none is active
+    complete: boolean;
+}
+
 export function PostPageClient({ post }: PostPageClientProps) {
     const [translatedContent, setTranslatedContent] = useState<string | null>(null);
     const [translationProvider, setTranslationProvider] = useState<string | undefined>(undefined);
+    const [chunkState, setChunkState] = useState<ChunkState | null>(null);
     const [readerOpen, setReaderOpen] = useState(false);
     const [archiving, setArchiving] = useState(false);
     const [isDev, setIsDev] = useState(false);
@@ -40,10 +49,53 @@ export function PostPageClient({ post }: PostPageClientProps) {
         }
     }, []);
 
-    const isTranslated = translatedContent !== null;
+    // Derived state
+    const isTranslated = translatedContent !== null || (chunkState?.complete ?? false);
     const displayContent = translatedContent || post.body;
     const titleRtl = isRTL(post.title);
     const postUrl = `${siteConfig.url}/post/${post.slug}`;
+
+    // ---- Progressive translation handlers ----
+
+    const handleTranslationStart = (originalChunks: string[]) => {
+        setChunkState({
+            originals: originalChunks,
+            translations: new Array(originalChunks.length).fill(null),
+            activeIndex: -1,
+            complete: false,
+        });
+        setTranslatedContent(null);
+        setTranslationProvider(undefined);
+    };
+
+    const handleChunkStart = (index: number) => {
+        setChunkState(prev => prev ? { ...prev, activeIndex: index } : null);
+    };
+
+    const handleChunkDone = (index: number, translatedText: string) => {
+        setChunkState(prev => {
+            if (!prev) return null;
+            const translations = [...prev.translations];
+            translations[index] = translatedText;
+            return { ...prev, translations, activeIndex: -1 };
+        });
+    };
+
+    /** Called when all chunks are done (or from cache) */
+    const handleTranslated = (text: string, provider?: string) => {
+        setTranslatedContent(text);
+        setTranslationProvider(provider);
+        // Mark progressive translation as complete (keeps chunk rendering to avoid flash)
+        setChunkState(prev => prev ? { ...prev, complete: true, activeIndex: -1 } : null);
+    };
+
+    const handleRevert = () => {
+        setTranslatedContent(null);
+        setTranslationProvider(undefined);
+        setChunkState(null);
+    };
+
+    // ---- Other handlers ----
 
     const handleBack = () => {
         // If user navigated from within the blog, go back
@@ -93,6 +145,44 @@ export function PostPageClient({ post }: PostPageClientProps) {
         setArchiving(false);
     };
 
+    // ---- Render ----
+
+    /** Render the post content — either as progressive chunks or a single block */
+    function renderContent() {
+        if (chunkState) {
+            // Progressive chunk-by-chunk rendering
+            return (
+                <>
+                    {chunkState.originals.map((original, i) => {
+                        const translated = chunkState.translations[i];
+                        const isActive = chunkState.activeIndex === i;
+                        const isDone = translated !== null;
+
+                        // During translation, show animation classes.
+                        // After complete, render cleanly with no animation classes.
+                        let className = "translation-chunk";
+                        if (!chunkState.complete) {
+                            if (isActive) className += " chunk-translating";
+                            else if (isDone) className += " chunk-done";
+                        }
+
+                        return (
+                            <div key={i} className={className}>
+                                <MarkdownRenderer
+                                    content={translated || original}
+                                    slug={post.slug}
+                                />
+                            </div>
+                        );
+                    })}
+                </>
+            );
+        }
+
+        // Normal single-block rendering (original or cached translation)
+        return <MarkdownRenderer content={displayContent} slug={post.slug} />;
+    }
+
     return (
         <article className="post-page">
             <button className="back-link" onClick={handleBack}>
@@ -126,14 +216,11 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         <TranslateButton
                             originalContent={post.body}
                             slug={post.slug}
-                            onTranslated={(text, provider) => {
-                                setTranslatedContent(text);
-                                setTranslationProvider(provider);
-                            }}
-                            onRevert={() => {
-                                setTranslatedContent(null);
-                                setTranslationProvider(undefined);
-                            }}
+                            onTranslated={handleTranslated}
+                            onTranslationStart={handleTranslationStart}
+                            onChunkStart={handleChunkStart}
+                            onChunkDone={handleChunkDone}
+                            onRevert={handleRevert}
                             isTranslated={isTranslated}
                             provider={translationProvider}
                         />
@@ -235,7 +322,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
             {isTranslated && (
                 <div className="translation-banner">
                     <span>🌐 showing translated version {translationProvider ? `by ${translationProvider}` : ""}</span>
-                    <button onClick={() => setTranslatedContent(null)}>
+                    <button onClick={handleRevert}>
                         show original
                     </button>
                 </div>
@@ -260,7 +347,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                 />
             )}
 
-            <MarkdownRenderer content={displayContent} slug={post.slug} />
+            {renderContent()}
             <InlineTranslate />
 
             {/* Comment / Reply section at the bottom */}
@@ -279,7 +366,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
             {/* Fullscreen ADHD Reader Mode */}
             <ReaderMode
                 title={post.title}
-                content={displayContent}
+                content={translatedContent || post.body}
                 isOpen={readerOpen}
                 onClose={() => setReaderOpen(false)}
             />

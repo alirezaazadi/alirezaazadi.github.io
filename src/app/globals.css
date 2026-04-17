@@ -1753,6 +1753,90 @@ img {
   text-decoration: underline;
 }
 
+/* ---- Translation Chunk Progress ---- */
+.translation-chunk {
+  position: relative;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.5s ease;
+}
+
+.translation-chunk::after {
+  content: '';
+  position: absolute;
+  left: -6px;
+  top: 4px;
+  bottom: 4px;
+  width: 3px;
+  border-radius: 3px;
+  background: var(--accent);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.chunk-translating {
+  background-color: color-mix(in srgb, var(--accent) 6%, transparent);
+  animation: chunk-bg-pulse 2s ease-in-out infinite;
+}
+
+.chunk-translating::after {
+  opacity: 1;
+  animation: chunk-bar-pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes chunk-bg-pulse {
+  0%, 100% { background-color: color-mix(in srgb, var(--accent) 6%, transparent); }
+  50% { background-color: color-mix(in srgb, var(--accent) 12%, transparent); }
+}
+
+@keyframes chunk-bar-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.3; }
+}
+
+.chunk-done {
+  background-color: transparent;
+  animation: chunk-settle 0.8s ease-out forwards;
+}
+
+.chunk-done::after {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+@keyframes chunk-settle {
+  0% { background-color: color-mix(in srgb, var(--accent) 10%, transparent); }
+  100% { background-color: transparent; }
+}
+
+/* Translation progress button */
+.translate-progress-btn {
+  cursor: pointer !important;
+  opacity: 1 !important;
+  pointer-events: auto !important;
+  gap: 6px;
+}
+
+.translate-progress-btn:hover {
+  border-color: #f87171 !important;
+  color: #f87171 !important;
+  background: rgba(248, 113, 113, 0.08) !important;
+}
+
+.translate-cancel-icon {
+  opacity: 0.4;
+  transition: opacity 0.15s ease;
+}
+
+.translate-progress-btn:hover .translate-cancel-icon {
+  opacity: 1;
+}
+
+/* RTL support for chunk indicator */
+[dir="rtl"] .translation-chunk::after {
+  left: auto;
+  right: -6px;
+}
+
 /* ---- Footer ---- */
 .footer {
   text-align: center;
