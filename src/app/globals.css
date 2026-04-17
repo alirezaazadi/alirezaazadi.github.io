@@ -1411,6 +1411,9 @@ img {
   width: 100%;
   border-collapse: collapse;
   margin-bottom: 16px;
+  display: block;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .markdown-body th,

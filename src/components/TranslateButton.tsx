@@ -32,8 +32,8 @@ const ALL_LANGUAGES = [
 ];
 
 const MODELS = [
-    { id: "gemma-3-4b-it", label: "Gemma 3 (4B)" },
     { id: "gemini-flash-latest", label: "Gemini Flash (Latest)" },
+    { id: "gemma-3-4b-it", label: "Gemma 3 (4B)" },
     { id: "gemini-2.0-flash-lite", label: "Gemini 2.0 Flash Lite" },
     { id: "gemini-2.0-flash", label: "Gemini 2.0 Flash" },
     { id: "google-translate", label: "Google Translate (Legacy)" },

@@ -96,7 +96,7 @@ export async function POST(request: NextRequest) {
             );
         }
 
-        const { text, targetLang, model = "gemma-3-4b-it" } = await request.json();
+        const { text, targetLang, model = "gemini-flash-latest" } = await request.json();
 
         if (!text || !targetLang) {
             return NextResponse.json(
@@ -116,13 +116,9 @@ export async function POST(request: NextRequest) {
         // Sanitize input — strip script tags
         const sanitized = text.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "");
 
-        // Truncate very long texts to stay within limits
-        const maxChars = 10000;
-        const truncated = sanitized.length > maxChars ? sanitized.substring(0, maxChars) + "\n\n[... truncated]" : sanitized;
-
         // Extract code blocks so they're never translated
         const codeBlocks: string[] = [];
-        const textWithPlaceholders = truncated.replace(
+        const textWithPlaceholders = sanitized.replace(
             /(```[\s\S]*?```|`[^`\n]+`)/g,
             (match: string) => {
                 codeBlocks.push(match);
@@ -197,52 +193,147 @@ export async function POST(request: NextRequest) {
             return cleaned.trim();
         }
 
+        /**
+         * Split text into chunks at paragraph/heading boundaries.
+         * Each chunk stays under maxChunkSize characters.
+         */
+        function splitIntoChunks(fullText: string, maxChunkSize: number): string[] {
+            if (fullText.length <= maxChunkSize) return [fullText];
+
+            const chunks: string[] = [];
+            // Split on double newlines (paragraph boundaries) to keep semantic units together
+            const paragraphs = fullText.split(/\n\n/);
+            let currentChunk = "";
+
+            for (const para of paragraphs) {
+                const candidate = currentChunk
+                    ? currentChunk + "\n\n" + para
+                    : para;
+
+                if (candidate.length > maxChunkSize && currentChunk.length > 0) {
+                    // Push current chunk and start a new one
+                    chunks.push(currentChunk);
+                    // If a single paragraph exceeds maxChunkSize, split it further by single newlines
+                    if (para.length > maxChunkSize) {
+                        const lines = para.split("\n");
+                        let lineChunk = "";
+                        for (const line of lines) {
+                            const lineCandidate = lineChunk
+                                ? lineChunk + "\n" + line
+                                : line;
+                            if (lineCandidate.length > maxChunkSize && lineChunk.length > 0) {
+                                chunks.push(lineChunk);
+                                lineChunk = line;
+                            } else {
+                                lineChunk = lineCandidate;
+                            }
+                        }
+                        currentChunk = lineChunk;
+                    } else {
+                        currentChunk = para;
+                    }
+                } else {
+                    currentChunk = candidate;
+                }
+            }
+
+            if (currentChunk.length > 0) {
+                chunks.push(currentChunk);
+            }
+
+            return chunks;
+        }
+
+        /**
+         * Translate a single chunk using the Gemini API.
+         * Returns the translated text or null on failure.
+         */
+        async function translateChunkWithGemini(
+            chunk: string,
+            targetLang: string,
+            modelId: string,
+            apiKey: string,
+            chunkIndex: number,
+            totalChunks: number,
+        ): Promise<string | null> {
+            const continuationHint = totalChunks > 1
+                ? `\nThis is part ${chunkIndex + 1} of ${totalChunks}. Translate only this part.`
+                : "";
+
+            const prompt = `Translate the following text to ${targetLang}. Preserve all markdown formatting and links. Keep any __CODE_BLOCK_N__ placeholders exactly as-is.
+
+IMPORTANT: Output ONLY the translated text. Do not include any preamble, introduction, explanation, or the original text. Do not say "Here is the translation" or anything similar. Start directly with the translated content.${continuationHint}
+
+${chunk}`;
+
+            const res = await fetch(
+                `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`,
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: prompt }] }],
+                    }),
+                }
+            );
+
+            if (!res.ok) {
+                const errorText = await res.text();
+                console.error(`❌ Gemini API Error (${res.status}) for chunk ${chunkIndex + 1}/${totalChunks}: ${errorText}`);
+                return null;
+            }
+
+            const data = await res.json();
+            const rawTranslated = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+
+            if (!rawTranslated) return null;
+
+            return stripPromptLeakage(rawTranslated, chunk);
+        }
+
         const apiKey = process.env.GEMINI_API_KEY;
         if (apiKey) {
             try {
-                const prompt = `Translate the following text to ${targetLang}. Preserve all markdown formatting and links. Keep any __CODE_BLOCK_N__ placeholders exactly as-is.
-
-IMPORTANT: Output ONLY the translated text. Do not include any preamble, introduction, explanation, or the original text. Do not say "Here is the translation" or anything similar. Start directly with the translated content.
-
-${textWithPlaceholders}`;
-
-                // Map of friendly model names to API versions/names if needed, 
-                // but mostly we can pass the model ID directly to the URL.
-                // Supported: gemma-3-4b-it, gemini-flash-latest, gemini-2.0-flash-lite, gemini-2.0-flash
                 const modelId = model;
 
-                const res = await fetch(
-                    `https://generativelanguage.googleapis.com/v1beta/models/${modelId}:generateContent?key=${apiKey}`,
-                    {
-                        method: "POST",
-                        headers: { "Content-Type": "application/json" },
-                        body: JSON.stringify({
-                            contents: [{ parts: [{ text: prompt }] }],
-                        }),
-                    }
-                );
+                // Split text into manageable chunks (~4000 chars each to stay well under API limits)
+                const MAX_CHUNK_SIZE = 4000;
+                const chunks = splitIntoChunks(textWithPlaceholders, MAX_CHUNK_SIZE);
 
-                // If Gemini returns error, log and fall through to fallback
-                if (!res.ok) {
-                    const errorText = await res.text();
-                    console.error(`❌ Gemini API Error (${res.status}): ${errorText}`);
-                    console.warn(`Falling back to Google Translate due to Gemini error.`);
-                } else {
-                    const data = await res.json();
-                    const rawTranslated =
-                        data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+                console.log(`Translating to ${targetLang} using ${modelId} — ${chunks.length} chunk(s), total ${textWithPlaceholders.length} chars`);
 
-                    if (rawTranslated) {
-                        const translatedText = stripPromptLeakage(rawTranslated, textWithPlaceholders);
-                        return NextResponse.json({
-                            translatedText: restoreCodeBlocks(translatedText),
-                            provider: "Gemini"
-                        }, {
-                            headers: {
-                                "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=43200"
-                            }
-                        });
+                const translatedChunks: string[] = [];
+                let allSucceeded = true;
+
+                for (let i = 0; i < chunks.length; i++) {
+                    const result = await translateChunkWithGemini(
+                        chunks[i],
+                        targetLang,
+                        modelId,
+                        apiKey,
+                        i,
+                        chunks.length,
+                    );
+
+                    if (result === null) {
+                        allSucceeded = false;
+                        console.warn(`Chunk ${i + 1}/${chunks.length} failed, falling back to Google Translate.`);
+                        break;
                     }
+
+                    translatedChunks.push(result);
+                }
+
+                if (allSucceeded && translatedChunks.length === chunks.length) {
+                    const fullTranslation = translatedChunks.join("\n\n");
+                    return NextResponse.json({
+                        translatedText: restoreCodeBlocks(fullTranslation),
+                        provider: "Gemini"
+                    }, {
+                        headers: {
+                            "Cache-Control": "public, s-maxage=86400, stale-while-revalidate=43200"
+                        }
+                    });
                 }
             } catch (geminiError) {
                 console.warn("Gemini translation failed, falling back:", geminiError);
@@ -273,3 +364,4 @@ ${textWithPlaceholders}`;
         );
     }
 }
+
