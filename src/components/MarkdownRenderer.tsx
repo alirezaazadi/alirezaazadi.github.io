@@ -126,6 +126,82 @@ function getSpotifyEmbedUrl(url: string): string | null {
     return null;
 }
 
+function processGalleryChildren(children: any[]) {
+    const newChildren: any[] = [];
+    let galleryBuffer: any[] = [];
+
+    for (let i = 0; i < children.length; i++) {
+        const node = children[i];
+        
+        let isImageParagraph = false;
+        if (node.type === 'element' && node.tagName === 'p') {
+            const hasOnlyImages = node.children && node.children.length > 0 && node.children.every((child: any) => 
+                (child.type === 'element' && child.tagName === 'img') || 
+                (child.type === 'text' && child.value.trim() === '')
+            );
+            const hasImage = node.children && node.children.some((child: any) => child.type === 'element' && child.tagName === 'img');
+            isImageParagraph = hasOnlyImages && hasImage;
+        }
+
+        if (isImageParagraph) {
+            const images = node.children.filter((child: any) => child.type === 'element' && child.tagName === 'img');
+            galleryBuffer.push(...images);
+        } else {
+            if (galleryBuffer.length > 0) {
+                if (galleryBuffer.length === 1) {
+                    newChildren.push({
+                        type: 'element',
+                        tagName: 'p',
+                        properties: {},
+                        children: galleryBuffer
+                    });
+                } else {
+                    newChildren.push({
+                        type: 'element',
+                        tagName: 'div',
+                        properties: { className: ['image-gallery'] },
+                        children: galleryBuffer
+                    });
+                }
+                galleryBuffer = [];
+            }
+            
+            if (node.children) {
+                node.children = processGalleryChildren(node.children);
+            }
+            newChildren.push(node);
+        }
+    }
+
+    if (galleryBuffer.length > 0) {
+        if (galleryBuffer.length === 1) {
+            newChildren.push({
+                type: 'element',
+                tagName: 'p',
+                properties: {},
+                children: galleryBuffer
+            });
+        } else {
+            newChildren.push({
+                type: 'element',
+                tagName: 'div',
+                properties: { className: ['image-gallery'] },
+                children: galleryBuffer
+            });
+        }
+    }
+
+    return newChildren;
+}
+
+function rehypeImageGallery() {
+    return (tree: any) => {
+        if (tree.children) {
+            tree.children = processGalleryChildren(tree.children);
+        }
+    };
+}
+
 export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRendererProps) {
     const processed = preprocessContent(content);
     const dir = getDirection(content);
@@ -187,7 +263,7 @@ export function MarkdownRenderer({ content, adhdMode = false, slug }: MarkdownRe
         <div className={`markdown-body ${adhdMode ? "adhd-friendly" : ""}`} dir={dir}>
             <ReactMarkdown
                 remarkPlugins={[remarkGfm]}
-                rehypePlugins={[rehypeRaw, [rehypeHighlight, { ignoreMissing: true }]]}
+                rehypePlugins={[rehypeRaw, rehypeImageGallery, [rehypeHighlight, { ignoreMissing: true }]]}
                 components={components}
             >
                 {processed}

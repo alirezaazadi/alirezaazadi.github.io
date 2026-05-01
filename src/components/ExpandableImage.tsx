@@ -37,46 +37,53 @@ export function ExpandableImage({ src, alt, className, style }: ExpandableImageP
 
     return (
         <>
-            <span
+            <figure
                 className={`expandable-image-container ${className || ""}`}
-                style={{ position: "relative", display: "inline-block", ...style }}
+                style={{ position: "relative", display: "inline-block", margin: 0, textAlign: "center", ...style }}
             >
-                <img
-                    src={src}
-                    alt={alt}
-                    className="expandable-image-files"
-                    style={{ ...style, cursor: "zoom-in", display: "block" }}
-                    onClick={() => setIsOpen(true)}
-                    loading="lazy"
-                />
-                <button
-                    className="expand-button"
-                    onClick={(e) => {
-                        e.stopPropagation();
-                        setIsOpen(true);
-                    }}
-                    aria-label="Expand image"
-                    style={{
-                        position: "absolute",
-                        bottom: "12px",
-                        right: "12px",
-                        background: "rgba(0, 0, 0, 0.6)",
-                        color: "white",
-                        border: "none",
-                        borderRadius: "50%",
-                        width: "32px",
-                        height: "32px",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        cursor: "pointer",
-                        opacity: 0,
-                        transition: "opacity 0.2s",
-                    }}
-                >
-                    <Maximize2 size={16} />
-                </button>
-            </span>
+                <div style={{ position: "relative", display: "inline-block" }}>
+                    <img
+                        src={src}
+                        alt={alt}
+                        className="expandable-image-files"
+                        style={{ ...style, cursor: "zoom-in", display: "block" }}
+                        onClick={() => setIsOpen(true)}
+                        loading="lazy"
+                    />
+                    <button
+                        className="expand-button"
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            setIsOpen(true);
+                        }}
+                        aria-label="Expand image"
+                        style={{
+                            position: "absolute",
+                            bottom: "12px",
+                            right: "12px",
+                            background: "rgba(0, 0, 0, 0.6)",
+                            color: "white",
+                            border: "none",
+                            borderRadius: "50%",
+                            width: "32px",
+                            height: "32px",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            opacity: 0,
+                            transition: "opacity 0.2s",
+                        }}
+                    >
+                        <Maximize2 size={16} />
+                    </button>
+                </div>
+                {alt && alt.trim() !== "" && alt.toLowerCase() !== "image" && (
+                    <figcaption className="image-caption" style={{ marginTop: "8px", fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+                        {alt}
+                    </figcaption>
+                )}
+            </figure>
 
             {isOpen && (
                 <div
