@@ -134,7 +134,11 @@ function processGalleryChildren(children: any[]) {
         const node = children[i];
         
         let isImageParagraph = false;
-        if (node.type === 'element' && node.tagName === 'p') {
+        let isDirectImage = false;
+
+        if (node.type === 'element' && node.tagName === 'img') {
+            isDirectImage = true;
+        } else if (node.type === 'element' && node.tagName === 'p') {
             const hasOnlyImages = node.children && node.children.length > 0 && node.children.every((child: any) => 
                 (child.type === 'element' && child.tagName === 'img') || 
                 (child.type === 'text' && child.value.trim() === '')
@@ -143,9 +147,15 @@ function processGalleryChildren(children: any[]) {
             isImageParagraph = hasOnlyImages && hasImage;
         }
 
-        if (isImageParagraph) {
+        if (isDirectImage) {
+            galleryBuffer.push(node);
+        } else if (isImageParagraph) {
             const images = node.children.filter((child: any) => child.type === 'element' && child.tagName === 'img');
             galleryBuffer.push(...images);
+        } else if (node.type === 'text' && (node.value || '').trim() === '') {
+            if (galleryBuffer.length === 0) {
+                newChildren.push(node);
+            }
         } else {
             if (galleryBuffer.length > 0) {
                 if (galleryBuffer.length === 1) {

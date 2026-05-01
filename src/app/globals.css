@@ -3343,7 +3343,7 @@ img {
 }
 
 .image-gallery .expandable-image-container {
-  width: 100%;
+  width: 100% !important;
 }
 
 .image-gallery img {
@@ -3358,5 +3358,5 @@ img {
   font-size: 13px;
   color: var(--text-muted);
   margin-top: 8px;
-  font-family: var(--font-mono);
+  font-family: var(--font-rtl);
 }

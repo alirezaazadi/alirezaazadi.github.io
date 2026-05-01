@@ -41,7 +41,7 @@ export function ExpandableImage({ src, alt, className, style }: ExpandableImageP
                 className={`expandable-image-container ${className || ""}`}
                 style={{ position: "relative", display: "inline-block", margin: 0, textAlign: "center", ...style }}
             >
-                <div style={{ position: "relative", display: "inline-block" }}>
+                <div style={{ position: "relative", display: "inline-block", width: "100%" }}>
                     <img
                         src={src}
                         alt={alt}
@@ -79,7 +79,7 @@ export function ExpandableImage({ src, alt, className, style }: ExpandableImageP
                     </button>
                 </div>
                 {alt && alt.trim() !== "" && alt.toLowerCase() !== "image" && (
-                    <figcaption className="image-caption" style={{ marginTop: "8px", fontSize: "13px", color: "var(--text-muted)", fontFamily: "var(--font-mono)" }}>
+                    <figcaption className="image-caption" style={{ marginTop: "8px", fontSize: "13px", color: "var(--text-muted)" }}>
                         {alt}
                     </figcaption>
                 )}
