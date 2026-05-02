@@ -23,6 +23,8 @@ interface PostListProps {
     allDates: Record<string, number>;
     /** Total number of posts available */
     totalPosts: number;
+    /** Current language for pagination requests */
+    lang: "fa" | "en";
 }
 
 interface PageCache {
@@ -33,11 +35,11 @@ interface PageCache {
     };
 }
 
-function buildCacheKey(page: number, category: string, query: string, date: string): string {
-    return `${page}:${category}:${query}:${date}`;
+function buildCacheKey(page: number, category: string, query: string, date: string, lang: "fa" | "en"): string {
+    return `${lang}:${page}:${category}:${query}:${date}`;
 }
 
-export function PostList({ initialPosts, allCategories, allDates, totalPosts }: PostListProps) {
+export function PostList({ initialPosts, allCategories, allDates, totalPosts, lang }: PostListProps) {
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -58,7 +60,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
 
     // Seed cache with initial server data
     useEffect(() => {
-        const key = buildCacheKey(1, "", "", "");
+        const key = buildCacheKey(1, "", "", "", lang);
         if (!cacheRef.current[key]) {
             cacheRef.current[key] = {
                 posts: initialPosts,
@@ -66,7 +68,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
                 totalPosts,
             };
         }
-    }, [initialPosts, totalPosts]);
+    }, [initialPosts, totalPosts, lang]);
 
     /**
      * Fetch posts from the paginated API
@@ -74,7 +76,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
     const fetchPosts = useCallback(async (
         p: number, cat: string, q: string, d: string, skipCache = false
     ): Promise<{ posts: PostMeta[]; totalPages: number; totalPosts: number } | null> => {
-        const key = buildCacheKey(p, cat, q, d);
+        const key = buildCacheKey(p, cat, q, d, lang);
 
         // Return cached data if available
         if (!skipCache && cacheRef.current[key]) {
@@ -88,6 +90,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
             if (cat) params.set("category", cat);
             if (q) params.set("q", q);
             if (d) params.set("date", d);
+            params.set("lang", lang);
 
             const res = await fetch(`/api/posts?${params.toString()}`);
             if (!res.ok) throw new Error("Failed to fetch");
@@ -106,7 +109,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
             console.error("Error fetching posts:", error);
             return null;
         }
-    }, []);
+    }, [lang]);
 
     /**
      * Prefetch the next page in the background
@@ -126,7 +129,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
     const loadPage = useCallback(async (
         p: number, cat: string, q: string, d: string
     ) => {
-        const key = buildCacheKey(p, cat, q, d);
+        const key = buildCacheKey(p, cat, q, d, lang);
 
         // If cached, use immediately
         if (cacheRef.current[key]) {
@@ -147,7 +150,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts }: 
             setTotalPages(result.totalPages);
             prefetchNextPage(p, cat, q, d, result.totalPages);
         }
-    }, [fetchPosts, prefetchNextPage]);
+    }, [fetchPosts, prefetchNextPage, lang]);
 
     // Sync state with URL search params (fix for back button)
     useEffect(() => {

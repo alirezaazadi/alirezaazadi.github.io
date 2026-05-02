@@ -28,6 +28,7 @@ export default async function HomePage() {
           allCategories={allCategories}
           allDates={allDates}
           totalPosts={allMeta.length}
+          lang={lang}
         />
       </Suspense>
     </div>

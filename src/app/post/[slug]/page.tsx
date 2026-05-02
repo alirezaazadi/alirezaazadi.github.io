@@ -56,5 +56,5 @@ export default async function PostPage({ params }: PostPageProps) {
         notFound();
     }
 
-    return <PostPageClient post={post} />;
+    return <PostPageClient post={post} currentLang={lang} />;
 }

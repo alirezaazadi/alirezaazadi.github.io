@@ -207,15 +207,20 @@ export function TranslateButton({
         setShowLangPicker(false);
         setError(null);
 
-        // If a file-based translation exists, switch site language instead of using AI
-        if (lang.code === "English" && availableLanguages?.includes("en") && currentLang !== "en") {
-            document.cookie = `lang=en; path=/; max-age=31536000`;
-            window.location.reload();
-            return;
-        }
-        if (lang.code === "Persian" && availableLanguages?.includes("fa") && currentLang !== "fa") {
-            document.cookie = `lang=fa; path=/; max-age=31536000`;
-            window.location.reload();
+        // For site languages, prefer existing file-based versions over AI translation.
+        const targetSiteLang = lang.code === "English"
+            ? "en"
+            : lang.code === "Persian"
+                ? "fa"
+                : null;
+        if (targetSiteLang && availableLanguages?.includes(targetSiteLang)) {
+            if (currentLang !== targetSiteLang) {
+                document.cookie = `lang=${targetSiteLang}; path=/; max-age=31536000`;
+                window.location.reload();
+            } else {
+                // If user selects the already-active language, ensure we show original file content.
+                onRevert();
+            }
             return;
         }
 

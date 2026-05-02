@@ -27,7 +27,10 @@ export async function GET(request: NextRequest) {
         const query = searchParams.get("q") || "";
         const date = searchParams.get("date") || "";
 
-        const lang = await getLanguage();
+        const queryLang = searchParams.get("lang");
+        const lang = queryLang === "en" || queryLang === "fa"
+            ? queryLang
+            : await getLanguage();
         let posts = await getAllPostsMeta(false, lang);
 
         // Apply filters
