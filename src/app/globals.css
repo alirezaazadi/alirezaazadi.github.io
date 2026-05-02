@@ -3346,7 +3346,7 @@ img {
   width: 100% !important;
 }
 
-.image-gallery img {
+.image-gallery .expandable-image-files {
   width: 100% !important;
   height: 250px !important;
   object-fit: cover !important;
