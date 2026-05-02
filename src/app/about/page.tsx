@@ -1,4 +1,5 @@
 import { getPostBySlug } from '@/lib/posts';
+import { getLanguage } from "@/lib/i18n";
 import { PostPageClient } from '@/components/PostPageClient';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
@@ -9,7 +10,8 @@ export const metadata: Metadata = {
 };
 
 export default async function AboutPage() {
-    const post = await getPostBySlug('about');
+    const lang = await getLanguage();
+    const post = await getPostBySlug('about', lang);
 
     if (!post) {
         notFound();

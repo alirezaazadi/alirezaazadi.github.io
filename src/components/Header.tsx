@@ -5,8 +5,14 @@ import { usePathname } from "next/navigation";
 import { siteConfig } from "../../site.config";
 import { ThemeToggle } from "./ThemeToggle";
 import { TerminalButton } from "./TerminalButton";
+import { LanguageToggle } from "./LanguageToggle";
 
-export function Header() {
+interface HeaderProps {
+    dict: Record<string, string>;
+    lang: "fa" | "en";
+}
+
+export function Header({ dict, lang }: HeaderProps) {
     const pathname = usePathname();
 
     return (
@@ -18,16 +24,16 @@ export function Header() {
                 </Link>
                 <nav className="header-nav">
                     <Link href="/" className={pathname === "/" ? "active" : ""}>
-                        posts
+                        {dict.posts}
                     </Link>
                     {siteConfig.showAbout && (
                         <Link href="/about" className={pathname === "/about" ? "active" : ""}>
-                            about
+                            {dict.about}
                         </Link>
                     )}
                     {siteConfig.showSuggestions && (
                         <Link href="/suggestions" className={pathname === "/suggestions" ? "active" : ""}>
-                            suggestions
+                            {dict.suggestions}
                         </Link>
                     )}
                 </nav>
@@ -35,10 +41,11 @@ export function Header() {
             <div className="header-right">
                 {process.env.NODE_ENV === 'development' && (
                     <Link href="/admin" className="btn" style={{ fontSize: "12px", padding: "4px 8px", marginRight: "10px" }}>
-                        Admin
+                        {dict.admin}
                     </Link>
                 )}
                 {siteConfig.showTerminal && <TerminalButton />}
+                <LanguageToggle currentLang={lang} />
                 <ThemeToggle />
             </div>
         </header>

@@ -56,8 +56,11 @@ export async function POST(req: Request) {
         fileContent += `---\n\n`;
         fileContent += content;
 
+        const enFilePath = path.join(folderPath, "index_en.md");
+
         await fs.mkdir(folderPath, { recursive: true });
         await fs.writeFile(filePath, fileContent, "utf-8");
+        await fs.writeFile(enFilePath, fileContent, "utf-8");
 
         if (archive) {
             const queuePath = path.join(process.cwd(), "content", ".archive-queue.json");

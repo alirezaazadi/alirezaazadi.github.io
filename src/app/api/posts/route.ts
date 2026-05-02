@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAllPostsMeta } from "@/lib/posts";
 import type { PostMeta } from "@/lib/post-utils";
+import { getLanguage } from "@/lib/i18n";
 
 interface PaginatedResponse {
     posts: PostMeta[];
@@ -26,7 +27,8 @@ export async function GET(request: NextRequest) {
         const query = searchParams.get("q") || "";
         const date = searchParams.get("date") || "";
 
-        let posts = await getAllPostsMeta();
+        const lang = await getLanguage();
+        let posts = await getAllPostsMeta(false, lang);
 
         // Apply filters
         if (category) {

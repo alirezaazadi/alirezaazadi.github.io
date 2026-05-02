@@ -133,8 +133,16 @@ export function stringifyFavorites(favorites: Favorites): string {
 /**
  * Read favorites from the local content directory.
  */
-export async function getFavorites(): Promise<Favorites | null> {
-    const localPath = path.join(process.cwd(), "content", "favorites.md");
+export async function getFavorites(lang: string = "fa"): Promise<Favorites | null> {
+    const basePath = path.join(process.cwd(), "content");
+    let localPath = path.join(basePath, "favorites.md");
+
+    if (lang !== "fa") {
+        const langPath = path.join(basePath, `favorites_${lang}.md`);
+        if (fs.existsSync(langPath)) {
+            localPath = langPath;
+        }
+    }
 
     try {
         if (!fs.existsSync(localPath)) {

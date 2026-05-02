@@ -7,6 +7,8 @@ import { siteConfig } from "../../site.config";
 interface TranslateButtonProps {
     originalContent: string;
     slug: string;
+    /** The language the post is currently displayed in ("fa" or "en") */
+    currentLang?: "fa" | "en";
     /** Called with full translated text (from cache or after all chunks finish) */
     onTranslated: (text: string, provider?: string) => void;
     /** Called when progressive translation starts — provides the original chunks for rendering */
@@ -18,6 +20,7 @@ interface TranslateButtonProps {
     onRevert: () => void;
     isTranslated: boolean;
     provider?: string;
+    availableLanguages?: string[];
 }
 
 const ALL_LANGUAGES = [
@@ -151,13 +154,15 @@ function restoreCodeBlocks(text: string, codeBlocks: string[]): string {
 export function TranslateButton({
     originalContent,
     slug,
+    currentLang = "fa",
     onTranslated,
     onTranslationStart,
     onChunkStart,
     onChunkDone,
     onRevert,
     isTranslated,
-    provider
+    provider,
+    availableLanguages
 }: TranslateButtonProps) {
     const LANGUAGES = useMemo(() => {
         const allowed = siteConfig.translateLanguages;
@@ -201,6 +206,18 @@ export function TranslateButton({
         setSelectedLang(lang);
         setShowLangPicker(false);
         setError(null);
+
+        // If a file-based translation exists, switch site language instead of using AI
+        if (lang.code === "English" && availableLanguages?.includes("en") && currentLang !== "en") {
+            document.cookie = `lang=en; path=/; max-age=31536000`;
+            window.location.reload();
+            return;
+        }
+        if (lang.code === "Persian" && availableLanguages?.includes("fa") && currentLang !== "fa") {
+            document.cookie = `lang=fa; path=/; max-age=31536000`;
+            window.location.reload();
+            return;
+        }
 
         // Check local cache first
         const cached = getCachedTranslation(slug, lang.code, selectedModel.id);

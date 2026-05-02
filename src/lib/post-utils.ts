@@ -14,6 +14,7 @@ export interface Post {
     readingTime: string; // e.g. "5 min read"
     body: string;
     hidden?: boolean;
+    availableLanguages?: string[];
 }
 
 export interface PostMeta {
@@ -26,6 +27,7 @@ export interface PostMeta {
     image: string;
     readingTime: string;
     hidden?: boolean;
+    availableLanguages?: string[];
 }
 
 /**

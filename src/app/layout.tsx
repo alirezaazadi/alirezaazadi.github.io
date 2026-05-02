@@ -10,6 +10,7 @@ import { ErrorBoundary } from "@/components/ErrorBoundary";
 import { ErrorReportingInit } from "@/components/ErrorReportingInit";
 import { DevToolsDetector } from "@/components/DevToolsDetector";
 import { getFavorites } from "@/lib/favorites";
+import { getLanguage, getDictionary } from "@/lib/i18n";
 import { siteConfig } from "../../site.config";
 
 export const metadata: Metadata = {
@@ -34,7 +35,9 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const favorites = await getFavorites();
+  const lang = await getLanguage();
+  const dict = getDictionary(lang);
+  const favorites = await getFavorites(lang);
 
   return (
     <html lang="en" data-theme="dark" suppressHydrationWarning>
@@ -42,10 +45,10 @@ export default async function RootLayout({
         <ThemeProvider>
           <ErrorBoundary>
             <div className="layout">
-              <Header />
+              <Header dict={dict} lang={lang} />
               <div className="layout-body">
                 {siteConfig.showFavorites && (
-                  <FavoritesSidebar favorites={favorites} />
+                  <FavoritesSidebar favorites={favorites} title={dict.favorites} />
                 )}
                 <main className="main-content">{children}</main>
               </div>

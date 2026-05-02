@@ -21,6 +21,7 @@ interface Favorites {
 
 interface FavoritesSidebarProps {
     favorites: Favorites | null;
+    title?: string;
 }
 
 const STORAGE_KEY = "blog-preferences";
@@ -162,7 +163,7 @@ function FavoritesContent({ favorites }: { favorites: Favorites }) {
     );
 }
 
-export function FavoritesSidebar({ favorites }: FavoritesSidebarProps) {
+export function FavoritesSidebar({ favorites, title = "Favorites" }: FavoritesSidebarProps) {
     const [collapsed, setCollapsed] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
     const [mounted, setMounted] = useState(false);
@@ -214,7 +215,7 @@ export function FavoritesSidebar({ favorites }: FavoritesSidebarProps) {
                     style={{ display: collapsed ? "none" : "block" }}
                 >
                     <div className="favorites-header">
-                        <span>Favorites</span>
+                        <span>{title}</span>
                     </div>
                     <div className="favorites-content">
                         <FavoritesContent favorites={favorites} />
@@ -230,7 +231,7 @@ export function FavoritesSidebar({ favorites }: FavoritesSidebarProps) {
                         onClick={(e) => e.stopPropagation()}
                     >
                         <div className="favorites-drawer-header">
-                            <span>Favorites</span>
+                            <span>{title}</span>
                             <button
                                 className="favorites-drawer-close"
                                 onClick={() => setMobileOpen(false)}

@@ -18,6 +18,7 @@ import { useClickAway } from "@uidotdev/usehooks";
 
 interface PostPageClientProps {
     post: Post;
+    currentLang?: "fa" | "en";
 }
 
 /** Tracks progressive translation state chunk-by-chunk */
@@ -28,7 +29,7 @@ interface ChunkState {
     complete: boolean;
 }
 
-export function PostPageClient({ post }: PostPageClientProps) {
+export function PostPageClient({ post, currentLang = "fa" }: PostPageClientProps) {
     const [translatedContent, setTranslatedContent] = useState<string | null>(null);
     const [translationProvider, setTranslationProvider] = useState<string | undefined>(undefined);
     const [chunkState, setChunkState] = useState<ChunkState | null>(null);
@@ -216,6 +217,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                         <TranslateButton
                             originalContent={post.body}
                             slug={post.slug}
+                            currentLang={currentLang}
                             onTranslated={handleTranslated}
                             onTranslationStart={handleTranslationStart}
                             onChunkStart={handleChunkStart}
@@ -223,6 +225,7 @@ export function PostPageClient({ post }: PostPageClientProps) {
                             onRevert={handleRevert}
                             isTranslated={isTranslated}
                             provider={translationProvider}
+                            availableLanguages={post.availableLanguages}
                         />
                     )}
 

@@ -161,8 +161,8 @@ function processGalleryChildren(children: any[]) {
                 if (galleryBuffer.length === 1) {
                     newChildren.push({
                         type: 'element',
-                        tagName: 'p',
-                        properties: {},
+                        tagName: 'div',
+                        properties: { className: ['single-image-wrapper'] },
                         children: galleryBuffer
                     });
                 } else {
@@ -187,8 +187,8 @@ function processGalleryChildren(children: any[]) {
         if (galleryBuffer.length === 1) {
             newChildren.push({
                 type: 'element',
-                tagName: 'p',
-                properties: {},
+                tagName: 'div',
+                properties: { className: ['single-image-wrapper'] },
                 children: galleryBuffer
             });
         } else {

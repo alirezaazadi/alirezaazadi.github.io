@@ -4,11 +4,11 @@ import { extractCategories, extractPostDates } from "@/lib/post-utils";
 import { PostList } from "@/components/PostList";
 import { siteConfig } from "../../site.config";
 
-// Use ISR: revalidate every 5 minutes for CDN caching
-export const revalidate = 300;
+import { getLanguage } from "@/lib/i18n";
 
 export default async function HomePage() {
-  const allMeta = await getAllPostsMeta();
+  const lang = await getLanguage();
+  const allMeta = await getAllPostsMeta(false, lang);
 
   // Extract filter data server-side (for SEO and first paint)
   const allCategories = extractCategories(allMeta);
@@ -23,6 +23,7 @@ export default async function HomePage() {
       <p className="page-subtitle" style={{ marginTop: 0 }}>{siteConfig.description}</p>
       <Suspense fallback={<div className="empty-state"><span className="spinner" /></div>}>
         <PostList
+          key={lang}
           initialPosts={firstPagePosts}
           allCategories={allCategories}
           allDates={allDates}

@@ -1,0 +1,26 @@
+---
+title: "Coexisting with Artificial Intelligence"
+summary: "It's been more than a year that I've been using tools built on top of well-known LLMs for programming. I wanted to write here about the experience of this period — what I did and didn't do in order to both benefit from them and minimize what I think are their real downsides."
+date: "2025-08-11"
+categories: ["Software engineering"]
+keywords: ["artificial intelligence", "AI coding assistant", "github copilot", "impact of AI on programming", "learning to code", "developer", "illusion of learning", "coding interview", "programming languages", "coding"]
+---
+
+
+I think it's been about a year now that I've been using these well-known agents on my IDEs, and it's become clear to me where I should use what, and which button to press when. Today, when the topic of ChatGPT came up, I figured I'd also talk about something that's been occupying my mind for a long time.
+
+I've always had GitHub Copilot. And for the past two months, at my company's insistent recommendation, I've been using Cascade. Of course, thankfully, I'm not paying for either out of my own pocket. I have the first one through GitHub Student, and the second one is paid for by the company itself. The code I write these days is Go first, then Rust by a considerable margin, and finally Python. For years Python was my primary language and my command of it is significantly greater than the other two, while I'm still in the sandbox phase with the other two — especially Rust.
+
+One thing worth noting is that when you install Cascade, it's nosy by default and eagerly sticks its finger into every hole. If there's an error somewhere in the code, the first option that comes up — instead of the IDE's own suggestion (like an import) — is: "Do you want to fix it with Cascade?" No, my friend! I don't!! Using it for that is pure foolishness. An import that the IDE itself can handle easily, quickly, and with a definitive solution gets handed off to the agent to go ask its master, get an answer, and then do the hard work of adding the import at the top. Of course, this first case is very easily solved — it costs four clicks to disable these kinds of suggestions. It's not much of a complaint. But the real problem is in the learning process…
+
+When I was starting to write Go, the verbose and tempting autocomplete from Copilot was also active. You'd write a method name and the body would be fleshed out. Or all the exciting things you've seen and experienced yourself (with all the problems they came with), and that itself was the problem. A whispering temptation that grows stronger day by day until you can't pull yourself away from it. I felt this when I wanted to implement a solution from scratch, from zero to one hundred, without copying from anyone. What I had fallen into was the "illusion of learning." When AI wasn't there, or when I tried to implement the code in my own head, the implementation details — like methods, syntax, packages, and most importantly the fundamental nuances of the language — weren't there in my memory, and that forgetting was frightening.
+
+We all probably experienced this before 2022. Forgetting of the same kind as those times we copied snippets from Stack Overflow and used them in projects and exercises, and when we needed them again, we'd have to go back and copy the same thing again. Code that took a long time to properly learn because we probably weren't paying much attention to it (and there was no need to, since it was working just fine), which meant it took much longer to commit to memory.
+
+Today's story is the same as yesterday's, but with one important difference: this failure to retain is both more frequent and more basic. More fundamental things we now don't need to remember or pay attention to — because everything is just working. And I don't think we genuinely don't need to. Now is where the debate comes up again: given this situation and the existence of these LLMs, why do we need to memorize anything at all? Again, my personal experience and opinion is that without memorization, learning is never truly complete. And most importantly — when you go to an interview and they ask you to write code, and you've been doing that language from day zero with these agents, how are you going to handle the disgrace of that forgetting? As we Mazandaranis say: "Even the wild boar won't eat this mess you've made!"
+
+It was out of fear of exactly this that I turned off all inline suggestions. In practice, inside the editor, there's no trace of these AIs anymore. Everything that's there is just a chat box, nothing more. I use agents much less frequently — only for things I've done many, many times before and know I can handle on my own if I write it myself. Or when I need to search for something inside a large, sprawling codebase. Now when I go back to older work, I find that I'm finally understanding what's actually happening. If I'm writing that line for managing goroutines, why should it be used, and why am I using it. Now I have the excuse to go there and read its documentation.
+
+The truth is, I'd rather have a talking donkey that guides me when I get stuck, than a magic wand that does my work for me.
+
+P.S.: To explain the proverb — the wild boar (خی in Mazandarani), which literally eats everything, won't even eat the mess you've made.

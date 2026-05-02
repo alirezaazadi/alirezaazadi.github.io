@@ -10,6 +10,7 @@ interface Post {
     date: string;
     categories: string[];
     hidden?: boolean;
+    availableLanguages?: string[];
 }
 
 export default function AdminPostsPage() {
@@ -66,6 +67,9 @@ export default function AdminPostsPage() {
                                     {post.hidden && (
                                         <span style={{ fontSize: 11, padding: "2px 8px", borderRadius: 4, background: "rgba(234, 179, 8, 0.15)", color: "#eab308", border: "1px solid rgba(234, 179, 8, 0.3)", fontWeight: 500, letterSpacing: 0.5, lineHeight: 1, whiteSpace: "nowrap" }}>Draft</span>
                                     )}
+                                    {post.availableLanguages?.map(lang => (
+                                        <span key={lang} style={{ fontSize: 10, padding: "2px 6px", borderRadius: 4, background: "rgba(59, 130, 246, 0.15)", color: "#3b82f6", border: "1px solid rgba(59, 130, 246, 0.3)", fontWeight: 600, textTransform: "uppercase" }}>{lang}</span>
+                                    ))}
                                 </h3>
                             </Link>
                             <div style={{ fontSize: "0.85em", opacity: 0.7 }}>

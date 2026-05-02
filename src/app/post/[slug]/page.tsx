@@ -4,8 +4,7 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import { siteConfig } from "../../../../site.config";
 
-// Use ISR: revalidate every 5 minutes for CDN caching
-export const revalidate = 300;
+import { getLanguage } from "@/lib/i18n";
 
 interface PostPageProps {
     params: Promise<{ slug: string }>;
@@ -15,7 +14,8 @@ export async function generateMetadata({
     params,
 }: PostPageProps): Promise<Metadata> {
     const { slug } = await params;
-    const post = await getPostBySlug(slug);
+    const lang = await getLanguage();
+    const post = await getPostBySlug(slug, lang);
     if (!post) return { title: "Post Not Found" };
 
     const postUrl = `${siteConfig.url}/post/${slug}`;
@@ -49,7 +49,8 @@ export async function generateMetadata({
 
 export default async function PostPage({ params }: PostPageProps) {
     const { slug } = await params;
-    const post = await getPostBySlug(slug);
+    const lang = await getLanguage();
+    const post = await getPostBySlug(slug, lang);
 
     if (!post) {
         notFound();

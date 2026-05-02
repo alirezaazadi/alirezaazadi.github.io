@@ -33,6 +33,7 @@ export async function PUT(req: Request, context: any) {
         
         const folderPath = path.join(process.cwd(), "content", "posts", safeSlug);
         const newFilePath = path.join(folderPath, "index.md");
+        const enFilePath = path.join(folderPath, "index_en.md");
         const oldFilePath = path.join(process.cwd(), "content", "posts", `${safeSlug}.md`);
 
         const cats = categories ? `[${categories.map((c: string) => `"${c}"`).join(", ")}]` : "[]";
@@ -58,7 +59,23 @@ export async function PUT(req: Request, context: any) {
         fileContent += content;
 
         await fs.mkdir(folderPath, { recursive: true });
+
+        let shouldSyncEn = false;
+        try {
+            const enContent = await fs.readFile(enFilePath, "utf-8");
+            const mainContent = await fs.readFile(newFilePath, "utf-8").catch(() => null);
+            if (enContent === mainContent) {
+                shouldSyncEn = true;
+            }
+        } catch {
+            // _en file doesn't exist yet
+            shouldSyncEn = true;
+        }
+
         await fs.writeFile(newFilePath, fileContent, "utf-8");
+        if (shouldSyncEn) {
+            await fs.writeFile(enFilePath, fileContent, "utf-8");
+        }
         
         // Cleanup old flat format file if we just migrated it to a folder
         try {
