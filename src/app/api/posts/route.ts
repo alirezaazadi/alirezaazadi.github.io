@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAllPostsMeta } from "@/lib/posts";
+import { getAllPosts, getAllPostsMeta } from "@/lib/posts";
 import type { PostMeta } from "@/lib/post-utils";
 import { getLanguage } from "@/lib/i18n";
 
@@ -42,10 +42,20 @@ export async function GET(request: NextRequest) {
 
         if (query) {
             const q = query.toLowerCase();
+            const [faPosts, enPosts] = await Promise.all([
+                getAllPosts("fa"),
+                getAllPosts("en"),
+            ]);
+            const searchIndex = new Map<string, string>();
+            for (const p of faPosts) {
+                searchIndex.set(p.slug, `${p.title}\n${p.summary}\n${p.body}`.toLowerCase());
+            }
+            for (const p of enPosts) {
+                const prev = searchIndex.get(p.slug) || "";
+                searchIndex.set(p.slug, `${prev}\n${p.title}\n${p.summary}\n${p.body}`.toLowerCase());
+            }
             posts = posts.filter(
-                (p) =>
-                    p.title.toLowerCase().includes(q) ||
-                    p.summary.toLowerCase().includes(q)
+                (p) => (searchIndex.get(p.slug) || `${p.title}\n${p.summary}`.toLowerCase()).includes(q)
             );
         }
 

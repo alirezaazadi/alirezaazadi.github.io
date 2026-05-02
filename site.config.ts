@@ -59,7 +59,7 @@ export const siteConfig = {
   showTerminal: true,
 
   shareOptions: ["linkedin", "telegram", "copyLink"] as string[],
-  terminalCommands: ["help", "ls", "cd", "cat", "grep", "favs", "whoami", "clear", "exit"] as string[],
+  terminalCommands: ["help", "ls", "cd", "cat", "grep", "lang", "favs", "whoami", "clear", "exit"] as string[],
   translateLanguages: ["English", "French", "German", "Spanish", "Arabic", "Persian", "Chinese", "Japanese", "Korean", "Russian", "Portuguese", "Italian", "Dutch", "Turkish", "Hindi"] as string[],
   defaultImageWidth: 0,
 };

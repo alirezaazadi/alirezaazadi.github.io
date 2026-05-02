@@ -108,7 +108,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
 
     const enabledCmds = siteConfig.terminalCommands?.length
         ? siteConfig.terminalCommands
-        : ["help", "ls", "cd", "cat", "grep", "favs", "whoami", "clear", "exit"];
+        : ["help", "ls", "cd", "cat", "grep", "lang", "favs", "whoami", "clear", "exit"];
 
     const handleCommand = useCallback(
         (raw: string) => {
@@ -138,6 +138,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                         cd: "  cd <dir>       Change directory (cd .., cd posts)",
                         cat: "  cat <file>     Open a post or show file contents",
                         grep: "  grep <term>    Search posts by keyword",
+                        lang: "  lang <fa|en>  Change site language",
                         favs: "  favs [section] List favorites (all or by section)",
                         whoami: "  whoami         Display user info",
                         clear: "  clear          Clear terminal",
@@ -271,6 +272,26 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                             ...lines.map((t) => ({ text: t, type: "output" as const })),
                         ]);
                     }
+                    break;
+                }
+
+                case "lang": {
+                    const nextLang = arg.toLowerCase();
+                    if (nextLang !== "fa" && nextLang !== "en") {
+                        setOutput((prev) => [
+                            ...prev,
+                            { text: "Usage: lang <fa|en>", type: "error" },
+                        ]);
+                        break;
+                    }
+                    document.cookie = `lang=${nextLang}; path=/; max-age=31536000`;
+                    setOutput((prev) => [
+                        ...prev,
+                        { text: `Language switched to ${nextLang.toUpperCase()}. Refreshing...`, type: "info" },
+                    ]);
+                    setTimeout(() => {
+                        router.refresh();
+                    }, 200);
                     break;
                 }
 

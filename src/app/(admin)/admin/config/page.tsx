@@ -33,6 +33,7 @@ const ALL_TERMINAL_COMMANDS = [
     { id: "cd", label: "cd — Change directory" },
     { id: "cat", label: "cat — Open a post / show file" },
     { id: "grep", label: "grep — Search posts by keyword" },
+    { id: "lang", label: "lang — Change site language (fa/en)" },
     { id: "favs", label: "favs — List favorites" },
     { id: "whoami", label: "whoami — Display user info" },
     { id: "clear", label: "clear — Clear terminal" },
@@ -134,7 +135,7 @@ export default function AdminConfigPage() {
                     showAbout: data.showAbout ?? true,
                     showTerminal: data.showTerminal ?? true,
                     shareOptions: data.shareOptions ?? ["linkedin", "telegram", "copyLink"],
-                    terminalCommands: data.terminalCommands ?? ["help", "ls", "cd", "cat", "grep", "favs", "whoami", "clear", "exit"],
+                    terminalCommands: data.terminalCommands ?? ["help", "ls", "cd", "cat", "grep", "lang", "favs", "whoami", "clear", "exit"],
                     translateLanguages: data.translateLanguages ?? ALL_LANGUAGES.map(l => l.code),
                     defaultImageWidth: data.defaultImageWidth ?? 0,
                 });

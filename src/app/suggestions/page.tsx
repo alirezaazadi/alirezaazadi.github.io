@@ -17,5 +17,5 @@ export default async function SuggestionsPage() {
         notFound();
     }
 
-    return <PostPageClient post={post} />;
+    return <PostPageClient post={post} currentLang={lang} />;
 }
