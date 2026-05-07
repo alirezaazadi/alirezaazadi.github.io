@@ -69,7 +69,7 @@ I had all of these. What remained was Tarragon (Dragoncello in Italian) and Savo
 
 For making fermented pickles, especially those where vinegar is not used, maintaining the brine concentration is vital. Your salt concentration in this solution should be between 3 to 5 (or as some say, 6) percent. I took the middle ground: 4 percent. Why do I say it's vital? Because:
 
-1- In this environment, spoilage-causing bacteria like Pseudomonas and pathogens (disease-causing agents) like Clostridium botulinum cannot survive and multiply. You've probably heard of Botulinum. It's the toxin produced by Clostridium botulinum bacteria that causes botulism. It's the exact same bacteria for which you boil canned tuna to kill. When we set the brine solution at 4 percent, we acidify the environment by encouraging the growth of other bacteria that produce lactic acid, and thus these bacteria are eliminated. To eliminate Pseudomonas, which causes spoilage, it's also necessary to keep the ingredients completely submerged under water throughout the process to prevent oxygen from reaching them.
+1- In this environment, spoilage bacteria such as Pseudomonas and pathogens (disease-causing agents) such as Clostridium botulinum cannot survive or multiply. You have probably heard the name Botulinum. It is the toxin that this bacterium, [Clostridium botulinum](https://www.cdc.gov/botulism/about/index.html), produces and causes the disease botulism. This is exactly the same bacterium because of which you boil canned tuna; however, we don't boil the can to kill the bacterium itself, as this bacterium and its spores (or endospores, a dormant, inactive, and highly resistant form of some bacteria produced for survival in unfavorable environmental conditions) are not destroyed by 100-degree boiling water and are only killed at 121 degrees. We actually boil the tuna to destroy the "toxin" that this bacterium has produced. When we set the brine solution to 4 percent, by helping the growth of other bacteria that produce lactic acid, we acidify the environment, and thus these bacteria are eliminated. To eliminate Pseudomonas, which causes spoilage, it is also necessary to keep the ingredients completely submerged under water throughout this process so that no oxygen reaches them.
 
 2- Osmosis! In flavoring, the phenomenon of osmosis, which we read about in middle school science, plays a very prominent role. The difference in concentration between the brine solution and the solution inside the cucumber causes this phenomenon. The brine causes the interstitial water of the cucumber, along with the natural sugars dissolved in it (glucose and fructose), to be drawn outward (into the jar). This way, we provide the sugar needed for the fermentation bacteria and draw the water containing the aromatic substances of garlic, hot pepper, and dill into the pickle. 
 
@@ -131,6 +131,8 @@ Ultimately, the outcome of this process was a spicy and crunchy pickle, and seei
 
 Thank you for reading. I recommend that if you have the chance, you try it too. 
 It's a lovely process. 
+
+P.S. Thanks to Peyman for the scientific correction of the text :)
 
 Sincerely,
 Alireza,
