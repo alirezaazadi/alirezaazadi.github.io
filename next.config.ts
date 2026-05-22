@@ -31,6 +31,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Allow dev server access from local network (e.g. another device or Docker host)
+  allowedDevOrigins: ["192.168.1.155"],
+
   // Standalone output for Docker deployment
   output: "standalone",
 

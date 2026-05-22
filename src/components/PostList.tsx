@@ -13,6 +13,7 @@ import { SearchBar } from "./SearchBar";
 import { FilterDropdown } from "./FilterDropdown";
 import { Pagination } from "./Pagination";
 import { FileText, Loader } from "lucide-react";
+import { RssFeedButton } from "./RssFeedButton";
 
 interface PostListProps {
     /** Initial posts from server-side rendering (first page, metadata only) */
@@ -238,6 +239,7 @@ export function PostList({ initialPosts, allCategories, allDates, totalPosts, la
                     selectedDate={date}
                     onDateSelect={handleDate}
                 />
+                <RssFeedButton />
             </div>
 
             {loading ? (

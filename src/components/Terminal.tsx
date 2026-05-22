@@ -139,6 +139,7 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                         cat: "  cat <file>     Open a post or show file contents",
                         grep: "  grep <term>    Search posts by keyword",
                         lang: "  lang <fa|en>  Change site language",
+                        rss: "  rss [fa|en]    Get RSS feed URL (default: both)",
                         favs: "  favs [section] List favorites (all or by section)",
                         whoami: "  whoami         Display user info",
                         clear: "  clear          Clear terminal",
@@ -292,6 +293,37 @@ export function Terminal({ isOpen, onClose, onMinimize }: { isOpen: boolean; onC
                     setTimeout(() => {
                         router.refresh();
                     }, 200);
+                    break;
+                }
+
+                case "rss": {
+                    const langArg = arg.toLowerCase();
+                    const baseUrl = typeof window !== "undefined" ? window.location.origin : siteConfig.url;
+                    const faUrl = `${baseUrl}/feed.xml`;
+                    const enUrl = `${baseUrl}/feed-en.xml`;
+
+                    if (langArg === "fa") {
+                        setOutput((prev) => [
+                            ...prev,
+                            { text: "Persian RSS feed:", type: "info" },
+                            { text: `  ${faUrl}`, type: "output" },
+                        ]);
+                    } else if (langArg === "en") {
+                        setOutput((prev) => [
+                            ...prev,
+                            { text: "English RSS feed:", type: "info" },
+                            { text: `  ${enUrl}`, type: "output" },
+                        ]);
+                    } else {
+                        setOutput((prev) => [
+                            ...prev,
+                            { text: "RSS feeds:", type: "info" },
+                            { text: `  [fa]  ${faUrl}`, type: "output" },
+                            { text: `  [en]  ${enUrl}`, type: "output" },
+                            { text: "", type: "output" },
+                            { text: "Tip: rss fa  or  rss en  to get a specific feed.", type: "info" },
+                        ]);
+                    }
                     break;
                 }
 

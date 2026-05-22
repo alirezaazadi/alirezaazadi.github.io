@@ -28,6 +28,14 @@ export const metadata: Metadata = {
     shortcut: "/favicon.ico",
     apple: "/icon.png",
   },
+  alternates: {
+    types: {
+      "application/rss+xml": [
+        { url: `${siteConfig.url}/feed.xml`, title: `${siteConfig.title} (فارسی)` },
+        { url: `${siteConfig.url}/feed-en.xml`, title: `${siteConfig.title} (English)` },
+      ],
+    },
+  },
 };
 
 export default async function RootLayout({
