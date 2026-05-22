@@ -56,8 +56,9 @@
   url: https://www.imdb.com/title/tt5753856/
   cover: /media/favorites/fav_xrmahwusy.jpg
   subtitle: IMDB
-- title: House MD (2004 - 2012_
+- title: House (2004 - 2012)
   url: https://www.imdb.com/title/tt0412142/
+  cover: /media/favorites/fav_1779439089406_lldce.jpg
   subtitle: IMDB
 
 ## playlists
