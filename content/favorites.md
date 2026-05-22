@@ -56,6 +56,9 @@
   url: https://www.imdb.com/title/tt5753856/
   cover: /media/favorites/fav_xrmahwusy.jpg
   subtitle: IMDB
+- title: House MD (2004 - 2012_
+  url: https://www.imdb.com/title/tt0412142/
+  subtitle: IMDB
 
 ## playlists
 - title: بین سطور حسین باستانی
