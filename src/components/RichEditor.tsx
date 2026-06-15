@@ -93,6 +93,53 @@ export function RichEditor({ value, onChange, id = "md-editor", slug }: RichEdit
         });
     }
 
+    /**
+     * Prefixes every selected line with `linePrefix`.
+     * If nothing is selected, prefixes the current line.
+     * Handles toggling: if all lines already start with the prefix, removes it.
+     */
+    function insertLinePrefix(linePrefix: string) {
+        const textarea = document.getElementById(id) as HTMLTextAreaElement;
+        if (!textarea) return;
+
+        textarea.focus();
+        const start = textarea.selectionStart;
+        const end = textarea.selectionEnd;
+        const fullText = textarea.value;
+
+        // Expand selection to cover full lines
+        const lineStart = fullText.lastIndexOf("\n", start - 1) + 1;
+        const lineEnd = fullText.indexOf("\n", end);
+        const blockEnd = lineEnd === -1 ? fullText.length : lineEnd;
+
+        const selectedBlock = fullText.substring(lineStart, blockEnd);
+        const lines = selectedBlock.split("\n");
+
+        // Toggle: if every line already starts with the prefix, remove it; otherwise add it
+        const allPrefixed = lines.every(l => l.startsWith(linePrefix));
+        const newLines = allPrefixed
+            ? lines.map(l => l.slice(linePrefix.length))
+            : lines.map(l => linePrefix + l);
+        const newBlock = newLines.join("\n");
+
+        const before = fullText.substring(0, lineStart);
+        const after = fullText.substring(blockEnd);
+        const newText = before + newBlock + after;
+
+        // Try execCommand for undo-stack support
+        textarea.setSelectionRange(lineStart, blockEnd);
+        const success = document.execCommand('insertText', false, newBlock);
+        if (!success) {
+            onChange(newText);
+        }
+
+        // Restore a sensible selection over the transformed block
+        queueMicrotask(() => {
+            textarea.focus();
+            textarea.setSelectionRange(lineStart, lineStart + newBlock.length);
+        });
+    }
+
     const ToolbarButton = ({ icon: Icon, onClick, title }: any) => (
         <button type="button" onClick={onClick} title={title} style={{ padding: "6px", background: "transparent", border: "1px solid transparent", cursor: "pointer", color: "var(--fg-primary)", borderRadius: 4, display: "flex", alignItems: "center", justifyContent: "center" }} onMouseOver={e => e.currentTarget.style.background = "var(--bg-secondary)"} onMouseOut={e => e.currentTarget.style.background = "transparent"}>
             <Icon size={16} />
@@ -121,7 +168,7 @@ export function RichEditor({ value, onChange, id = "md-editor", slug }: RichEdit
                         <ToolbarButton icon={Italic} title="Italic" onClick={() => insertFormatting("*", "*")} />
                         <div style={{ width: 1, height: 16, background: "var(--border-color)", margin: "0 4px" }} />
                         <ToolbarButton icon={Link2} title="Link" onClick={() => insertFormatting("[", "](url)", "link")} />
-                        <ToolbarButton icon={Quote} title="Quote" onClick={() => insertFormatting("> ", "")} />
+                        <ToolbarButton icon={Quote} title="Quote / Blockquote (works on multi-line selections)" onClick={() => insertLinePrefix("> ")} />
                         <ToolbarButton icon={Code} title="Code" onClick={() => insertFormatting("`", "`")} />
                         <ToolbarButton icon={List} title="List" onClick={() => insertFormatting("- ", "")} />
                         <div style={{ width: 1, height: 16, background: "var(--border-color)", margin: "0 4px" }} />
