@@ -40,10 +40,22 @@ function GoogleAnalytics() {
     );
 }
 
+function CloudflareAnalytics() {
+    return (
+        <Script
+            defer
+            src="https://static.cloudflareinsights.com/beacon.min.js"
+            data-cf-beacon='{"token": "ba24026596a646e0aba65867fac721f2"}'
+            strategy="afterInteractive"
+        />
+    );
+}
+
 export function Analytics() {
     return (
         <>
             <GoogleAnalytics />
+            <CloudflareAnalytics />
             <VercelAnalytics />
         </>
     );
