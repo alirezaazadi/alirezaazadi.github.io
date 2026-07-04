@@ -19,6 +19,14 @@
   url: https://www.goodreads.com/book/show/242721705
   cover: /media/favorites/fav_5sopocu3v.jpg
   subtitle: Thomas Pynchon ,  بهرنگ شیرین زاده  (Translator )
+- title: Site Reliability Engineering: How Google Runs Production Systems
+  url: https://www.goodreads.com/en/book/show/27968891-site-reliability-engineering
+  cover: /media/favorites/fav_xcv1gofyw.jpg
+  subtitle: Betsy Beyer, Chris Jones, Jennifer Petoff, Niall Richard Murphy
+- title: Prisoners of Geography: Ten Maps That Tell You Everything You Need to Know About Global Politics
+  url: https://www.goodreads.com/book/show/25135194-prisoners-of-geography
+  cover: /media/favorites/fav_mp289evvv.jpg
+  subtitle: Tim Marshall
 
 ## music
 - title: Aghoosh
@@ -30,6 +38,10 @@
 - title: Piano & Kamancheh, Pt. 1 (Live Improvisation) - Peyman Yazdanian · Hesam Inanlou
   url: https://www.youtube.com/watch?v=Htkm5ZnDzRk&list=RDHtkm5ZnDzRk&start_radio=1
   cover: /media/favorites/fav_sh29nj0el.jpg
+- title: Maybe Tomorrow
+  url: https://open.spotify.com/track/6SXy02aTZU3ysoGUixYCz0?si=c468c163beea4ca4
+  cover: /media/favorites/fav_w0k5vokz0.jpg
+  subtitle: Stereophonics
 
 ## podcasts
 - title: رختکن بازنده‌ها
