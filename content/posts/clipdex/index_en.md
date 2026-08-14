@@ -1,25 +1,27 @@
 ---
-title: "پروژ‌ه‌ی clipdex"
-summary: "نیاز بود که بخش‌هایی از یک دوره‌ای رو ببینم. دوره‌ای ویدیو‌ای و طولانی که مشخص نبود هر سرفصل توی کدوم فصل و توی کدوم بازه‌ی زمانی توضیح داده شده. یک ابزار نوشتم که این اطلاعات رو از دوره استخراج کنه."
+title: "The Clipdex Project"
+summary: "I needed to review certain parts of a long video course where topics and timestamps weren't clearly indexed. I built a tool to automatically extract and timestamp topic sections from the course."
 date: "2026-08-14"
 categories: ["Programming"]
 keywords: ["clipdex", "linux kernel internals", "video topic extraction", "video course navigation", "ai video indexing", "abolfazl kazemi", "linux forensics course", "video content search", "whisper transcript", "long video analysis"]
 image: "/media/posts/img_1786740342674_hj83e.png"
 ---
+Here is the English translation of that section:
 
+***
 
-سلام. 
-می‌خواستم که بخش‌هایی از Linux Kernel Internals رو دوره کنم. از قبل می‌دونستم که ابوالفضل کاظمی، دورهایی رو توی یو‌تیوب داره: [کانال os_security](https://www.youtube.com/@os_security). متوجه شدم که دوره‌ی لینوکس اینترنالی که گذاشته کامل نیست و خودش بخشی از دوره‌ی Linux Internals and Forensicsـه که اون هم توی هیچ‌کدوم از پلتفرم‌ها منتشر نشده. به [ایشون](https://www.linkedin.com/in/akazemi67/) پیام دادم و ماجرا رو گفتم. توضیح دادن که فایل‌های این دوره رو توی یک کانال تلگرامی گذاشتن. [از اینجا](https://t.me/akazemi67_courses) می‌تونین شما هم دانلود کنین.
+Hello.
 
-نکته اما این بود که دوره مفصل بود و محور اصلی دوره هم فارنزیک بود و من فقط دنبال بخش‌هایی از اون دوره بودم که تماشا کنم. ولی مشکل این بود که پیدا کردن سرفصل‌ها بین این همه فایل ویدیو‌ای (۱۳ فصل هر کدوم دو فایل) و فایل‌های طولانی (هر فایل حدودا ۱ و نیم‌ساعت) به صورت دستی کار سختی بود برای همین تصمیم گرفتم ابزاری بنویسم که این رو برای من آماده کنه. 
+I wanted to review some sections of a Linux Kernel Internals course. I already knew that [Abolfazl Kazemi](https://www.linkedin.com/in/akazemi67/) had uploaded courses on YouTube on his [os_security channel](https://www.youtube.com/@os_security). I checked his channel and noticed that the Linux Kernel Internals course he posted was incomplete—it was actually part of a broader Linux Internals and Forensics course that hadn't been published on any platform. I messaged him about it, and he explained that the full course files were uploaded to a Telegram channel. You can download them [here](https://t.me/akazemi67_courses).
 
-از Grok 4.6 که یک روزی از زمان انتشارش گذشته استفاده کردم. الگوریتمی هم که برای انجام این کار داشتم ساده بود:
-- استخراج transcribe هر ویدیو با یکی از مدل‌هایی تبدیل صوت به متن که از فارسی هم ساپورت کنه (mlx-whisper یا openai-whisper)
-- دادن متن‌ها به همراه تایم استمپ به یکی از LLMها برای تفکیک تاپیک‌ها
-- نمایش سرفصل‌ها یا تاپیک‌ها به همراه زمانشون به طوری که قابل کلیک باشن و پلیر به همون زمان که ابتدای مبحث می‌شه seek کنه. 
+However, the course was quite detailed and focused mainly on forensics, whereas I was only looking to watch specific parts. Manually finding topics across so many video files (13 sessions, two files each) and long videos (~1.5 hours per file) was difficult. Therefore, I decided to write a tool to generate this index for me.
 
-نتیجه‌ی این ماجرا شد پروژه‌ی ‌Clipdex.  خودم از نتیجه‌ی پروژه راضی بودم و برای همین دوست داشتم که اون رو منتشر هم بکنم. احتمالا بدرد بقیه هم بخوره. [از اینجا می‌تونین پروژه رو بررسی کنین](https://github.com/alirezaazadi/clipdex) و اگر دوست داشتید هم استفاده کنین. اگر به مشکلی هم برخوردین یا پیشنهادی برای بهتر کردنش یا توسعه‌ش هم داشتید ایشو باز کنین. خوش‌حال می‌شم که بررسی کنم. 
+I used Grok 4.6 (just a day after its release). The algorithm I followed was simple:
+- Extract the transcript of each video using a speech-to-text model that supports Persian (such as `mlx-whisper` or `openai-whisper`).
+- Pass the transcripts along with timestamps to an LLM to categorize the topics.
+- Display the topics and timestamps with clickable links so the player seeks directly to the start of each topic.
 
+The result of this effort became the **Clipdex** project. I was pleased with how it turned out, so I wanted to publish it—hopefully, it will be useful to others as well. You can check out the project [here on GitHub](https://github.com/alirezaazadi/clipdex) and use it if you like. If you encounter any issues or have suggestions for improvements or developments, feel free to open an issue. I'd be happy to check it out!
 
 ![Image](/media/posts/clipdex/img_1786741273958_hjb3o.jpg)
 
@@ -29,8 +31,9 @@ image: "/media/posts/img_1786740342674_hj83e.png"
 
 ![Image](/media/posts/clipdex/img_1786741273996_kzusr.jpg)
 
-پی‌نوشت: خروجی زمان‌بندی دوره رو هم اینجا می‌ذارم. اگر نخواستید پروژه رو ران کنین، حداقل بتونین از این استفاده کنین:
+P.S.: I'm also sharing the topic index generated for this course below. If you don't feel like running the tool yourself, you can still use this index directly:
 
+```
 # linux internal forensics topics index
 
 55 topics · 137 clips
@@ -516,3 +519,4 @@ image: "/media/posts/img_1786740342674_hj83e.png"
 - `00:21:16` – `00:43:17` · S13-P2.mp4 — Apache log analysis
 - `00:43:17` – `00:48:47` · S13-P2.mp4 — Symbiote
 - `00:48:47` – `00:56:13` · S13-P2.mp4 — BPFDoor
+```
